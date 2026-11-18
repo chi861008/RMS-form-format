@@ -2121,12 +2121,6 @@ body.rms-mobile-ui dialog.metric-dialog .pay-dialog-search{flex:none}
 .store-total-trend-frame .single-trend-widget{min-width:0}
 @media(max-width:900px){.store-overview-dual-charts{grid-template-columns:minmax(0,1fr)}}
 .device-phone .store-overview-dual-charts{grid-template-columns:minmax(0,1fr)}
-
-[data-total-trend-day]{cursor:pointer}
-[data-total-trend-day]:focus-visible{outline:2px solid #0d9e96;outline-offset:3px}
-.multi-store-day-content .store-card-list{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
-.multi-store-day-content .card{min-width:0;margin:0}
-.cash-net-caption{margin:0 0 12px;color:var(--muted);font-weight:600}
 </style></head><body>
 <div class="top"><span class="back">‹ &nbsp; RMS</span><span class="headline" id="report-title">門市營收一覽表</span><div class="controls"><div class="tog"><button data-device="desktop" class="active">電腦版</button><button data-device="phone">手機版</button><button data-device="auto">自動 RWD</button></div><div class="tog vs"><button data-version="before">Before</button><button data-version="after" class="active">After</button></div></div></div>
 <div class="selector-bar"><div class="selector-left"><span class="muted">報表</span><select id="reportSelect"></select></div></div>
@@ -2225,7 +2219,7 @@ for(let day=1;day<=30;day++){
   }));
 }
 const CLOSE={'營業報表':[['原價','128,300'],['折扣招待','-3,800'],['服務費','2,200'],['實際營收','126,700']],'結帳方式':[['現金','43,700'],['信用卡','57,000'],['LINE PAY','26,000'],['合計','126,700']],'單據／客單':[['結帳單數','328'],['來客數','410'],['平均訂單單價','386.28']],'發票資訊':[['發票張數','322'],['作廢張數','2'],['作廢金額','750']]};
-const state={allStoresTrend:false,cashTableType:'all',report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','orders'],cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
+const state={report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','orders'],cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
 const el=id=>document.getElementById(id), fmt=(v,d=0)=>Number(v).toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d}),e=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const field=k=>STORE_FIELDS.find(x=>x.key===k)||STORE_FIELDS[0];
 function fnum(v,k){let t=field(k).type;return `${fmt(v,t==='rate'||t==='growth'?2:t==='avg'?2:t==='amount'?2:0)}${t==='rate'||t==='growth'?'%':''}`;}
@@ -2503,7 +2497,6 @@ function singleTrendDayDetail(day){
   </div>`;
 }
 function selectSingleTrendDay(target){
-  state.allStoresTrend=false;
   const date=target.dataset.trendDay;
   const widget=target.closest('.single-trend-widget');
   if(!date||!widget)return;
@@ -2516,7 +2509,6 @@ function selectSingleTrendDay(target){
 }
 function singleTrendDayLayer(){
   if(!state.trendDrawerDate)return '';
-  if(state.allStoresTrend)return multiStoreTrendDayLayer();
   const item=state.storeDrill?DATASTORES.find(x=>x.name===state.storeDrill):DATASTORES.find(x=>state.selectedStores.includes(x.name));
   if(!item)return '';
   const day=singleStorePeriodData(item).daily.find(d=>d.date===state.trendDrawerDate);
@@ -2562,13 +2554,13 @@ function singleStoreTrend(daily,{compact=false,metricKey="revenue",aggregate=fal
   const dots=coords.map(p=>{
     const selected=state.trendSelectedDate===p.d.date;
     const label=`${p.d.date.replaceAll('-','/')}：${aggregate?'所選門市整體':''}${metricName} ${fnum(p.value,metricKey)}${aggregate?'':'。點選查看當日營業狀況'}`;
-    if(aggregate)return `<g class="store-total-node ${selected?'is-selected':''}" data-date="${e(p.d.date)}" data-total-trend-day="${e(p.d.date)}" data-value="${p.value}" role="button" tabindex="0" aria-pressed="${selected}" aria-label="${e(label)}，查看多店單日營業明細"><circle cx="${p.x}" cy="${p.y}" r="${selected?6:4.5}" fill="#0d9e96" stroke="white" stroke-width="1.5"/><circle cx="${p.x}" cy="${p.y}" r="18" fill="transparent"><title>${e(label)}</title></circle></g>`;
+    if(aggregate)return `<g class="store-total-node" data-date="${e(p.d.date)}" data-value="${p.value}"><circle cx="${p.x}" cy="${p.y}" r="4.5" fill="#0d9e96" stroke="white" stroke-width="1.5"/><circle cx="${p.x}" cy="${p.y}" r="18" fill="transparent"><title>${e(label)}</title></circle></g>`;
     return `<g class="single-trend-node ${selected?'is-selected':''}" data-trend-day="${e(p.d.date)}" role="button" tabindex="0" aria-pressed="${selected}" aria-label="${e(label)}"><circle class="trend-day-ring" cx="${p.x}" cy="${p.y}" r="11" fill="none" stroke="none"/><circle class="trend-day-visible" cx="${p.x}" cy="${p.y}" r="${selected?6:4.5}" fill="#0d9e96" stroke="white" stroke-width="1.5"/><circle class="trend-day-hit" cx="${p.x}" cy="${p.y}" r="22"/><title>${e(label)}</title></g>`;
   }).join('');
   const selectedDay=daily.find(x=>x.date===state.trendSelectedDate);
   return `<div class="single-trend-widget">
     <div class="single-trend-scroll" tabindex="0" aria-label="每日${e(metricName)}折線圖${scrollMode?'，可左右滑動查看其他日期':''}"><svg class="single-trend-svg" viewBox="0 0 ${width} ${height}" style="${scrollMode?`width:${width}px;max-width:none`:'width:100%'}" role="group" aria-label="每日${e(metricName)}趨勢，自 ${daily[0].date} 至 ${daily[daily.length-1].date}">${grids}<path d="${path}" fill="none" stroke="#0d9e96" stroke-width="${narrow?2.5:3}" stroke-linejoin="round" stroke-linecap="round" pointer-events="none"/>${dots}${ticks}</svg></div>
-    <p class="single-trend-hint">${aggregate?'點選日期節點查看多店單日卡牌；彙整所有選取門市，不受 Top 10 限制，平均及比率依分母加權。':'點選日期節點從右側查看當日營業明細'}${scrollMode?'；圖表區域可左右滑動查看其他日期':''}。</p>
+    <p class="single-trend-hint">${aggregate?'依日期彙整所有選取門市，不受排名與 Top 10 限制；平均及比率依分母加權。':'點選日期節點從右側查看當日營業明細'}${scrollMode?'；圖表區域可左右滑動查看其他日期':''}。</p>
   </div>`;
 }
 /* V11.7: only sales-based reports show revenue-performance comparison.
@@ -2599,39 +2591,6 @@ function revenueComparisonCards({revenue,orders,previousRevenue=null,label='較�
   const orderCard=showOrders?`<div class="stat"><div class="label">結帳單數</div><div class="num">${fmt(orders)}</div></div>`:'';
   if(!showRevenue&&!showOrders)return '';
   return `<div class="comparison-summary">${context?`<p class="comparison-context">${e(context)}</p>`:''}<div class="statgrid comparison-summary-grid">${revenueCard}${orderCard}</div></div>`;
-}
-function multiStoreTrendDayRows(date){
-  return DATASTORES.filter(row=>state.selectedStores.includes(row.name)&&(!state.exploreBrandFilter||(DEMO_BRAND_MEMBERS[state.exploreBrandFilter]||[]).includes(row.name))).map(row=>{
-    const day=singleStorePeriodData(row).daily.find(day=>day.date===date);
-    if(!day)return null;
-    const metric=detail({...row,revenue:day.revenue,orders:day.orders},0);
-    return {...row,...metric,days:1,psd:day.revenue};
-  }).filter(Boolean);
-}
-function selectMultiStoreTrendDay(target){
-  const date=target.dataset.totalTrendDay;
-  if(!date||!multiStoreTrendDayRows(date).length)return;
-  state.trendScrollLeft=target.closest('.single-trend-widget')?.querySelector('.single-trend-scroll')?.scrollLeft||0;
-  state.allStoresTrend=true;state.storeDrill='';
-  state.trendSelectedDate=date;state.trendDrawerDate=date;render();
-  document.querySelector('.multi-store-day-layer .rms-drill-close')?.focus({preventScroll:true});
-}
-function multiStoreTrendDayLayer(){
-  const date=state.trendDrawerDate,rows=multiStoreTrendDayRows(date);
-  if(!rows.length)return '';
-  const revenue=rows.reduce((sum,row)=>sum+row.revenue,0),orders=rows.reduce((sum,row)=>sum+row.orders,0);
-  const title=date.replaceAll('-','/')+' 多店單日營業明細';
-  return `<div class="rms-drill-layer multi-store-day-layer">
-    <button type="button" class="rms-drill-scrim" data-trend-day-dismiss="1" aria-label="關閉多店單日營業明細"></button>
-    <section class="rms-drill-panel" role="dialog" aria-modal="true" aria-label="${e(title)}">
-      ${drillHeader(title,'data-trend-day-back="1"','data-trend-day-dismiss="1"')}
-      <div class="rms-drill-content multi-store-day-content">
-        ${drillFilterBar([['日期',date.replaceAll('-','/')],['門市',`所選 ${rows.length} 間門市`]])}
-        ${standardSummaryCards({revenue,orders,avg:orders?revenue/orders:0})}
-        <h4>各門市當日營業明細</h4>${storeCards(rows)}
-      </div>
-    </section>
-  </div>`;
 }
 function multiStoreTotalTrend(scoped){
   const dates=new Map();
@@ -2727,7 +2686,7 @@ function renderStore(){
       (showTrend?sections('營收趨勢',`<div class="chartbar single-trend-metric-bar">${control('統計指標',choose('singleTrendMetric',STORE_TREND_FIELDS.map(x=>[x.key,x.label])))}</div><div class="single-trend-container"><div class="single-trend-head"><strong>每日${e(field(state.singleTrendMetric).label)}趨勢</strong>${chartHeaderMore()}</div>${singleStoreTrend(singleData.daily,{metricKey:state.singleTrendMetric})}</div>`):'');
 
   }else if(rows.length){
-    overview=sections('圖表',`${storeOverviewCards}<div class="chartbar">${mControl}${control('排序',group([['storeSort','desc','由高到低'],['storeSort','asc','由低到高']]))}${control('顯示',group([['storeTop','10',state.storeSort==='asc'?'最低 10':'Top 10'],['storeTop','all','全部']]))}</div>${state.start<state.end&&storeOverviewDays>=2?`<div class="store-overview-dual-charts">${multiStoreTotalTrend(scoped)}`:''}<div class="rms-chart-frame store-chart-frame"><div class="rms-chart-frame-head"><strong>門市比較</strong>${chartHeaderMore()}</div><div class="chartbox">${svgBars(shown,{horizontal:true,signed:metric.type==='growth'||metric.type==='rate',unit:metric.type==='rate'||metric.type==='growth'?'%':'',storeClick:true,halfDesktop:true})}</div></div>${state.start<state.end&&storeOverviewDays>=2?'</div>':''}`);
+    overview=sections('圖表',`${storeOverviewCards}<div class="chartbar">${mControl}</div>${state.start<state.end&&storeOverviewDays>=2?`<div class="store-overview-dual-charts">${multiStoreTotalTrend(scoped)}`:''}<div class="rms-chart-frame store-chart-frame"><div class="rms-chart-frame-head"><strong>門市比較</strong>${chartHeaderMore()}</div><div class="chartbar store-ranking-controls" aria-label="門市比較排序與顯示設定">${control('排序',group([['storeSort','desc','由高到低'],['storeSort','asc','由低到高']]))}${control('顯示',group([['storeTop','10',state.storeSort==='asc'?'最低 10':'Top 10'],['storeTop','all','全部']]))}</div><div class="chartbox">${svgBars(shown,{horizontal:true,signed:metric.type==='growth'||metric.type==='rate',unit:metric.type==='rate'||metric.type==='growth'?'%':'',storeClick:true,halfDesktop:true})}</div></div>${state.start<state.end&&storeOverviewDays>=2?'</div>':''}`);
   }
   const tableGrouping=single?'':control('表格分類',group([['storeDim','store','門市名稱'],['storeDim','group','門市群組']]));
   const result=sections('查詢結果',
@@ -3222,8 +3181,8 @@ function cashBottomSheet(dateCash, selectedDate, selectedStore, visibleStoreRows
   const detailTable=`${drillFilterBar([['日期',selectedDate],['門市',selectedStore]])}
     <div class="cash-sheet-detail">${table(['類型','事由','金額','次數'],rows.map(x=>({values:[e(x.type),e(x.reason),fmt(x.amount,2),fmt(x.qty)]})))}</div>
     <div class="cash-sheet-total">收支淨額：<strong>${fmt(rows.reduce((a,b)=>a+b.amount,0),2)}</strong></div>`;
-  const comparison=`${drillFilterBar([['日期',selectedDate],['統計指標',{in:'現金入',out:'現金出',net:'收支淨額'}['net']]])}
-    ${cashBarChart(visibleStoreRows,'net','store')}`;
+  const comparison=`${drillFilterBar([['日期',selectedDate],['統計指標',{in:'現金入',out:'現金出',net:'收支淨額'}[state.cashMeasure]]])}
+    ${cashBarChart(visibleStoreRows,state.cashMeasure,'store')}`;
   return `<div class="rms-drill-layer cash-drill-layer" data-cash-layer="${step}"><button type="button" class="rms-drill-scrim" data-cash-dismiss="true" aria-label="關閉"></button>
     <section class="rms-drill-panel" role="dialog" aria-modal="true" aria-label="${title}">
       ${drillHeader(title,'data-cash-sheet-back="true"','data-cash-dismiss="true"')}
@@ -3244,28 +3203,28 @@ function renderCash(){
   const out=cash.filter(x=>x.type==='現金出').reduce((a,b)=>a+b.amount,0);
   const allDates=[...new Set(cash.map(x=>x.date))].sort();
   if(state.cashFocusDate&&!allDates.includes(state.cashFocusDate)){state.cashFocusDate='';state.cashFocusStore='';state.cashSheet='';}
-  const dayRows=allDates.map(date=>({name:date,v:cashMeasureValue(cash.filter(x=>x.date===date),'net')}));
+  const dayRows=allDates.map(date=>({name:date,v:cashMeasureValue(cash.filter(x=>x.date===date),state.cashMeasure)}));
   const selectedDate=state.cashFocusDate;
   const dateCash=selectedDate?cash.filter(x=>x.date===selectedDate):[];
   const allStoreNames=[...new Set(dateCash.map(x=>x.store))];
   if(state.cashFocusStore&&!allStoreNames.includes(state.cashFocusStore)){state.cashFocusStore='';state.cashSheet='stores';}
   const selectedStore=state.cashFocusStore;
-  const storeRows=allStoreNames.map(name=>({name,v:cashMeasureValue(dateCash.filter(x=>x.store===name),'net')}))
+  const storeRows=allStoreNames.map(name=>({name,v:cashMeasureValue(dateCash.filter(x=>x.store===name),state.cashMeasure)}))
     .filter(x=>x.v!==0).sort((a,b)=>Math.abs(b.v)-Math.abs(a.v)||a.name.localeCompare(b.name));
   const visibleStoreRows=storeRows.length?storeRows:allStoreNames.map(name=>({name,v:0}));
-  const tableCash=cash.filter(x=>(state.cashStoreGroup==='全部'||byStore.get(x.store)===state.cashStoreGroup)&&(state.cashTableType==='all'||x.type===(state.cashTableType==='in'?'現金入':'現金出')));
+  const tableCash=cash.filter(x=>state.cashStoreGroup==='全部'||byStore.get(x.store)===state.cashStoreGroup);
   const p=pivotRows(tableCash,state.cashMode,state.cashStoreView);
   const tableDim=control('維度顯示',group([['cashMode','all','全部'],['cashMode','typeDate','類型 × 日期'],['cashMode','typeStore','類型 × 門市名稱']]));
   const storeDisplay=control('門市顯示',group([['cashStoreView','store','門市名稱'],['cashStoreView','group','門市群組']]));
   const groupFilter=control('門市群組',choose('cashStoreGroup',[['全部','全部'],...groupNames.map(x=>[x,x])]));
-  const tableType=control('收支類型',group([['cashTableType','all','全部'],['cashTableType','in','現金入'],['cashTableType','out','現金出']]));
-  const mainChart=`<div class="cash-analysis rms-chart-frame"><div class="rms-chart-frame-head"><strong>現金收支比較</strong>${chartHeaderMore()}</div><p class="cash-net-caption">收支淨額</p>${cashBarChart(dayRows,'net','date')}`;
+  const measureToggles=group([['cashMeasure','net','收支淨額'],['cashMeasure','in','現金入'],['cashMeasure','out','現金出']]);
+  const mainChart=`<div class="cash-analysis rms-chart-frame"><div class="rms-chart-frame-head"><strong>現金收支比較</strong>${chartHeaderMore()}</div><div class="cash-chart-actions">${control('顯示',measureToggles)}</div>${cashBarChart(dayRows,state.cashMeasure,'date')}`;
   const report=screen(
     sections('圖表',
       `<div class="cash-summary-strip">${stats([['現金入',fmt(income,2)],['現金出',fmt(out,2)],['收支淨額',fmt(income+out,2)]])}</div>`+
       mainChart+'</div>')+
     sections('查詢結果',
-      `<div class="settings cash-table-display cash-result-spot">${tableType}${tableDim}${storeDisplay}${groupFilter}</div>`+
+      `<div class="settings cash-table-display cash-result-spot">${tableDim}${storeDisplay}${groupFilter}</div>`+
       `<div class="table-toolbar"><div class="group"><span class="cash-table-title">現金管理明細</span></div><div class="group"><button data-quick="download">下載</button></div></div>`+
       table(p.headers,p.rows,'cash-reconcile-table'))
   );
@@ -3390,7 +3349,6 @@ function renderClose(){return screen(sections('查詢結果',`<div class="table-
 /* V11.62: separate back-navigation from closing the entire drill stack.
    Back changes the visible step in place; close exits once and clears every step. */
 function clearDrillStack(){
-  state.allStoresTrend=false;
   state.trendDrawerDate='';
   state.trendSelectedDate='';
   state.storeDrill='';
@@ -3760,8 +3718,6 @@ if(hourlyBar&&state.version==='after'){
 }
 const exploreLeaf=evt.target.closest('[data-explore-leaf]');
 if(exploreLeaf&&state.version==='after'){evt.preventDefault();openExplore(exploreLeaf);return}
-const totalTrendDay=evt.target.closest('[data-total-trend-day]');
-if(totalTrendDay&&state.report==='store'&&state.version==='after'){selectMultiStoreTrendDay(totalTrendDay);return}
 const trendDay=evt.target.closest('[data-trend-day]');
 if(trendDay&&state.report==='store'&&state.version==='after'){selectSingleTrendDay(trendDay);return}
 const storeTarget=evt.target.closest('[data-store-target]');
@@ -3824,7 +3780,7 @@ el('applyPayments').onclick=()=>{
   state.paymentMethods=a;el('paymentDialog').close();render();
 };
 el('cancelStores').onclick=()=>el('storesDialog').close();el('applyStores').onclick=()=>{let x=[...el('storeOptions').querySelectorAll('input:checked')].map(x=>x.value);if(!x.length){alert('請至少選擇一間門市');return}state.selectedStores=x;if(state.report==='cash')state.cashHasSearched=false;state.trendDrawerDate='';state.storeDrill='';if(state.storeScope!=='all'&&!x.includes(state.storeScope))state.storeScope='all';el('storesDialog').close();render()};el('cancelCols').onclick=()=>el('columnsDialog').close();el('applyCols').onclick=()=>{let a=[...el('columnOptions').querySelectorAll('input:checked')].map(x=>x.value);if(!a.length&&!(state.report==='pay'&&state.activeColumnTarget==='table')){alert('請至少選擇一項');return}if(state.activeColumnTarget==='calendar')state.weekCalendarCols=a;else if(state.report==='week')state.weekTableCols=a;else if(state.report==='pay')state.paymentCols=a;else if(state.report==='brand')state.brandCols=a;else state.storeCols=a;el('columnsDialog').close();render()};
-document.addEventListener('keydown',evt=>{if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-total-trend-day]')){evt.preventDefault();selectMultiStoreTrendDay(evt.target);return}if(evt.key==='Escape'&&!el('exploreReportScreen').hidden){evt.preventDefault();closeExploreReportScreen();return;}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('.single-hourly-row,.single-hourly-col')){evt.preventDefault();openExplore(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-explore-leaf]')){evt.preventDefault();openExplore(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-trend-day]')){evt.preventDefault();selectSingleTrendDay(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-store-target]')){evt.preventDefault();state.storeDrill=evt.target.dataset.storeTarget;render();return}if(evt.key==='Escape'&&state.report==='store'&&state.trendDrawerDate){evt.preventDefault();dismissDrill(()=>{state.trendDrawerDate=''});return}if(evt.key==='Escape'&&state.report==='store'&&state.storeDrill){evt.preventDefault();dismissDrill(()=>{state.storeDrill=''});return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-week-target]')){evt.preventDefault();state.weekDrill=evt.target.dataset.weekTarget;render();return}if(evt.key==='Escape'&&state.report==='week'&&state.weekDrill){evt.preventDefault();if(state.weekDrillPeriod){state.weekDrillPeriod='';render()}else{dismissDrill(()=>{state.weekDrill='';state.weekDrillPeriod=''})}return}if(evt.key==='Escape'&&state.report==='cash'&&state.cashSheet){evt.preventDefault();dismissDrill(()=>{state.cashSheet='';state.cashFocusDate='';state.cashFocusStore=''});return}if(evt.key==='Escape'&&state.report==='pay'&&state.payDrillMethod){evt.preventDefault();dismissDrill(()=>{state.payDrillMethod=''});return}});
+document.addEventListener('keydown',evt=>{if(evt.key==='Escape'&&!el('exploreReportScreen').hidden){evt.preventDefault();closeExploreReportScreen();return;}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('.single-hourly-row,.single-hourly-col')){evt.preventDefault();openExplore(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-explore-leaf]')){evt.preventDefault();openExplore(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-trend-day]')){evt.preventDefault();selectSingleTrendDay(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-store-target]')){evt.preventDefault();state.storeDrill=evt.target.dataset.storeTarget;render();return}if(evt.key==='Escape'&&state.report==='store'&&state.trendDrawerDate){evt.preventDefault();dismissDrill(()=>{state.trendDrawerDate=''});return}if(evt.key==='Escape'&&state.report==='store'&&state.storeDrill){evt.preventDefault();dismissDrill(()=>{state.storeDrill=''});return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-week-target]')){evt.preventDefault();state.weekDrill=evt.target.dataset.weekTarget;render();return}if(evt.key==='Escape'&&state.report==='week'&&state.weekDrill){evt.preventDefault();if(state.weekDrillPeriod){state.weekDrillPeriod='';render()}else{dismissDrill(()=>{state.weekDrill='';state.weekDrillPeriod=''})}return}if(evt.key==='Escape'&&state.report==='cash'&&state.cashSheet){evt.preventDefault();dismissDrill(()=>{state.cashSheet='';state.cashFocusDate='';state.cashFocusStore=''});return}if(evt.key==='Escape'&&state.report==='pay'&&state.payDrillMethod){evt.preventDefault();dismissDrill(()=>{state.payDrillMethod=''});return}});
 el('mobileSelectSheet').addEventListener('close',()=>{rmsMobileSelectSource=null});
 window.addEventListener('resize',()=>{document.body.classList.toggle('rms-mobile-ui',rmsIsMobileSelectMode());if(!rmsIsMobileSelectMode())rmsCloseMobileSelect()});
 render();
