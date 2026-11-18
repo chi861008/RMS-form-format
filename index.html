@@ -2114,6 +2114,13 @@ body.rms-mobile-ui dialog.metric-dialog .pay-dialog-search{flex:none}
 /* V11.88: uniform chart-head overflow affordance, reserving space for sharing. */
 .rms-chart-more{display:inline-flex;align-items:center;justify-content:center;flex:0 0 30px;width:30px;height:28px;line-height:1;color:#72838c;font-size:23px;font-weight:700;letter-spacing:1px;user-select:none;cursor:default;border-radius:6px}
 .single-hourly-head .rms-chart-more,.single-trend-head .rms-chart-more,.brand-panel-header .rms-chart-more{font-size:23px;color:#72838c}
+
+/* Multi-store, multi-day: totals on the left, store ranking on the right. */
+.store-overview-dual-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start;min-width:0}
+#app #body .store-overview-dual-charts>.rms-chart-frame{box-sizing:border-box;width:100%;max-width:none;min-width:0;margin:0}
+.store-total-trend-frame .single-trend-widget{min-width:0}
+@media(max-width:900px){.store-overview-dual-charts{grid-template-columns:minmax(0,1fr)}}
+.device-phone .store-overview-dual-charts{grid-template-columns:minmax(0,1fr)}
 </style></head><body>
 <div class="top"><span class="back">‹ &nbsp; RMS</span><span class="headline" id="report-title">門市營收一覽表</span><div class="controls"><div class="tog"><button data-device="desktop" class="active">電腦版</button><button data-device="phone">手機版</button><button data-device="auto">自動 RWD</button></div><div class="tog vs"><button data-version="before">Before</button><button data-version="after" class="active">After</button></div></div></div>
 <div class="selector-bar"><div class="selector-left"><span class="muted">報表</span><select id="reportSelect"></select></div></div>
@@ -2518,10 +2525,11 @@ function singleTrendDayLayer(){
   </div>`;
 }
 
-function singleStoreTrend(daily,{compact=false,metricKey="revenue"}={}){
+function singleStoreTrend(daily,{compact=false,metricKey="revenue",aggregate=false}={}){
   if(!daily.length)return '<div class="no-data">所選期間沒有資料</div>';
   const metricName=field(metricKey).label;
   const metricValue=day=>{
+    if(aggregate)return day.totalMetric||0;
     if(metricKey==='revenue'||metricKey==='orders')return day[metricKey]||0;
     return detail({revenue:day.revenue,orders:Math.max(day.orders,1)},0)[metricKey]||0;
   };
@@ -2531,26 +2539,28 @@ function singleStoreTrend(daily,{compact=false,metricKey="revenue"}={}){
   const scrollMode=daily.length>(narrow?6:22);
   const baseWidth=compact?380:narrow?360:(desktopHalfChartWidth()||1000);
   const height=compact?230:232;
-  const left=narrow?48:57,right=narrow?24:30,top=30,bottom=46;
+  const left=aggregate?(narrow?88:96):(narrow?48:57),right=narrow?24:30,top=30,bottom=46;
   const width=scrollMode?Math.max(baseWidth,left+right+Math.max(1,daily.length-1)*(narrow?53:45)):baseWidth;
   const plotW=width-left-right,plotH=height-top-bottom;
   const values=daily.map(metricValue);
   const max=Math.max(1,...values.map(x=>Math.abs(x)))*1.13;
-  const coords=daily.map((d,i)=>({x:left+(daily.length===1?plotW/2:i*plotW/(daily.length-1)),y:top+plotH-Math.max(0,values[i])/max*plotH,d,value:values[i]}));
+  const min=aggregate?Math.min(0,...values):0;
+  const coords=daily.map((d,i)=>({x:left+(daily.length===1?plotW/2:i*plotW/(daily.length-1)),y:top+plotH-(Math.max(min,values[i])-min)/(max-min)*plotH,d,value:values[i]}));
   const path=coords.map((p,i)=>`${i?'L':'M'}${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(' ');
   const maxTicks=narrow?4:8;
   const labelStep=scrollMode?1:Math.max(1,Math.ceil((daily.length-1)/Math.max(1,maxTicks-1)));
-  const grids=[0,.25,.5,.75,1].map(k=>{let y=top+plotH*(1-k);return `<line x1="${left}" x2="${width-right}" y1="${y}" y2="${y}" stroke="#e7eeee"/><text x="${left-8}" y="${y+4}" text-anchor="end" font-size="${narrow?13:12}" fill="#75848d">${e(fnum(max*k,metricKey))}</text>`}).join('');
+  const grids=[0,.25,.5,.75,1].map(k=>{let y=top+plotH*(1-k);return `<line x1="${left}" x2="${width-right}" y1="${y}" y2="${y}" stroke="#e7eeee"/><text x="${left-8}" y="${y+4}" text-anchor="end" font-size="${narrow?13:12}" fill="#75848d">${e(fnum(min+(max-min)*k,metricKey))}</text>`}).join('');
   const ticks=coords.map((p,i)=>i%labelStep===0||i===daily.length-1?`<text x="${p.x}" y="${height-16}" text-anchor="middle" fill="#63757e" font-size="${narrow?12:12}">${p.d.date.slice(5).replace('-','/')}</text>`:'').join('');
   const dots=coords.map(p=>{
     const selected=state.trendSelectedDate===p.d.date;
-    const label=`${p.d.date.replaceAll('-','/')}：${metricName} ${fnum(p.value,metricKey)}。點選查看當日營業狀況`;
+    const label=`${p.d.date.replaceAll('-','/')}：${aggregate?'所選門市整體':''}${metricName} ${fnum(p.value,metricKey)}${aggregate?'':'。點選查看當日營業狀況'}`;
+    if(aggregate)return `<g class="store-total-node" data-date="${e(p.d.date)}" data-value="${p.value}"><circle cx="${p.x}" cy="${p.y}" r="4.5" fill="#0d9e96" stroke="white" stroke-width="1.5"/><circle cx="${p.x}" cy="${p.y}" r="18" fill="transparent"><title>${e(label)}</title></circle></g>`;
     return `<g class="single-trend-node ${selected?'is-selected':''}" data-trend-day="${e(p.d.date)}" role="button" tabindex="0" aria-pressed="${selected}" aria-label="${e(label)}"><circle class="trend-day-ring" cx="${p.x}" cy="${p.y}" r="11" fill="none" stroke="none"/><circle class="trend-day-visible" cx="${p.x}" cy="${p.y}" r="${selected?6:4.5}" fill="#0d9e96" stroke="white" stroke-width="1.5"/><circle class="trend-day-hit" cx="${p.x}" cy="${p.y}" r="22"/><title>${e(label)}</title></g>`;
   }).join('');
   const selectedDay=daily.find(x=>x.date===state.trendSelectedDate);
   return `<div class="single-trend-widget">
     <div class="single-trend-scroll" tabindex="0" aria-label="每日${e(metricName)}折線圖${scrollMode?'，可左右滑動查看其他日期':''}"><svg class="single-trend-svg" viewBox="0 0 ${width} ${height}" style="${scrollMode?`width:${width}px;max-width:none`:'width:100%'}" role="group" aria-label="每日${e(metricName)}趨勢，自 ${daily[0].date} 至 ${daily[daily.length-1].date}">${grids}<path d="${path}" fill="none" stroke="#0d9e96" stroke-width="${narrow?2.5:3}" stroke-linejoin="round" stroke-linecap="round" pointer-events="none"/>${dots}${ticks}</svg></div>
-    <p class="single-trend-hint">點選日期節點從右側查看當日營業明細${scrollMode?'；圖表區域可左右滑動查看其他日期':''}。</p>
+    <p class="single-trend-hint">${aggregate?'依日期彙整所有選取門市，不受排名與 Top 10 限制；平均及比率依分母加權。':'點選日期節點從右側查看當日營業明細'}${scrollMode?'；圖表區域可左右滑動查看其他日期':''}。</p>
   </div>`;
 }
 /* V11.7: only sales-based reports show revenue-performance comparison.
@@ -2581,6 +2591,17 @@ function revenueComparisonCards({revenue,orders,previousRevenue=null,label='較�
   const orderCard=showOrders?`<div class="stat"><div class="label">結帳單數</div><div class="num">${fmt(orders)}</div></div>`:'';
   if(!showRevenue&&!showOrders)return '';
   return `<div class="comparison-summary">${context?`<p class="comparison-context">${e(context)}</p>`:''}<div class="statgrid comparison-summary-grid">${revenueCard}${orderCard}</div></div>`;
+}
+function multiStoreTotalTrend(scoped){
+  const dates=new Map();
+  scoped.forEach(({row,period})=>period.daily.forEach(day=>{
+    const metric=detail({...row,revenue:day.revenue,orders:day.orders},0);
+    metric.days=1;metric.psd=day.revenue;
+    if(!dates.has(day.date))dates.set(day.date,[]);
+    dates.get(day.date).push(metric);
+  }));
+  const daily=[...dates].sort(([a],[b])=>a.localeCompare(b)).map(([date,rows])=>({date,totalMetric:valueGroup(rows,state.storeMetric)}));
+  return `<div class="rms-chart-frame store-total-trend-frame"><div class="rms-chart-frame-head"><strong>所選門市每日${['avg','guestAvg','productAvg','psd'].includes(state.storeMetric)||['rate','growth'].includes(field(state.storeMetric).type)?'整體':'合計'}${e(field(state.storeMetric).label)}趨勢</strong>${chartHeaderMore()}</div>${singleStoreTrend(daily,{metricKey:state.storeMetric,aggregate:true})}</div>`;
 }
 function renderStore(){
   // A single store in the *global* store filter is the single-store scenario.
@@ -2665,7 +2686,7 @@ function renderStore(){
       (showTrend?sections('營收趨勢',`<div class="chartbar single-trend-metric-bar">${control('統計指標',choose('singleTrendMetric',STORE_TREND_FIELDS.map(x=>[x.key,x.label])))}</div><div class="single-trend-container"><div class="single-trend-head"><strong>每日${e(field(state.singleTrendMetric).label)}趨勢</strong>${chartHeaderMore()}</div>${singleStoreTrend(singleData.daily,{metricKey:state.singleTrendMetric})}</div>`):'');
 
   }else if(rows.length){
-    overview=sections('圖表',`${storeOverviewCards}<div class="chartbar">${mControl}${control('排序',group([['storeSort','desc','由高到低'],['storeSort','asc','由低到高']]))}${control('顯示',group([['storeTop','10',state.storeSort==='asc'?'最低 10':'Top 10'],['storeTop','all','全部']]))}</div><div class="rms-chart-frame store-chart-frame"><div class="rms-chart-frame-head"><strong>門市比較</strong>${chartHeaderMore()}</div><div class="chartbox">${svgBars(shown,{horizontal:true,signed:metric.type==='growth'||metric.type==='rate',unit:metric.type==='rate'||metric.type==='growth'?'%':'',storeClick:true,halfDesktop:true})}</div></div>`);
+    overview=sections('圖表',`${storeOverviewCards}<div class="chartbar">${mControl}${control('排序',group([['storeSort','desc','由高到低'],['storeSort','asc','由低到高']]))}${control('顯示',group([['storeTop','10',state.storeSort==='asc'?'最低 10':'Top 10'],['storeTop','all','全部']]))}</div>${state.start<state.end&&storeOverviewDays>=2?`<div class="store-overview-dual-charts">${multiStoreTotalTrend(scoped)}`:''}<div class="rms-chart-frame store-chart-frame"><div class="rms-chart-frame-head"><strong>門市比較</strong>${chartHeaderMore()}</div><div class="chartbox">${svgBars(shown,{horizontal:true,signed:metric.type==='growth'||metric.type==='rate',unit:metric.type==='rate'||metric.type==='growth'?'%':'',storeClick:true,halfDesktop:true})}</div></div>${state.start<state.end&&storeOverviewDays>=2?'</div>':''}`);
   }
   const tableGrouping=single?'':control('表格分類',group([['storeDim','store','門市名稱'],['storeDim','group','門市群組']]));
   const result=sections('查詢結果',
