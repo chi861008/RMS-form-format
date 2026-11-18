@@ -2228,7 +2228,7 @@ for(let day=1;day<=30;day++){
   }));
 }
 const CLOSE={'營業報表':[['原價','128,300'],['折扣招待','-3,800'],['服務費','2,200'],['實際營收','126,700']],'結帳方式':[['現金','43,700'],['信用卡','57,000'],['LINE PAY','26,000'],['合計','126,700']],'單據／客單':[['結帳單數','328'],['來客數','410'],['平均訂單單價','386.28']],'發票資訊':[['發票張數','322'],['作廢張數','2'],['作廢金額','750']]};
-const state={allStoresTrend:false,cashTableType:'all',report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','orders'],cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
+const state={multiDayStore:'',allStoresTrend:false,cashTableType:'all',report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','orders'],cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
 const el=id=>document.getElementById(id), fmt=(v,d=0)=>Number(v).toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d}),e=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const field=k=>STORE_FIELDS.find(x=>x.key===k)||STORE_FIELDS[0];
 function fnum(v,k){let t=field(k).type;return `${fmt(v,t==='rate'||t==='growth'?2:t==='avg'?2:t==='amount'?2:0)}${t==='rate'||t==='growth'?'%':''}`;}
@@ -2506,6 +2506,7 @@ function singleTrendDayDetail(day){
   </div>`;
 }
 function selectSingleTrendDay(target){
+  state.multiDayStore='';
   state.allStoresTrend=false;
   const date=target.dataset.trendDay;
   const widget=target.closest('.single-trend-widget');
@@ -2519,7 +2520,7 @@ function selectSingleTrendDay(target){
 }
 function singleTrendDayLayer(){
   if(!state.trendDrawerDate)return '';
-  if(state.allStoresTrend)return multiStoreTrendDayLayer();
+  if(state.allStoresTrend)return state.multiDayStore?multiStoreDayStoreLayer():multiStoreTrendDayLayer();
   const item=state.storeDrill?DATASTORES.find(x=>x.name===state.storeDrill):DATASTORES.find(x=>state.selectedStores.includes(x.name));
   if(!item)return '';
   const day=singleStorePeriodData(item).daily.find(d=>d.date===state.trendDrawerDate);
@@ -2615,9 +2616,36 @@ function selectMultiStoreTrendDay(target){
   const date=target.dataset.totalTrendDay;
   if(!date||!multiStoreTrendDayRows(date).length)return;
   state.trendScrollLeft=target.closest('.single-trend-widget')?.querySelector('.single-trend-scroll')?.scrollLeft||0;
-  state.allStoresTrend=true;state.storeDrill='';
+  state.allStoresTrend=true;state.multiDayStore='';state.storeDrill='';
   state.trendSelectedDate=date;state.trendDrawerDate=date;render();
   document.querySelector('.multi-store-day-layer .rms-drill-close')?.focus({preventScroll:true});
+}
+function selectMultiStoreDayStore(target){
+  const name=target.dataset.dayStore;
+  if(!state.allStoresTrend||!state.trendDrawerDate||!multiStoreTrendDayRows(state.trendDrawerDate).some(row=>row.name===name))return;
+  state.multiDayStore=name;render();
+  document.querySelector('.multi-day-store-layer .rms-drill-close')?.focus({preventScroll:true});
+}
+function multiStoreDayStoreLayer(){
+  const date=state.trendDrawerDate;
+  const item=DATASTORES.find(row=>row.name===state.multiDayStore);
+  if(!item||!multiStoreTrendDayRows(date).some(row=>row.name===item.name))return '';
+  const day=singleStorePeriodData(item).daily.find(day=>day.date===date);
+  if(!day)return '';
+  const previousDate=storeISO(storeShiftDate(storeUTC(date),-1));
+  const previous=storeDailyFactory(item)(previousDate);
+  const previousRevenue=previous?.revenue??null;
+  const growth=previousRevenue>0?(day.revenue/previousRevenue-1)*100:null;
+  const summary=standardSummaryCards({revenue:day.revenue,orders:day.orders,avg:day.orders?day.revenue/day.orders:0,
+    weather:rmsWeatherChip(date),growth,growthLabel:'較前一等長區間',previousRevenue,className:'store-summary-grid'});
+  return `<div class="rms-drill-layer store-drill-layer multi-day-store-layer">
+    <button class="rms-drill-scrim" type="button" data-store-dismiss="1" aria-label="關閉門市詳情"></button>
+    <section class="rms-drill-panel" role="dialog" aria-modal="true" aria-label="${e(item.name)} 單日營業明細">
+      ${drillHeader(item.name,'data-store-back="1"','data-store-dismiss="1"')}
+      <div class="rms-drill-content">${drillFilterBar([['日期',date+' ～ '+date],['門市',item.name],['群組',item.group]])}
+      ${summary}<section class="store-drill-hourly"><h4>營業時段分布</h4>${singleStoreHourlyChart(day,{inDrawer:true,followChartMetric:true})}</section></div>
+    </section>
+  </div>`;
 }
 function multiStoreTrendDayLayer(){
   const date=state.trendDrawerDate,rows=multiStoreTrendDayRows(date);
@@ -2627,7 +2655,7 @@ function multiStoreTrendDayLayer(){
   const metric=field(state.storeMetric);
   const comparison=rows.map(row=>({name:row.name,v:row[state.storeMetric]||0})).sort((a,b)=>(state.storeSort==='asc'?a.v-b.v:b.v-a.v)||a.name.localeCompare(b.name,'zh-Hant'));
   const plotWidth=Math.max(300,Math.min(460,window.innerWidth-68));
-  const chart=svgBars(comparison,{horizontal:true,signed:['growth','rate'].includes(metric.type),unit:['growth','rate'].includes(metric.type)?'%':'',plotWidth,staticChart:true});
+  const chart=svgBars(comparison,{horizontal:true,signed:['growth','rate'].includes(metric.type),unit:['growth','rate'].includes(metric.type)?'%':'',plotWidth,storeClick:true}).replaceAll('data-store-target=','data-day-store=');
 
   return `<div class="rms-drill-layer multi-store-day-layer">
     <button type="button" class="rms-drill-scrim" data-trend-day-dismiss="1" aria-label="關閉多店單日營業明細"></button>
@@ -3398,8 +3426,9 @@ function renderClose(){return screen(sections('查詢結果',`<div class="table-
 /* V11.62: separate back-navigation from closing the entire drill stack.
    Back changes the visible step in place; close exits once and clears every step. */
 function clearDrillStack(){
+  state.multiDayStore='';
   state.allStoresTrend=false;
-  state.trendDrawerDate='';
+  state.multiDayStore='';state.trendDrawerDate='';
   state.trendSelectedDate='';
   state.storeDrill='';
   state.weekDrill='';
@@ -3409,8 +3438,12 @@ function clearDrillStack(){
   state.cashSheet='';
 }
 function backDrillStep(){
+  if(state.multiDayStore&&state.trendDrawerDate){
+    const name=state.multiDayStore;state.multiDayStore='';render();
+    [...document.querySelectorAll('[data-day-store]')].find(node=>node.dataset.dayStore===name)?.focus({preventScroll:true});return;
+  }
   if(state.trendDrawerDate){
-    state.trendDrawerDate='';
+    state.multiDayStore='';state.trendDrawerDate='';
   }else if(state.weekDrillPeriod){
     state.weekDrillPeriod='';
   }else if(state.cashSheet==='detail'){
@@ -3467,7 +3500,7 @@ function openBrandStoresReport(ctx){
   state.storeDim='store';
   state.storeMetric=ctx.metric==='orders'?'orders':'revenue';
   state.storeTop='all';
-  state.storeDrill='';state.trendDrawerDate='';
+  state.storeDrill='';state.multiDayStore='';state.trendDrawerDate='';
   render();resetScroll();
   exploreCurrent=null;
 }
@@ -3491,11 +3524,11 @@ function exploreContextFor(node){
   if(!rawDate&&state.report==='week'&&state.weekMode==='daily')rawDate=state.weekDrill;
   if(!rawDate&&state.start===state.end)rawDate=state.start;
   const date=exploreDateFromText(rawDate);
-  const store=state.storeDrill||(state.selectedStores.length===1?state.selectedStores[0]:`已選 ${state.selectedStores.length} 間門市`);
-  const fallbackMetric=state.report==='week'?(state.weekMode==='daily'?state.weekMobileMetric:state.weekMetric):state.report==='store'?(state.storeDrill?state.storeMetric:state.singleHourlyMetric):state.report==='brand'?state.brandMetric:state.report==='cash'?state.cashMeasure:state.report==='pay'?state.paymentMeasure:'revenue';
+  const store=state.multiDayStore||state.storeDrill||(state.selectedStores.length===1?state.selectedStores[0]:`已選 ${state.selectedStores.length} 間門市`);
+  const fallbackMetric=state.report==='week'?(state.weekMode==='daily'?state.weekMobileMetric:state.weekMetric):state.report==='store'?((state.multiDayStore||state.storeDrill)?state.storeMetric:state.singleHourlyMetric):state.report==='brand'?state.brandMetric:state.report==='cash'?state.cashMeasure:state.report==='pay'?state.paymentMeasure:'revenue';
   const metric=node.dataset.exploreMetric||fallbackMetric||'revenue';
   const brandFocus=state.report==='brand'?(node.dataset.exploreLabel||''):'';
-  return {reportId:state.report,report:REPORTS.find(x=>x.id===state.report)?.name||'營運報表',date,period:date?date.replaceAll('-','/'):state.start.replaceAll('-','/')+' ～ '+state.end.replaceAll('-','/'),store,metric,metricLabel:exploreMetricName(metric),focus:node.dataset.exploreLabel||'',brandFocus,rawStore:state.storeDrill||(state.selectedStores.length===1?state.selectedStores[0]:'')};
+  return {reportId:state.report,report:REPORTS.find(x=>x.id===state.report)?.name||'營運報表',date,period:date?date.replaceAll('-','/'):state.start.replaceAll('-','/')+' ～ '+state.end.replaceAll('-','/'),store,metric,metricLabel:exploreMetricName(metric),focus:node.dataset.exploreLabel||'',brandFocus,rawStore:state.multiDayStore||state.storeDrill||(state.selectedStores.length===1?state.selectedStores[0]:'')};
 }
 function exploreContextHtml(ctx){return [['日期',ctx.period],['門市',ctx.store],['統計指標',ctx.metricLabel],...(ctx.focus?[['選取資料',ctx.focus]]:[])].map(([label,value])=>`<span>${e(label)}：<strong>${e(value)}</strong></span>`).join('');}
 function exploreChoiceHtml(ctx){
@@ -3772,8 +3805,10 @@ const totalTrendDay=evt.target.closest('[data-total-trend-day]');
 if(totalTrendDay&&state.report==='store'&&state.version==='after'){selectMultiStoreTrendDay(totalTrendDay);return}
 const trendDay=evt.target.closest('[data-trend-day]');
 if(trendDay&&state.report==='store'&&state.version==='after'){selectSingleTrendDay(trendDay);return}
+const dayStore=evt.target.closest('[data-day-store]');
+if(dayStore&&state.report==='store'&&state.version==='after'){selectMultiStoreDayStore(dayStore);return}
 const storeTarget=evt.target.closest('[data-store-target]');
-if(storeTarget&&state.report==='store'&&state.version==='after'){state.storeDrill=storeTarget.dataset.storeTarget;state.trendDrawerDate='';render();return}
+if(storeTarget&&state.report==='store'&&state.version==='after'){state.storeDrill=storeTarget.dataset.storeTarget;state.multiDayStore='';state.trendDrawerDate='';render();return}
 const weekTarget=evt.target.closest('[data-week-target]');
 if(weekTarget&&state.report==='week'&&state.version==='after'){state.weekCalendarFocused=weekTarget.dataset.weekTarget;state.weekDrill=weekTarget.dataset.weekTarget;state.weekDrillPeriod='';render();return}
 let b=evt.target.closest('button');if(!b)return;
@@ -3785,7 +3820,7 @@ if(b.dataset.cashDate){state.cashFocusDate=state.cashFocusDate===b.dataset.cashD
 if(b.dataset.cashStore){state.cashFocusStore=state.cashFocusStore===b.dataset.cashStore?'':b.dataset.cashStore;state.cashMode='all';state.cashSheet=state.cashFocusStore?'detail':'stores';render();return}
 if(b.dataset.cashClear){if(b.dataset.cashClear==='date'){state.cashFocusDate='';state.cashFocusStore='';state.cashSheet=''}else{state.cashFocusStore='';state.cashSheet=state.cashFocusDate?'stores':''}render();return}
 if(b.dataset.storeRange&&state.report==='store'){[state.start,state.end]=storeDatePreset(b.dataset.storeRange);state.storeDrill='';render();return}
-if(b.dataset.device){state.trendDrawerDate='';state.storeDrill='';state.weekDrill='';state.weekDrillPeriod='';state.cashSheet='';state.cashFocusDate='';state.cashFocusStore='';state.device=b.dataset.device;render();resetScroll();return}if(b.dataset.version){state.trendDrawerDate='';state.storeDrill='';state.weekDrill='';state.weekDrillPeriod='';state.cashSheet='';state.cashFocusDate='';state.cashFocusStore='';state.version=b.dataset.version;render();resetScroll();return}if(b.dataset.key){state.trendDrawerDate='';state.storeDrill='';if(['weekMode','weekMeal'].includes(b.dataset.key))state.weekDrill='';state.weekDrillPeriod='';state[b.dataset.key]=b.dataset.value==='true'?true:b.dataset.value==='false'?false:b.dataset.value;render();return}if(b.dataset.quick==='paymentMethods'){
+if(b.dataset.device){state.multiDayStore='';state.trendDrawerDate='';state.storeDrill='';state.weekDrill='';state.weekDrillPeriod='';state.cashSheet='';state.cashFocusDate='';state.cashFocusStore='';state.device=b.dataset.device;render();resetScroll();return}if(b.dataset.version){state.multiDayStore='';state.trendDrawerDate='';state.storeDrill='';state.weekDrill='';state.weekDrillPeriod='';state.cashSheet='';state.cashFocusDate='';state.cashFocusStore='';state.version=b.dataset.version;render();resetScroll();return}if(b.dataset.key){state.multiDayStore='';state.trendDrawerDate='';state.storeDrill='';if(['weekMode','weekMeal'].includes(b.dataset.key))state.weekDrill='';state.weekDrillPeriod='';state[b.dataset.key]=b.dataset.value==='true'?true:b.dataset.value==='false'?false:b.dataset.value;render();return}if(b.dataset.quick==='paymentMethods'){
   el('paymentSearch').value='';
   el('paymentOptions').innerHTML=PAYMETHODS.map(name=>`<label><input type="checkbox" class="payment-check" value="${e(name)}" ${state.paymentMethods.includes(name)?'checked':''}>${e(name)}</label>`).join('');
   el('paymentDialog').showModal();updateBulk('paymentOptions');return;
@@ -3799,8 +3834,8 @@ if(b.dataset.quick==='stores'){el('storeOptions').innerHTML=STORES.filter(x=>!st
   b.textContent='已更新';setTimeout(()=>{if(b.isConnected)b.textContent=b.dataset.quick==='search'?'搜尋':'更新時間'},850);return;
 }});
 document.addEventListener('change',evt=>{let t=evt.target;
-if(t.id==='reportSelect'){exploreBrandReturnState=null;state.exploreBrandFilter='';state.trendDrawerDate='';state.storeDrill='';state.weekDrill='';state.weekDrillPeriod='';state.cashSheet='';state.cashFocusDate='';state.cashFocusStore='';state.report=t.value;render();resetScroll();return}
-if(t.dataset.key){state.trendDrawerDate='';if(state.report==='cash'&&['dateType','start','end','group','brand'].includes(t.dataset.key))state.cashHasSearched=false;state.trendDrawerDate='';state.storeDrill='';if(['weekMode','weekMeal','start','end'].includes(t.dataset.key))state.weekDrill='';state.weekDrillPeriod='';state[t.dataset.key]=t.type==='checkbox'?t.checked:t.value;render();return}});
+if(t.id==='reportSelect'){exploreBrandReturnState=null;state.exploreBrandFilter='';state.multiDayStore='';state.trendDrawerDate='';state.storeDrill='';state.weekDrill='';state.weekDrillPeriod='';state.cashSheet='';state.cashFocusDate='';state.cashFocusStore='';state.report=t.value;render();resetScroll();return}
+if(t.dataset.key){state.multiDayStore='';state.trendDrawerDate='';if(state.report==='cash'&&['dateType','start','end','group','brand'].includes(t.dataset.key))state.cashHasSearched=false;state.multiDayStore='';state.trendDrawerDate='';state.storeDrill='';if(['weekMode','weekMeal','start','end'].includes(t.dataset.key))state.weekDrill='';state.weekDrillPeriod='';state[t.dataset.key]=t.type==='checkbox'?t.checked:t.value;render();return}});
 // Shared multi-select semantics. The header checkbox and footer button both
 // support all -> none and partial -> all. Modal selection remains a draft until Confirm.
 const bulkDefs=[['storeOptions','selectAllStores'],['columnOptions','selectAllCols'],['paymentOptions','selectAllPayments']];
@@ -3831,8 +3866,8 @@ el('applyPayments').onclick=()=>{
   if(!a.length){alert('請至少選擇一種付款方式');return}
   state.paymentMethods=a;el('paymentDialog').close();render();
 };
-el('cancelStores').onclick=()=>el('storesDialog').close();el('applyStores').onclick=()=>{let x=[...el('storeOptions').querySelectorAll('input:checked')].map(x=>x.value);if(!x.length){alert('請至少選擇一間門市');return}state.selectedStores=x;if(state.report==='cash')state.cashHasSearched=false;state.trendDrawerDate='';state.storeDrill='';if(state.storeScope!=='all'&&!x.includes(state.storeScope))state.storeScope='all';el('storesDialog').close();render()};el('cancelCols').onclick=()=>el('columnsDialog').close();el('applyCols').onclick=()=>{let a=[...el('columnOptions').querySelectorAll('input:checked')].map(x=>x.value);if(!a.length&&!(state.report==='pay'&&state.activeColumnTarget==='table')){alert('請至少選擇一項');return}if(state.activeColumnTarget==='calendar')state.weekCalendarCols=a;else if(state.report==='week')state.weekTableCols=a;else if(state.report==='pay')state.paymentCols=a;else if(state.report==='brand')state.brandCols=a;else state.storeCols=a;el('columnsDialog').close();render()};
-document.addEventListener('keydown',evt=>{if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-total-trend-day]')){evt.preventDefault();selectMultiStoreTrendDay(evt.target);return}if(evt.key==='Escape'&&!el('exploreReportScreen').hidden){evt.preventDefault();closeExploreReportScreen();return;}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('.single-hourly-row,.single-hourly-col')){evt.preventDefault();openExplore(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-explore-leaf]')){evt.preventDefault();openExplore(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-trend-day]')){evt.preventDefault();selectSingleTrendDay(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-store-target]')){evt.preventDefault();state.storeDrill=evt.target.dataset.storeTarget;render();return}if(evt.key==='Escape'&&state.report==='store'&&state.trendDrawerDate){evt.preventDefault();dismissDrill(()=>{state.trendDrawerDate=''});return}if(evt.key==='Escape'&&state.report==='store'&&state.storeDrill){evt.preventDefault();dismissDrill(()=>{state.storeDrill=''});return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-week-target]')){evt.preventDefault();state.weekDrill=evt.target.dataset.weekTarget;render();return}if(evt.key==='Escape'&&state.report==='week'&&state.weekDrill){evt.preventDefault();if(state.weekDrillPeriod){state.weekDrillPeriod='';render()}else{dismissDrill(()=>{state.weekDrill='';state.weekDrillPeriod=''})}return}if(evt.key==='Escape'&&state.report==='cash'&&state.cashSheet){evt.preventDefault();dismissDrill(()=>{state.cashSheet='';state.cashFocusDate='';state.cashFocusStore=''});return}if(evt.key==='Escape'&&state.report==='pay'&&state.payDrillMethod){evt.preventDefault();dismissDrill(()=>{state.payDrillMethod=''});return}});
+el('cancelStores').onclick=()=>el('storesDialog').close();el('applyStores').onclick=()=>{let x=[...el('storeOptions').querySelectorAll('input:checked')].map(x=>x.value);if(!x.length){alert('請至少選擇一間門市');return}state.selectedStores=x;if(state.report==='cash')state.cashHasSearched=false;state.multiDayStore='';state.trendDrawerDate='';state.storeDrill='';if(state.storeScope!=='all'&&!x.includes(state.storeScope))state.storeScope='all';el('storesDialog').close();render()};el('cancelCols').onclick=()=>el('columnsDialog').close();el('applyCols').onclick=()=>{let a=[...el('columnOptions').querySelectorAll('input:checked')].map(x=>x.value);if(!a.length&&!(state.report==='pay'&&state.activeColumnTarget==='table')){alert('請至少選擇一項');return}if(state.activeColumnTarget==='calendar')state.weekCalendarCols=a;else if(state.report==='week')state.weekTableCols=a;else if(state.report==='pay')state.paymentCols=a;else if(state.report==='brand')state.brandCols=a;else state.storeCols=a;el('columnsDialog').close();render()};
+document.addEventListener('keydown',evt=>{if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-day-store]')){evt.preventDefault();selectMultiStoreDayStore(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-total-trend-day]')){evt.preventDefault();selectMultiStoreTrendDay(evt.target);return}if(evt.key==='Escape'&&!el('exploreReportScreen').hidden){evt.preventDefault();closeExploreReportScreen();return;}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('.single-hourly-row,.single-hourly-col')){evt.preventDefault();openExplore(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-explore-leaf]')){evt.preventDefault();openExplore(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-trend-day]')){evt.preventDefault();selectSingleTrendDay(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-store-target]')){evt.preventDefault();state.storeDrill=evt.target.dataset.storeTarget;render();return}if(evt.key==='Escape'&&state.report==='store'&&state.multiDayStore&&state.trendDrawerDate){evt.preventDefault();backDrillStep();return}if(evt.key==='Escape'&&state.report==='store'&&state.trendDrawerDate){evt.preventDefault();dismissDrill(()=>{state.trendDrawerDate=''});return}if(evt.key==='Escape'&&state.report==='store'&&state.storeDrill){evt.preventDefault();dismissDrill(()=>{state.storeDrill=''});return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-week-target]')){evt.preventDefault();state.weekDrill=evt.target.dataset.weekTarget;render();return}if(evt.key==='Escape'&&state.report==='week'&&state.weekDrill){evt.preventDefault();if(state.weekDrillPeriod){state.weekDrillPeriod='';render()}else{dismissDrill(()=>{state.weekDrill='';state.weekDrillPeriod=''})}return}if(evt.key==='Escape'&&state.report==='cash'&&state.cashSheet){evt.preventDefault();dismissDrill(()=>{state.cashSheet='';state.cashFocusDate='';state.cashFocusStore=''});return}if(evt.key==='Escape'&&state.report==='pay'&&state.payDrillMethod){evt.preventDefault();dismissDrill(()=>{state.payDrillMethod=''});return}});
 el('mobileSelectSheet').addEventListener('close',()=>{rmsMobileSelectSource=null});
 window.addEventListener('resize',()=>{document.body.classList.toggle('rms-mobile-ui',rmsIsMobileSelectMode());if(!rmsIsMobileSelectMode())rmsCloseMobileSelect()});
 render();
