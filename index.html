@@ -2130,6 +2130,63 @@ body.rms-mobile-ui dialog.metric-dialog .pay-dialog-search{flex:none}
 
 .multi-store-day-comparison{width:100%;margin:20px 0 0;min-width:0}
 .multi-store-day-comparison .chartsvg{width:100%;height:auto}
+
+/* Shared report gutters and overlay spacing. Full-width section bands and
+   anchored drawer shells remain intentional; their contents are inset. */
+#app{--rms-edge:24px;--rms-gap:20px;--rms-card-gap:24px}
+#body{padding-bottom:var(--rms-edge)}
+#body>.date-filters,#body>.search-row,#body>.settings,#body>.chartbar,#body>.table-toolbar{padding-left:var(--rms-edge);padding-right:var(--rms-edge)}
+#body>.store-overview-dual-charts{width:calc(100% - 2 * var(--rms-edge));margin:12px var(--rms-edge) 24px;gap:var(--rms-card-gap);align-items:stretch}
+#body>.rms-chart-frame,#body>.single-trend-container{margin-left:var(--rms-edge);margin-right:var(--rms-edge);margin-bottom:24px}
+#body>.brand-dual-charts{padding:16px var(--rms-edge) 24px;gap:var(--rms-card-gap)}
+#body>.table-area,#body>.single-store-results>.table-area,#body>.week-daily-results>.table-area,
+#body>.week-daily-results>.week-legacy-calendar-scroll{width:calc(100% - 2 * var(--rms-edge));margin:12px var(--rms-edge) 24px;border:1px solid #e0e7e9;border-radius:8px;padding-bottom:0}
+#body>.card-list{margin:12px var(--rms-edge) 24px;width:calc(100% - 2 * var(--rms-edge))}
+#body>.card-list .card{margin-left:0;margin-right:0;margin-bottom:14px}
+#body>.store-overview-kpis>.statgrid,#body>.cash-summary-strip>.statgrid{padding-left:var(--rms-edge);padding-right:var(--rms-edge);gap:12px}
+#body>.payment-summary-cards{padding-left:var(--rms-edge);padding-right:var(--rms-edge);gap:12px}
+#body>.tile-sheet{padding:16px var(--rms-edge) 24px;gap:16px}
+.rms-chart-frame>.chartbar{padding:8px 0 16px;gap:12px 16px}
+.rms-chart-frame-head{margin-bottom:12px}
+.rms-drill-layer .rms-drill-content{padding:20px 20px max(24px,env(safe-area-inset-bottom));scroll-padding-block:20px}
+.rms-drill-content>.table-area{margin:16px 0 20px;width:100%}
+.rms-drill-content .rms-chart-frame{margin:20px 0;width:100%}
+.rms-drill-content>.rms-drill-filterbar{margin-bottom:16px}
+.rms-drill-content h4{margin-top:24px;margin-bottom:12px}
+.rms-drill-head{gap:12px;padding-left:20px;padding-right:20px}
+.rms-drill-head strong{min-width:0;overflow-wrap:anywhere}
+dialog.metric-dialog{max-width:calc(100vw - 48px);max-height:calc(100dvh - 48px);border-radius:12px}
+.metric-dialog .dialog-title{padding:20px 24px 16px}
+.metric-dialog .metric-options{padding:16px 24px;column-gap:20px;row-gap:12px;min-height:0}
+.metric-dialog .dialog-actions{padding:16px 24px;gap:12px;flex-wrap:wrap}
+.explore-dialog .explore-dialog-header{gap:12px;padding:18px 20px 14px}
+.explore-dialog .explore-dialog-body{padding:18px 20px 20px}
+.explore-dialog .explore-chat-body{padding:16px 20px 20px}
+/* Clickable chart feedback, including the aggregate trend's SVG hit target. */
+.store-total-node{cursor:pointer;outline:none}
+.store-total-dot{transition:r .14s,fill .14s,stroke .14s,stroke-width .14s}
+.store-total-hit{pointer-events:all;transition:fill .14s,stroke .14s}
+.store-total-node:hover .store-total-dot,.store-total-node:focus-visible .store-total-dot{r:7px;fill:#087f7b;stroke:#fff;stroke-width:2.5}
+.store-total-node:hover .store-total-hit,.store-total-node:focus-visible .store-total-hit{fill:#0d9e961c;stroke:#0d9e9666;stroke-width:2}
+.store-total-node.is-selected .store-total-hit{fill:#0d9e9614;stroke:#0d9e96;stroke-width:2}
+.store-rank-hit:hover rect,.store-rank-hit:focus-visible rect{filter:brightness(.88)}
+[data-day-store].mobile-bar:hover,[data-day-store].mobile-bar:focus-visible{background:#edf8f6;outline:2px solid #0d9e96;outline-offset:2px}
+@media(max-width:900px){#app{--rms-edge:16px;--rms-card-gap:16px}}
+#app.device-phone{--rms-edge:16px;--rms-card-gap:16px}
+@media(max-width:550px){
+ .rms-drill-layer .rms-drill-content{padding:16px 16px max(24px,env(safe-area-inset-bottom))}
+ .rms-drill-head{padding:14px 16px;gap:8px}
+ .metric-dialog .dialog-title{padding:20px 16px 14px}
+ .metric-dialog .metric-options{padding:12px 16px;gap:12px}
+ .metric-dialog .dialog-actions{padding:14px 16px;gap:10px}
+}
+.device-phone .rms-drill-layer .rms-drill-content{padding:16px 16px max(24px,env(safe-area-inset-bottom))}
+body.rms-mobile-ui dialog.metric-dialog{inset:auto 12px max(12px,env(safe-area-inset-bottom)) 12px;width:min(430px,calc(100vw - 24px));max-width:calc(100vw - 24px);border-radius:16px;max-height:calc(100dvh - 32px)}
+body.rms-mobile-ui dialog.metric-dialog .metric-options{padding:10px 16px}
+body.rms-mobile-ui dialog.metric-dialog .dialog-actions{padding:14px 16px;gap:10px}
+body.rms-mobile-ui dialog.explore-dialog,body:has(.device-phone) dialog.explore-dialog{inset:auto 12px max(12px,env(safe-area-inset-bottom)) 12px;margin:0 auto;width:min(465px,calc(100vw - 24px));max-width:calc(100vw - 24px);border-radius:16px;max-height:calc(100dvh - 32px)}
+body.rms-mobile-ui dialog.rms-mobile-select-sheet{inset:auto 12px max(12px,env(safe-area-inset-bottom)) 12px;width:min(430px,calc(100vw - 24px));max-width:calc(100vw - 24px);border-radius:16px}
+@media(prefers-reduced-motion:reduce){.store-total-dot,.store-total-hit{transition:none}dialog.metric-dialog,dialog.explore-dialog,dialog.rms-mobile-select-sheet{animation:none!important}}
 </style></head><body>
 <div class="top"><span class="back">‹ &nbsp; RMS</span><span class="headline" id="report-title">門市營收一覽表</span><div class="controls"><div class="tog"><button data-device="desktop" class="active">電腦版</button><button data-device="phone">手機版</button><button data-device="auto">自動 RWD</button></div><div class="tog vs"><button data-version="before">Before</button><button data-version="after" class="active">After</button></div></div></div>
 <div class="selector-bar"><div class="selector-left"><span class="muted">報表</span><select id="reportSelect"></select></div></div>
@@ -2566,7 +2623,7 @@ function singleStoreTrend(daily,{compact=false,metricKey="revenue",aggregate=fal
   const dots=coords.map(p=>{
     const selected=state.trendSelectedDate===p.d.date;
     const label=`${p.d.date.replaceAll('-','/')}：${aggregate?'所選門市整體':''}${metricName} ${fnum(p.value,metricKey)}${aggregate?'':'。點選查看當日營業狀況'}`;
-    if(aggregate)return `<g class="store-total-node ${selected?'is-selected':''}" data-date="${e(p.d.date)}" data-total-trend-day="${e(p.d.date)}" data-value="${p.value}" role="button" tabindex="0" aria-pressed="${selected}" aria-label="${e(label)}，查看多店單日營業明細"><circle cx="${p.x}" cy="${p.y}" r="${selected?6:4.5}" fill="#0d9e96" stroke="white" stroke-width="1.5"/><circle cx="${p.x}" cy="${p.y}" r="18" fill="transparent"><title>${e(label)}</title></circle></g>`;
+    if(aggregate)return `<g class="store-total-node ${selected?'is-selected':''}" data-date="${e(p.d.date)}" data-total-trend-day="${e(p.d.date)}" data-value="${p.value}" role="button" tabindex="0" aria-pressed="${selected}" aria-label="${e(label)}，查看多店單日營業明細"><circle cx="${p.x}" cy="${p.y}" class="store-total-dot" r="${selected?6:4.5}" fill="#0d9e96" stroke="white" stroke-width="1.5"/><circle class="store-total-hit" cx="${p.x}" cy="${p.y}" r="18" fill="transparent"><title>${e(label)}</title></circle></g>`;
     return `<g class="single-trend-node ${selected?'is-selected':''}" data-trend-day="${e(p.d.date)}" role="button" tabindex="0" aria-pressed="${selected}" aria-label="${e(label)}"><circle class="trend-day-ring" cx="${p.x}" cy="${p.y}" r="11" fill="none" stroke="none"/><circle class="trend-day-visible" cx="${p.x}" cy="${p.y}" r="${selected?6:4.5}" fill="#0d9e96" stroke="white" stroke-width="1.5"/><circle class="trend-day-hit" cx="${p.x}" cy="${p.y}" r="22"/><title>${e(label)}</title></g>`;
   }).join('');
   const selectedDay=daily.find(x=>x.date===state.trendSelectedDate);
