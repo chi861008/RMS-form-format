@@ -2210,6 +2210,12 @@ body.rms-mobile-ui dialog.rms-mobile-select-sheet{inset:auto 12px max(12px,env(s
 
 .rms-trend-tooltip{position:fixed;z-index:10000;max-width:min(320px,calc(100vw - 24px));padding:10px 14px;border:1px solid #d4e4e5;border-radius:8px;background:#203e46;color:white;box-shadow:0 4px 16px #152c3833;white-space:pre-line;line-height:1.65;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;pointer-events:none;overflow-wrap:anywhere}
 .rms-trend-tooltip[hidden]{display:none}
+
+/* Keep the store report's result table consistent on desktop and mobile. */
+#app #body .store-query-results>.table-area{display:block;width:calc(100% - 2 * var(--rms-edge));margin:12px var(--rms-edge) 24px;border:1px solid #e0e7e9;border-radius:8px;padding-bottom:0;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.store-query-results{min-width:0;max-width:100%}
+.store-query-results .store-result-table table{min-width:760px;width:100%}
+.store-query-results .store-result-table th,.store-query-results .store-result-table td{white-space:nowrap}
 </style></head><body>
 <div class="top"><span class="back">‹ &nbsp; RMS</span><span class="headline" id="report-title">門市營收一覽表</span><div class="controls"><div class="tog"><button data-device="desktop" class="active">電腦版</button><button data-device="phone">手機版</button><button data-device="auto">自動 RWD</button></div><div class="tog vs"><button data-version="before">Before</button><button data-version="after" class="active">After</button></div></div></div>
 <div class="selector-bar"><div class="selector-left"><span class="muted">報表</span><select id="reportSelect"></select></div></div>
@@ -2865,9 +2871,9 @@ function renderStore(){
   const tableGrouping=single?'':control('表格分類',group([['storeDim','store','門市名稱'],['storeDim','group','門市群組']]));
   const result=sections('查詢結果',
     `<div class="table-toolbar"><div class="group">${tableGrouping}<label>統計欄位</label>${selectCols}</div><div class="group"><button data-quick="download">下載</button></div></div>`
-    +(single?`<div class="single-store-results">`:'')
-    +table(tableHeaders,tableRows,single?'single-period-table':'mobile-cards')
-    +(single?singleStorePeriodCards(singleData.periods)+'</div>':storeCards(mobileStoreRows)));
+    +`<div class="store-query-results${single?' single-store-results':''}">`
+    +table(tableHeaders,tableRows,single?'single-period-table store-result-table':'store-result-table')
+    +'</div>');
   const fromBrand=state.exploreBrandFilter?`<div class="explore-brand-return"><button type="button" data-explore-brand-back="1">‹ 返回品牌營收一覽表</button><span>目前查看：<strong>${e(state.exploreBrandFilter)}</strong>旗下門市（DEMO 示意關聯）</span></div>`:'';
   return storeGrainHeader()+screen(fromBrand+overview+result)+(state.trendDrawerDate?singleTrendDayLayer():storeDrillLayer());
 }
