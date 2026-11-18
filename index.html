@@ -2207,6 +2207,9 @@ body.rms-mobile-ui dialog.rms-mobile-select-sheet{inset:auto 12px max(12px,env(s
 .brand-rank-fill{height:100%}
 @media(max-width:900px){#app .brand-dual-panel{padding:16px}}
 #app.device-phone .brand-dual-panel{padding:16px}
+
+.rms-trend-tooltip{position:fixed;z-index:10000;max-width:min(320px,calc(100vw - 24px));padding:10px 14px;border:1px solid #d4e4e5;border-radius:8px;background:#203e46;color:white;box-shadow:0 4px 16px #152c3833;white-space:pre-line;line-height:1.65;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;pointer-events:none;overflow-wrap:anywhere}
+.rms-trend-tooltip[hidden]{display:none}
 </style></head><body>
 <div class="top"><span class="back">‹ &nbsp; RMS</span><span class="headline" id="report-title">門市營收一覽表</span><div class="controls"><div class="tog"><button data-device="desktop" class="active">電腦版</button><button data-device="phone">手機版</button><button data-device="auto">自動 RWD</button></div><div class="tog vs"><button data-version="before">Before</button><button data-version="after" class="active">After</button></div></div></div>
 <div class="selector-bar"><div class="selector-left"><span class="muted">報表</span><select id="reportSelect"></select></div></div>
@@ -2643,8 +2646,8 @@ function singleStoreTrend(daily,{compact=false,metricKey="revenue",aggregate=fal
   const dots=coords.map(p=>{
     const selected=state.trendSelectedDate===p.d.date;
     const label=`${p.d.date.replaceAll('-','/')}：${aggregate?'所選門市整體':''}${metricName} ${fnum(p.value,metricKey)}${aggregate?'':'。點選查看當日營業狀況'}`;
-    if(aggregate)return `<g class="store-total-node ${selected?'is-selected':''}" data-date="${e(p.d.date)}" data-total-trend-day="${e(p.d.date)}" data-value="${p.value}" role="button" tabindex="0" aria-pressed="${selected}" aria-label="${e(label)}，查看多店單日營業明細"><circle cx="${p.x}" cy="${p.y}" class="store-total-dot" r="${selected?6:4.5}" fill="#0d9e96" stroke="white" stroke-width="1.5"/><circle class="store-total-hit" cx="${p.x}" cy="${p.y}" r="18" fill="transparent"><title>${e(label)}</title></circle></g>`;
-    return `<g class="single-trend-node ${selected?'is-selected':''}" data-trend-day="${e(p.d.date)}" role="button" tabindex="0" aria-pressed="${selected}" aria-label="${e(label)}"><circle class="trend-day-ring" cx="${p.x}" cy="${p.y}" r="11" fill="none" stroke="none"/><circle class="trend-day-visible" cx="${p.x}" cy="${p.y}" r="${selected?6:4.5}" fill="#0d9e96" stroke="white" stroke-width="1.5"/><circle class="trend-day-hit" cx="${p.x}" cy="${p.y}" r="22"/><title>${e(label)}</title></g>`;
+    if(aggregate)return `<g class="store-total-node ${selected?'is-selected':''}" data-date="${e(p.d.date)}" data-total-trend-day="${e(p.d.date)}" data-value="${p.value}" data-trend-tooltip="${e(p.d.date.replaceAll('-','/')+'\n'+metricName+' '+fnum(p.value,metricKey))}" role="button" tabindex="0" aria-pressed="${selected}" aria-label="${e(label)}，查看多店單日營業明細"><circle cx="${p.x}" cy="${p.y}" class="store-total-dot" r="${selected?6:4.5}" fill="#0d9e96" stroke="white" stroke-width="1.5"/><circle class="store-total-hit" cx="${p.x}" cy="${p.y}" r="18" fill="transparent"><title>${e(label)}</title></circle></g>`;
+    return `<g class="single-trend-node ${selected?'is-selected':''}" data-trend-day="${e(p.d.date)}" data-trend-tooltip="${e(p.d.date.replaceAll('-','/')+'\n'+metricName+' '+fnum(p.value,metricKey))}" role="button" tabindex="0" aria-pressed="${selected}" aria-label="${e(label)}"><circle class="trend-day-ring" cx="${p.x}" cy="${p.y}" r="11" fill="none" stroke="none"/><circle class="trend-day-visible" cx="${p.x}" cy="${p.y}" r="${selected?6:4.5}" fill="#0d9e96" stroke="white" stroke-width="1.5"/><circle class="trend-day-hit" cx="${p.x}" cy="${p.y}" r="22"/><title>${e(label)}</title></g>`;
   }).join('');
   const selectedDay=daily.find(x=>x.date===state.trendSelectedDate);
   return `<div class="single-trend-widget">
@@ -3257,7 +3260,7 @@ function brandTrendSvg(brands,metric){
     svg+=`<polyline points="${points}" fill="none" stroke="${color}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
     dates.forEach((d,i)=>{
       const val=d.values[bi];
-      svg+=`<g class="brand-trend-point" style="--trend-color:${color}" role="button" tabindex="0" data-explore-leaf="brand-trend" data-explore-label="${e(brand.name)}" data-explore-date="${e(d.date)}" data-explore-metric="${e(metric)}" aria-label="${e(brand.name)} ${e(d.date.replaceAll('-','/'))}，${e(metric==='orders'?'結帳單數':'營業額')} ${fmt(val,0)}，查看當日門市營收"><circle class="brand-trend-hit" cx="${x(i)}" cy="${y(val)}" r="${dates.length>25?7:11}"/><circle class="brand-trend-dot" cx="${x(i)}" cy="${y(val)}" r="${dates.length>21?2.2:3.5}" fill="${color}" stroke="white" stroke-width="1" pointer-events="none"/><title>${e(brand.name)} · ${e(d.date.replaceAll('-','/'))}：${fmt(val,0)}</title></g>`;
+      svg+=`<g class="brand-trend-point" style="--trend-color:${color}" role="button" tabindex="0" data-trend-tooltip="${e(d.date.replaceAll('-','/')+' · '+brand.name+'\n'+(metric==='orders'?'結帳單數':'營業額')+' '+fmt(val,0))}" data-explore-leaf="brand-trend" data-explore-label="${e(brand.name)}" data-explore-date="${e(d.date)}" data-explore-metric="${e(metric)}" aria-label="${e(brand.name)} ${e(d.date.replaceAll('-','/'))}，${e(metric==='orders'?'結帳單數':'營業額')} ${fmt(val,0)}，查看當日門市營收"><circle class="brand-trend-hit" cx="${x(i)}" cy="${y(val)}" r="${dates.length>25?7:11}"/><circle class="brand-trend-dot" cx="${x(i)}" cy="${y(val)}" r="${dates.length>21?2.2:3.5}" fill="${color}" stroke="white" stroke-width="1" pointer-events="none"/><title>${e(brand.name)} · ${e(d.date.replaceAll('-','/'))}：${fmt(val,0)}</title></g>`;
     });
   });
   return svg+'</svg><div class="brand-trend-legend">'+brands.map(b=>`<span><i style="background:${colors[b.name]||'#109d97'}"></i>${e(b.name)}</span>`).join('')+'</div>';
@@ -3863,7 +3866,45 @@ function rmsPickMobileSelect(value){
   if(target.isConnected)rmsEnhanceMobileSelects();
 }
 
-function render(){const previousDrill=document.querySelector('.rms-drill-layer:not(.is-closing)');document.body.classList.toggle('rms-drill-open',state.version==='after'&&((state.report==='week'&&!!state.weekDrill)||(state.report==='cash'&&!!state.cashSheet)||(state.report==='store'&&!!(state.storeDrill||state.trendDrawerDate))));document.body.classList.remove('cash-modal-open');let rep=REPORTS.find(x=>x.id===state.report)||REPORTS[0];el('report-title').textContent=rep.name;el('reportSelect').innerHTML=REPORTS.map(x=>`<option value="${x.id}" ${x.id===state.report?'selected':''}>${x.name}</option>`).join('');let app=el('app');app.className='device-'+state.device;document.querySelectorAll('[data-device]').forEach(b=>b.classList.toggle('active',b.dataset.device===state.device));document.querySelectorAll('[data-version]').forEach(b=>b.classList.toggle('active',b.dataset.version===state.version));if(state.version==='before'){let key={store:'store',week:'weekday',brand:'brand',punch:'punch',cash:'cash',pay:'payment',close:'close'}[state.report];el('body').innerHTML=`<img class="raw-image" src="${originalScreens[key]}" alt="${rep.name} RMS 原始截圖">`;return}el('body').innerHTML=({store:renderStore,week:renderWeek,brand:renderBrand,punch:renderPunch,cash:renderCash,pay:renderPay,close:renderClose}[state.report])();if(previousDrill){const nextDrill=document.querySelector('.rms-drill-layer');if(nextDrill)nextDrill.classList.add('no-enter')}const scroller=el('body').querySelector('.single-trend-scroll');if(scroller&&state.trendScrollLeft)scroller.scrollLeft=state.trendScrollLeft;rmsEnhanceMobileSelects();fitStoreTotalTrend()}
+let activeTrendTooltipNode=null;
+function hideTrendTooltip(){
+  activeTrendTooltipNode?.removeAttribute('aria-describedby');
+  activeTrendTooltipNode=null;
+  const tip=document.getElementById('rmsTrendTooltip');if(tip)tip.hidden=true;
+}
+function showTrendTooltip(node){
+  if(!node?.isConnected||!node.dataset.trendTooltip)return;
+  let tip=document.getElementById('rmsTrendTooltip');
+  if(!tip){tip=document.createElement('div');tip.id='rmsTrendTooltip';tip.className='rms-trend-tooltip';tip.setAttribute('role','tooltip');tip.hidden=true;document.body.append(tip);}
+  if(activeTrendTooltipNode!==node)hideTrendTooltip();
+  activeTrendTooltipNode=node;
+  // Avoid a second, delayed native SVG tooltip on top of the visible value.
+  node.querySelectorAll('title').forEach(title=>title.remove());
+  tip.textContent=node.dataset.trendTooltip;tip.hidden=false;
+  node.setAttribute('aria-describedby',tip.id);
+  const anchor=node.getBoundingClientRect(),box=tip.getBoundingClientRect();
+  const x=Math.max(12,Math.min(innerWidth-box.width-12,anchor.left+anchor.width/2-box.width/2));
+  let y=anchor.top-box.height-12;if(y<12)y=anchor.bottom+12;
+  y=Math.max(12,Math.min(innerHeight-box.height-12,y));
+  tip.style.left=x+'px';tip.style.top=y+'px';
+}
+document.addEventListener('pointerover',event=>{
+  if(event.pointerType==='touch')return;
+  const node=event.target.closest('[data-trend-tooltip]');
+  if(node&&node!==activeTrendTooltipNode)showTrendTooltip(node);
+});
+document.addEventListener('pointerout',event=>{
+  const node=event.target.closest('[data-trend-tooltip]');
+  if(node&&(!event.relatedTarget||!node.contains(event.relatedTarget)))hideTrendTooltip();
+});
+document.addEventListener('focusin',event=>{const node=event.target.closest('[data-trend-tooltip]');if(node)showTrendTooltip(node)});
+document.addEventListener('focusout',event=>{if(event.target.closest('[data-trend-tooltip]'))hideTrendTooltip()});
+document.addEventListener('scroll',hideTrendTooltip,true);
+document.addEventListener('pointerdown',hideTrendTooltip,true);
+document.addEventListener('click',hideTrendTooltip,true);
+document.addEventListener('keydown',event=>{if(event.key==='Escape')hideTrendTooltip()},true);
+window.addEventListener('resize',hideTrendTooltip);
+function render(){hideTrendTooltip();const previousDrill=document.querySelector('.rms-drill-layer:not(.is-closing)');document.body.classList.toggle('rms-drill-open',state.version==='after'&&((state.report==='week'&&!!state.weekDrill)||(state.report==='cash'&&!!state.cashSheet)||(state.report==='store'&&!!(state.storeDrill||state.trendDrawerDate))));document.body.classList.remove('cash-modal-open');let rep=REPORTS.find(x=>x.id===state.report)||REPORTS[0];el('report-title').textContent=rep.name;el('reportSelect').innerHTML=REPORTS.map(x=>`<option value="${x.id}" ${x.id===state.report?'selected':''}>${x.name}</option>`).join('');let app=el('app');app.className='device-'+state.device;document.querySelectorAll('[data-device]').forEach(b=>b.classList.toggle('active',b.dataset.device===state.device));document.querySelectorAll('[data-version]').forEach(b=>b.classList.toggle('active',b.dataset.version===state.version));if(state.version==='before'){let key={store:'store',week:'weekday',brand:'brand',punch:'punch',cash:'cash',pay:'payment',close:'close'}[state.report];el('body').innerHTML=`<img class="raw-image" src="${originalScreens[key]}" alt="${rep.name} RMS 原始截圖">`;return}el('body').innerHTML=({store:renderStore,week:renderWeek,brand:renderBrand,punch:renderPunch,cash:renderCash,pay:renderPay,close:renderClose}[state.report])();if(previousDrill){const nextDrill=document.querySelector('.rms-drill-layer');if(nextDrill)nextDrill.classList.add('no-enter')}const scroller=el('body').querySelector('.single-trend-scroll');if(scroller&&state.trendScrollLeft)scroller.scrollLeft=state.trendScrollLeft;rmsEnhanceMobileSelects();fitStoreTotalTrend()}
 function resetScroll(){window.scrollTo({top:0,behavior:'instant'})}
 function isPhoneInteraction(){
   return state.device==='phone'||window.matchMedia('(max-width:550px)').matches;
