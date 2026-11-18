@@ -2197,6 +2197,16 @@ body.rms-mobile-ui dialog.rms-mobile-select-sheet{inset:auto 12px max(12px,env(s
 .brand-trend-point:hover .brand-trend-dot,.brand-trend-point:focus-visible .brand-trend-dot{r:6px;stroke:white;stroke-width:2.5}
 .brand-trend-point:hover .brand-trend-hit,.brand-trend-point:focus-visible .brand-trend-hit{fill:color-mix(in srgb,var(--trend-color,#0d9e96) 14%,transparent);stroke:var(--trend-color,#0d9e96);stroke-width:2}
 @media(prefers-reduced-motion:reduce){.single-trend-node .trend-day-visible,.single-trend-node .trend-day-ring,.brand-trend-point .brand-trend-dot,.brand-trend-point .brand-trend-hit{transition:none}}
+
+/* Make each brand bar participate in its row's layout and keep panel insets. */
+#app .brand-dual-panel{padding:20px}
+.brand-panel-header{margin-bottom:12px}
+.brand-rank-list{gap:12px;padding-top:0}
+.brand-rank-row{display:flex;flex-direction:column;gap:8px;padding:8px 4px}
+.brand-rank-track{display:block;flex:none;width:100%;height:16px;margin-top:0}
+.brand-rank-fill{height:100%}
+@media(max-width:900px){#app .brand-dual-panel{padding:16px}}
+#app.device-phone .brand-dual-panel{padding:16px}
 </style></head><body>
 <div class="top"><span class="back">‹ &nbsp; RMS</span><span class="headline" id="report-title">門市營收一覽表</span><div class="controls"><div class="tog"><button data-device="desktop" class="active">電腦版</button><button data-device="phone">手機版</button><button data-device="auto">自動 RWD</button></div><div class="tog vs"><button data-version="before">Before</button><button data-version="after" class="active">After</button></div></div></div>
 <div class="selector-bar"><div class="selector-left"><span class="muted">報表</span><select id="reportSelect"></select></div></div>
