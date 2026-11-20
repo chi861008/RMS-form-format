@@ -452,6 +452,9 @@ body.cash-modal-open{overflow:hidden}
 #body > .store-query-summary{position:sticky;top:var(--rms-top-h,62px);z-index:40}
 #body > .store-toolbar,#body .store-below > .store-toolbar{position:sticky;top:calc(var(--rms-top-h,62px) + var(--rms-sq-h,0px));z-index:39;background:#fff;box-shadow:0 1px 0 #e3e3e3}
 #body > .store-query-summary.is-stuck{box-shadow:0 2px 6px rgba(20,30,40,.06)}
+.brand-triple-charts{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+@media(max-width:900px){.brand-triple-charts{grid-template-columns:minmax(0,1fr)!important}}
+.device-phone .brand-triple-charts{grid-template-columns:minmax(0,1fr)!important}
 .table-fs-wrap.is-fs{position:fixed;inset:0;z-index:900;background:#fff;overflow:auto;padding:12px 16px;animation:sqsIn .2s ease-out}
 .table-fs-wrap.is-fs .table-toolbar{position:sticky;top:-12px;background:#fff;z-index:2}
 body:has(.table-fs-wrap.is-fs){overflow:hidden}
@@ -2430,7 +2433,12 @@ const PAY_COLUMN_FIELDS=[{key:'amount',label:'金額'},{key:'count',label:'次�
 // Omit 'business days', PSD, and period-over-period metrics, which need a
 // different period or baseline and must not be fabricated from single-day data.
 const STORE_TREND_FIELDS=STORE_FIELDS.filter(x=>!['days','psd','prevWeekSales','weekGrowth','prevMonthSales','monthGrowth','prevYearSales','yearGrowth'].includes(x.key));
-const BRAND_COLUMN_FIELDS=[{key:'revenue',label:'營業額'},{key:'orders',label:'結帳單數'}];
+// V13.1: the brand table offers the same 11 columns as the production RMS 統計欄位 dialog.
+const BRAND_COLUMN_FIELDS=[['revenue','營業額','amount'],['prevWeekSales','上週同期銷售額','amount'],['prevMonthSales','上月同期銷售額','amount'],['discount','折扣招待','amount'],['service','服務費','amount'],['guests','來客數','count'],['orders','結帳單數','count'],['avg','平均訂單單價','avg'],['dineRevenue','營業額(內用)','amount'],['dineGuests','來客數(內用)','count'],['dineGuestAvg','客單價(內用)','avg']].map(([key,label,type])=>({key,label,type}));
+// The brand chart always shows these three side by side.
+const BRAND_CHART_METRICS=[{key:'revenue',label:'營業額',digits:0},{key:'guests',label:'來客數',digits:0},{key:'guestAvg',label:'客單價',digits:0}];
+function brandMetrics(brand,index){const base=detail(brand,index),r=base.revenue,k=index%3,guests=Math.round(base.orders*[1.48,1.71,1.32][k]);const d={...base,guests,guestAvg:guests?r/guests:0,prevWeekSales:Math.round(r/(1+[.031,-.024,.012][k])),prevMonthSales:Math.round(r/(1+[-.046,.058,.027][k]))};d.weekGrowth=100*(r/d.prevWeekSales-1);d.monthGrowth=100*(r/d.prevMonthSales-1);const dineRevenue=Math.round(d.revenue*.64),dineGuests=Math.round(d.guests*.71);return {...d,dineRevenue,dineGuests,dineGuestAvg:dineGuests?dineRevenue/dineGuests:0};}
+function brandFmt(v,type){return fmt(v,type==='count'?0:2)}
 // Demonstration-only payment transactions for November 2026.  The original
 // 11/11-11/13, six-store fixture left common queries such as 11/16 empty and
 // counted methods 7-34 twice.  Generate exactly one entry per day/store/method.
@@ -2445,7 +2453,7 @@ for(let day=1;day<=30;day++){
   }));
 }
 const CLOSE={'營業報表':[['原價','128,300'],['折扣招待','-3,800'],['服務費','2,200'],['實際營收','126,700']],'結帳方式':[['現金','43,700'],['信用卡','57,000'],['LINE PAY','26,000'],['合計','126,700']],'單據／客單':[['結帳單數','328'],['來客數','410'],['平均訂單單價','386.28']],'發票資訊':[['發票張數','322'],['作廢張數','2'],['作廢金額','750']]};
-const state={searchedReports:{},queryCollapsed:{},brandView:'chart',brandKeyword:'',brandUnifyCurrency:'off',brandMerge:'merge',tableFullscreen:false,cashView:'chart',cashKeyword:'',weekView:'chart',viewSheet:'',storeView:'chart',storeKeyword:'',storeShowCode:false,storeMerge:'merge',storeSheet:false,storeGroupFilter:'全部',storeRuleMin:0,multiDayStore:'',allStoresTrend:false,cashTableType:'all',report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','orders'],cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
+const state={searchedReports:{},queryCollapsed:{},brandView:'chart',brandKeyword:'',brandUnifyCurrency:'off',brandMerge:'merge',tableFullscreen:false,cashView:'chart',cashKeyword:'',weekView:'chart',viewSheet:'',storeView:'chart',storeKeyword:'',storeShowCode:false,storeMerge:'merge',storeSheet:false,storeGroupFilter:'全部',storeRuleMin:0,multiDayStore:'',allStoresTrend:false,cashTableType:'all',report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','prevWeekSales','prevMonthSales','discount','service','guests','orders','avg','dineRevenue','dineGuests','dineGuestAvg'],cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
 const el=id=>document.getElementById(id), fmt=(v,d=0)=>Number(v).toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d}),e=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const field=k=>STORE_FIELDS.find(x=>x.key===k)||STORE_FIELDS[0];
 function fnum(v,k){let t=field(k).type;return `${fmt(v,t==='rate'||t==='growth'?2:t==='avg'?2:t==='amount'?2:0)}${t==='rate'||t==='growth'?'%':''}`;}
@@ -3504,41 +3512,42 @@ function brandTrendSvg(brands,metric){
 function renderBrand(){
   // 14-day fixtures; the same daily allocation drives both charts and table.
   const fixtures=[{name:'品牌 A',revenue:1260000,orders:3660},{name:'品牌 B',revenue:980000,orders:2840},{name:'品牌 C',revenue:1450000,orders:4210}];
-  const brands=fixtures.map(brand=>{
+  const brands=fixtures.map((brand,index)=>{
     const period=demoRevenuePeriod(brand);
-    return {...brand,revenue:period.current?.revenue||0,orders:period.current?.orders||0,hasSamples:!!period.current?.count,previousRevenue:period.previous?.revenue??null,comparisonLabel:period.label};
+    const revenue=period.current?.revenue||0,orders=period.current?.orders||0;
+    const metrics=orders?brandMetrics({name:brand.name,revenue,orders},index):{};
+    return {...brand,...metrics,revenue,orders,hasSamples:!!period.current?.count,previousRevenue:period.previous?.revenue??null,comparisonLabel:period.label};
   });
   const unify=state.brandUnifyCurrency==='on';
   const brandKw=(state.brandKeyword||'').trim();
   const visibleBrands=brands.filter(x=>!brandKw||x.name.includes(brandKw));
   const hasData=visibleBrands.some(x=>x.hasSamples);
   const chosen=BRAND_COLUMN_FIELDS.filter(x=>state.brandCols.includes(x.key));
-  const sorted=hasData?[...visibleBrands].sort((a,b)=>b[state.brandMetric]-a[state.brandMetric]):[];
-  const metricLabel=state.brandMetric==='orders'?'結帳單數':'營業額';
-  const metricControl=control('統計指標',choose('brandMetric',BRAND_COLUMN_FIELDS.map(x=>[x.key,x.label])));
-  const metricMax=Math.max(1,...sorted.map(x=>x[state.brandMetric]));
   const brandColors={'品牌 A':'#6d86c8','品牌 B':'#d8a450','品牌 C':'#109d97'};
-  const rankRows=hasData?sorted.map(brand=>{
-    const val=brand[state.brandMetric];
-    return `<button type="button" class="brand-rank-row" data-explore-leaf="brand" data-explore-label="${e(brand.name)}" data-explore-metric="${e(state.brandMetric)}" aria-label="${e(brand.name)}，${e(metricLabel)} ${fmt(val,0)}，進一步分析"><span class="brand-rank-label"><span>${e(brand.name)}</span><strong>${fmt(val,0)}</strong></span><span class="brand-rank-track"><span class="brand-rank-fill" style="width:${Math.max(0,val/metricMax*100)}%;background:${brandColors[brand.name]||'#109d97'}"></span></span></button>`;
-  }).join(''):`<div class="no-data">${brandKw?'沒有符合搜尋的品牌。':'所選期間沒有資料'}</div>`;
+  const rankList=m=>{
+    if(!hasData)return `<div class="no-data">${brandKw?'沒有符合搜尋的品牌。':'所選期間沒有資料'}</div>`;
+    const list=[...visibleBrands].sort((a,b)=>(b[m.key]||0)-(a[m.key]||0));
+    const max=Math.max(1,...list.map(x=>x[m.key]||0));
+    return list.map(brand=>{const val=brand[m.key]||0;return `<button type="button" class="brand-rank-row" data-explore-leaf="brand" data-explore-label="${e(brand.name)}" data-explore-metric="${e(m.key)}" aria-label="${e(brand.name)}，${e(m.label)} ${fmt(val,m.digits)}，進一步分析"><span class="brand-rank-label"><span>${e(brand.name)}</span><strong>${fmt(val,m.digits)}</strong></span><span class="brand-rank-track"><span class="brand-rank-fill" style="width:${Math.max(0,val/max*100)}%;background:${brandColors[brand.name]||'#109d97'}"></span></span></button>`}).join('');
+  };
+  const metricLabel=state.brandMetric==='orders'?'結帳單數':'營業額';
   // V11.84: temporarily hide the brand revenue trend chart; retain its code
   // so it can be restored without affecting the brand ranking data or actions.
   const singleDay=state.start===state.end;
   const showBrandTrend=false;
   const showTrend=showBrandTrend&&!singleDay;
   const dateCaption=singleDay?e(state.start.replaceAll('-','/')):`${e(state.start.replaceAll('-','/'))} ～ ${e(state.end.replaceAll('-','/'))}`;
-  const dual=`<div class="chartbar">${metricControl}</div><div class="brand-dual-charts${!showTrend?' brand-single-day':''}">
-    <section class="brand-dual-panel" aria-label="品牌比較圖">
-      <header class="brand-panel-header"><h3>品牌比較</h3>${chartHeaderMore()}</header>
-      <div class="brand-rank-list">${rankRows}</div>
-    </section>
+  const dual=`<div class="brand-dual-charts brand-triple-charts">
+    ${BRAND_CHART_METRICS.map(m=>`<section class="brand-dual-panel" aria-label="品牌${e(m.label)}比較">
+      <header class="brand-panel-header"><h3>${e(m.label)}</h3>${chartHeaderMore()}</header>
+      <div class="brand-rank-list">${rankList(m)}</div>
+    </section>`).join('')}
     ${showTrend?`<section class="brand-dual-panel" aria-label="品牌趨勢圖">
       <header class="brand-panel-header"><h3>${e(metricLabel)}趨勢</h3>${chartHeaderMore()}</header>
       <div class="brand-line-wrap">${brandTrendSvg(fixtures,state.brandMetric)}<p class="brand-trend-action-note">點選日期節點，可查看該品牌當日各門市的營收表現。</p></div>
     </section>`:''}
   </div>`;
-  const rows=hasData?visibleBrands.map(x=>({values:[e(x.name),unify?'TWD（統一）':'TWD',...chosen.map(c=>c.key==='revenue'?fmt(x.revenue,2):fmt(x.orders))]})):[];
+  const rows=hasData?visibleBrands.map(x=>({values:[e(x.name),unify?'TWD（統一）':'TWD',...chosen.map(c=>brandFmt(x[c.key]||0,c.type))]})):[];
   const brandChartSection=sections('圖表',dual);
   const fs=state.tableFullscreen;
   const brandTableSection=sections('查詢結果',`<div class="table-fs-wrap${fs?' is-fs':''}"${fs?' role="dialog" aria-modal="true" aria-label="品牌營收表格（全螢幕）"':''}><div class="table-toolbar store-table-toolbar brand-table-toolbar"><div class="group">${control('列合併',group([['brandMerge','merge','合併'],['brandMerge','split','不合併']]))}<span class="fil"><label>統計欄位</label><button data-quick="columns" aria-label="選擇品牌營收統計欄位">已選 ${chosen.length} 項 ▾</button></span></div><div class="group"><button type="button" data-table-fullscreen="${fs?'close':'open'}">${fs?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div></div>${table(['品牌名稱','品牌幣別',...chosen.map(x=>x.label)],rows,'brand-table')}</div>`);
