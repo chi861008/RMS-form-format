@@ -3714,8 +3714,7 @@ function cashDayList(rows){
   const dates=[...new Set(rows.map(x=>x.date))].sort();
   const mag=Math.max(1,...dates.map(d=>Math.abs(rows.filter(x=>x.date===d).reduce((a,b)=>a+b.amount,0))));
   const list=dates.map(d=>{const r=rows.filter(x=>x.date===d),v=r.reduce((a,b)=>a+b.amount,0),q=r.reduce((a,b)=>a+b.qty,0);return `<div class="cash-bar-choice cash-day-row"><div class="cash-bar-line"><span>${e(d)}<small>${q} 次</small></span><strong>${fmt(v,0)}</strong></div><div class="cash-track" aria-hidden="true"><div class="cash-fill ${v<0?'cash-out':''}" style="width:${Math.abs(v)/mag*100}%"></div></div></div>`}).join('');
-  return `<p class="cash-step-caption">共 ${dates.length} 天有這筆收支</p><div class="cash-graph">${list}</div>
-    <div class="cash-sheet-detail">${table(['日期','類型','事由','金額','次數'],rows.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(x=>({values:[e(x.date),e(x.type),e(x.reason),fmt(x.amount,2),fmt(x.qty)]})))}</div>`;
+  return `<p class="cash-step-caption">共 ${dates.length} 天有這筆收支</p><div class="cash-graph">${list}</div>`;
 }
 function cashBottomSheet(cash,single){
   if(!state.cashSheet)return '';
