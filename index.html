@@ -493,6 +493,13 @@ body.cash-modal-open{overflow:hidden}
 .sfl-rule-hint{margin:0;font-size:12px;color:#7a8991}
 .store-toolbar .st-chips{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 24px 10px}.device-phone .store-toolbar .st-chips{padding:0 12px 10px}.st-chips-label{font-size:12px;color:#7a8991}
 .st-rule-chip{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border:1px solid #f0b48a;border-radius:16px;background:#fff6ef;color:#8a4a1c;font-size:13px;white-space:nowrap}.st-rule-chip span{font-size:11px;opacity:.7}
+#body{position:relative}
+.rms-reload-overlay{position:absolute;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.72);backdrop-filter:blur(1.5px);display:flex;justify-content:center;align-items:flex-start;padding-top:120px;animation:rmsFadeIn .15s ease-out}
+.rms-reload-overlay.is-done{opacity:0;transition:opacity .2s ease}
+.rms-reload-box{position:sticky;top:45vh;display:inline-flex;align-items:center;gap:10px;padding:10px 16px;border-radius:20px;background:#fff;box-shadow:0 4px 16px rgba(20,40,50,.14);font-size:14px;color:#2f4850}
+.rms-spinner{width:18px;height:18px;border-radius:50%;border:2.5px solid #d6e9e7;border-top-color:#109d97;animation:rmsSpin .7s linear infinite}
+@keyframes rmsSpin{to{transform:rotate(360deg)}}@keyframes rmsFadeIn{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.rms-spinner{animation-duration:2s}}
 .table-fs-wrap.is-fs{position:fixed;inset:0;z-index:900;background:#fff;overflow:auto;padding:12px 16px;animation:sqsIn .2s ease-out}
 .table-fs-wrap.is-fs .table-toolbar{position:sticky;top:-12px;background:#fff;z-index:2}
 body:has(.table-fs-wrap.is-fs){overflow:hidden}
@@ -3054,12 +3061,27 @@ function collapseQueryThen(apply){
   setTimeout(finish,280);
 }
 // Animate a store sheet out before the state change re-renders the page.
+// V13.8: changing columns / filters is the same level as choosing what to view;
+// in production that means a re-query, so the demo shows a short loading state.
+let filterSnapshot='';
+function dataSnapshot(){const {viewSheet,storeSheet,tableFullscreen,queryCollapsed,...rest}=state;return JSON.stringify(rest)}
+function showReloading(ms=650){
+  const body=document.getElementById('body');if(!body)return;
+  body.querySelector('.rms-reload-overlay')?.remove();
+  const anchor=body.querySelector('.store-toolbar')||body.querySelector('.store-query-summary');
+  const top=anchor?anchor.offsetTop+anchor.offsetHeight:0;
+  const ov=document.createElement('div');ov.className='rms-reload-overlay';ov.style.top=top+'px';ov.setAttribute('role','status');ov.setAttribute('aria-live','polite');
+  ov.innerHTML='<div class="rms-reload-box"><span class="rms-spinner" aria-hidden="true"></span>資料更新中…</div>';
+  body.appendChild(ov);
+  setTimeout(()=>{ov.classList.add('is-done');setTimeout(()=>ov.remove(),220)},ms);
+}
 function closeStoreLayer(apply){
   const layer=document.querySelector('.store-filter-layer:not(.is-closing)');
   const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(!layer||reduce){apply();render();return}
+  const done=()=>{apply();render();if(filterSnapshot&&dataSnapshot()!==filterSnapshot)showReloading();filterSnapshot=''};
+  if(!layer||reduce){done();return}
   layer.classList.add('is-closing');
-  setTimeout(()=>{apply();render()},200);
+  setTimeout(done,200);
 }
 function renderStore(){
   if(awaitingSearch())return storeGrainHeader()+query()+awaitSearchBlock();
@@ -4356,13 +4378,13 @@ let b=evt.target.closest('button');if(!b)return;
 
 if(b.dataset.trendDayDismiss||b.dataset.storeDismiss||b.dataset.weekDismiss||b.dataset.cashDismiss){dismissDrillStack();return}
 if(b.dataset.trendDayBack||b.dataset.storeBack||b.dataset.weekBack||b.dataset.weekPeriodBack||b.dataset.cashSheetBack){backDrillStep();return}
-if(b.dataset.viewSheet){if(b.dataset.viewSheet==='close'){closeStoreLayer(()=>{state.viewSheet=''});return}if(b.dataset.viewSheet==='open')state.viewSheet=state.report;else{if(state.report==='cash')state.cashStoreGroup='全部';if(state.report==='brand'){state.brandUnifyCurrency='off';state.brandRuleValue=''}}render();return}
+if(b.dataset.viewSheet){if(b.dataset.viewSheet==='close'){closeStoreLayer(()=>{state.viewSheet=''});return}if(b.dataset.viewSheet==='open'){state.viewSheet=state.report;filterSnapshot=dataSnapshot()}else{if(state.report==='cash')state.cashStoreGroup='全部';if(state.report==='brand'){state.brandUnifyCurrency='off';state.brandRuleValue=''}}render();return}
 if(b.dataset.storeCode){state.storeShowCode=!state.storeShowCode;render();return}
-if(b.dataset.brandRuleClear){state.brandRuleValue='';render();return}
+if(b.dataset.brandRuleClear){state.brandRuleValue='';render();showReloading();return}
 if(b.dataset.tableFullscreen){state.tableFullscreen=b.dataset.tableFullscreen==='open';render();return}
 if(b.dataset.viewSet){state[b.dataset.viewSet]=b.dataset.viewValue;if(state.report==='cash'){state.cashFocusDate='';state.cashFocusStore='';state.cashSheet=''}render();return}
 if(b.dataset.storeQuery){if(b.dataset.storeQuery==='close'){closeStoreLayer(()=>setQueryCollapsed(true));return}setQueryCollapsed(false);render();return}
-if(b.dataset.storeSheet){if(b.dataset.storeSheet==='close'){closeStoreLayer(()=>{state.storeSheet=false});return}if(b.dataset.storeSheet==='open')state.storeSheet=true;else{state.storeGroupFilter='全部';state.storeRuleMin=0}render();return}
+if(b.dataset.storeSheet){if(b.dataset.storeSheet==='close'){closeStoreLayer(()=>{state.storeSheet=false});return}if(b.dataset.storeSheet==='open'){state.storeSheet=true;filterSnapshot=dataSnapshot()}else{state.storeGroupFilter='全部';state.storeRuleMin=0}render();return}
 if(b.dataset.storeGroup!==undefined){state.storeGroupFilter=b.dataset.storeGroup;state.storeDrill='';state.trendDrawerDate='';render();return}
 if(b.dataset.storeRule!==undefined){state.storeRuleMin=Number(b.dataset.storeRule)||0;state.storeDrill='';state.trendDrawerDate='';render();return}
 if(b.dataset.weekPeriod&&state.report==='week'&&state.weekDrill&&state.weekMode==='interval'&&state.weekDrill!=='五'){state.weekDrillPeriod=b.dataset.weekPeriod;render();return}
@@ -4426,7 +4448,7 @@ el('applyPayments').onclick=()=>{
   if(!a.length){alert('請至少選擇一種付款方式');return}
   state.paymentMethods=a;el('paymentDialog').close();render();
 };
-el('cancelStores').onclick=()=>el('storesDialog').close();el('applyStores').onclick=()=>{let x=[...el('storeOptions').querySelectorAll('input:checked')].map(x=>x.value);if(!x.length){alert('請至少選擇一間門市');return}state.selectedStores=x;if(state.report==='cash')state.cashHasSearched=false;state.multiDayStore='';state.trendDrawerDate='';state.storeDrill='';if(state.storeScope!=='all'&&!x.includes(state.storeScope))state.storeScope='all';el('storesDialog').close();render()};el('cancelCols').onclick=()=>el('columnsDialog').close();el('applyCols').onclick=()=>{let a=[...el('columnOptions').querySelectorAll('input:checked')].map(x=>x.value);if(!a.length&&!(state.report==='pay'&&state.activeColumnTarget==='table')){alert('請至少選擇一項');return}if(state.activeColumnTarget==='brandChart')state.brandChartMetrics=BRAND_CHART_FIELDS.map(f=>f.key).filter(k=>a.includes(k));else if(state.activeColumnTarget==='calendar')state.weekCalendarCols=a;else if(state.report==='week')state.weekTableCols=a;else if(state.report==='pay')state.paymentCols=a;else if(state.report==='brand')state.brandCols=a;else state.storeCols=a;el('columnsDialog').close();render()};
+el('cancelStores').onclick=()=>el('storesDialog').close();el('applyStores').onclick=()=>{let x=[...el('storeOptions').querySelectorAll('input:checked')].map(x=>x.value);if(!x.length){alert('請至少選擇一間門市');return}state.selectedStores=x;if(state.report==='cash')state.cashHasSearched=false;state.multiDayStore='';state.trendDrawerDate='';state.storeDrill='';if(state.storeScope!=='all'&&!x.includes(state.storeScope))state.storeScope='all';el('storesDialog').close();render()};el('cancelCols').onclick=()=>el('columnsDialog').close();el('applyCols').onclick=()=>{let a=[...el('columnOptions').querySelectorAll('input:checked')].map(x=>x.value);if(!a.length&&!(state.report==='pay'&&state.activeColumnTarget==='table')){alert('請至少選擇一項');return}if(state.activeColumnTarget==='brandChart')state.brandChartMetrics=BRAND_CHART_FIELDS.map(f=>f.key).filter(k=>a.includes(k));else if(state.activeColumnTarget==='calendar')state.weekCalendarCols=a;else if(state.report==='week')state.weekTableCols=a;else if(state.report==='pay')state.paymentCols=a;else if(state.report==='brand')state.brandCols=a;else state.storeCols=a;el('columnsDialog').close();render();showReloading()};
 document.addEventListener('keydown',evt=>{if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-day-store]')){evt.preventDefault();selectMultiStoreDayStore(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-total-trend-day]')){evt.preventDefault();selectMultiStoreTrendDay(evt.target);return}if(evt.key==='Escape'&&!el('exploreReportScreen').hidden){evt.preventDefault();closeExploreReportScreen();return;}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('.single-hourly-row,.single-hourly-col')){evt.preventDefault();openExplore(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-explore-leaf]')){evt.preventDefault();openExplore(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-trend-day]')){evt.preventDefault();selectSingleTrendDay(evt.target);return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-store-target]')){evt.preventDefault();state.storeDrill=evt.target.dataset.storeTarget;render();return}if(evt.key==='Escape'&&state.report==='store'&&state.multiDayStore&&state.trendDrawerDate){evt.preventDefault();backDrillStep();return}if(evt.key==='Escape'&&state.report==='store'&&state.trendDrawerDate){evt.preventDefault();dismissDrill(()=>{state.trendDrawerDate=''});return}if(evt.key==='Escape'&&state.report==='store'&&state.storeDrill){evt.preventDefault();dismissDrill(()=>{state.storeDrill=''});return}if((evt.key==='Enter'||evt.key===' ')&&evt.target.matches('[data-week-target]')){evt.preventDefault();state.weekDrill=evt.target.dataset.weekTarget;render();return}if(evt.key==='Escape'&&state.report==='week'&&state.weekDrill){evt.preventDefault();if(state.weekDrillPeriod){state.weekDrillPeriod='';render()}else{dismissDrill(()=>{state.weekDrill='';state.weekDrillPeriod=''})}return}if(evt.key==='Escape'&&state.report==='cash'&&state.cashSheet){evt.preventDefault();dismissDrill(()=>{state.cashSheet='';state.cashFocusDate='';state.cashFocusStore=''});return}if(evt.key==='Escape'&&state.report==='pay'&&state.payDrillMethod){evt.preventDefault();dismissDrill(()=>{state.payDrillMethod=''});return}});
 el('mobileSelectSheet').addEventListener('close',()=>{rmsMobileSelectSource=null});
 window.addEventListener('resize',()=>{document.body.classList.toggle('rms-mobile-ui',rmsIsMobileSelectMode());if(!rmsIsMobileSelectMode())rmsCloseMobileSelect();requestAnimationFrame(fitStoreTotalTrend)});
