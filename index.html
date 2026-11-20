@@ -2851,10 +2851,8 @@ function storeQuerySummary(n){
 function storeToolbar(o){
   const active=storeActiveFilterCount();
   const shared=o.single?'':`<label class="st-search">${ST_ICON_SEARCH}<input type="search" data-store-keyword value="${e(state.storeKeyword)}" placeholder="搜尋門市名稱" aria-label="搜尋門市名稱"></label><button type="button" class="st-filter${active?' is-on':''}" data-store-sheet="open" aria-haspopup="dialog">${ST_ICON_FILTER}<span>進階篩選</span>${active?`<span class="st-badge" aria-label="已套用 ${active} 個條件">${active}</span>`:''}</button>${o.filtered?`<span class="st-count">顯示 ${o.viewCount} / ${o.total} 間</span>`:''}`;
-  const viewCtl=state.storeView==='chart'
-    ?(o.single?'':o.mControl)
-    :`${o.tableGrouping}<span class="fil"><label>統計欄位</label>${o.selectCols}</span><button data-quick="download">下載</button>`;
-  return `<div class="store-toolbar">${shared?`<div class="st-row st-shared">${shared}</div>`:''}<div class="st-row st-view"><div class="st-view-ctl">${viewCtl}</div><span class="st-toggle" aria-label="切換圖表或表格">${group([['storeView','chart','圖表'],['storeView','table','表格']])}</span></div></div>`;
+  // Chart- or table-only settings sit under their own section ribbon, not here.
+  return `<div class="store-toolbar"><div class="st-row st-view"><div class="st-view-ctl">${shared}</div><span class="st-toggle" aria-label="切換圖表或表格">${group([['storeView','chart','圖表'],['storeView','table','表格']])}</span></div></div>`;
 }
 function storeFilterSheet(scopedAll){
   const groups=['全部',...new Set(scopedAll.map(x=>x.row.group))];
@@ -2950,13 +2948,14 @@ function renderStore(){
       (showTrend?sections('營收趨勢',`<div class="chartbar single-trend-metric-bar">${control('統計指標',choose('singleTrendMetric',STORE_TREND_FIELDS.map(x=>[x.key,x.label])))}</div><div class="single-trend-container"><div class="single-trend-head"><strong>每日${e(field(state.singleTrendMetric).label)}趨勢</strong>${chartHeaderMore()}</div>${singleStoreTrend(singleData.daily,{metricKey:state.singleTrendMetric})}</div>`):'');
 
   }else if(rows.length){
-    overview=sections('圖表',`${storeOverviewCards}${state.start<state.end&&storeOverviewDays>=2?`<div class="store-overview-dual-charts">${multiStoreTotalTrend(scoped)}`:''}<div class="rms-chart-frame store-chart-frame"><div class="rms-chart-frame-head"><strong>門市比較</strong>${chartHeaderMore()}</div><div class="chartbar store-ranking-controls" aria-label="門市比較排序與顯示設定">${control('排序',group([['storeSort','desc','由高到低'],['storeSort','asc','由低到高']]))}${control('顯示',group([['storeTop','10',state.storeSort==='asc'?'最低 10':'Top 10'],['storeTop','all','全部']]))}</div><div class="chartbox">${svgBars(shown,{horizontal:true,signed:metric.type==='growth'||metric.type==='rate',unit:metric.type==='rate'||metric.type==='growth'?'%':'',storeClick:true,halfDesktop:true})}</div></div>${state.start<state.end&&storeOverviewDays>=2?'</div>':''}`);
+    overview=sections('圖表',`${storeOverviewCards}<div class="chartbar">${mControl}</div>${state.start<state.end&&storeOverviewDays>=2?`<div class="store-overview-dual-charts">${multiStoreTotalTrend(scoped)}`:''}<div class="rms-chart-frame store-chart-frame"><div class="rms-chart-frame-head"><strong>門市比較</strong>${chartHeaderMore()}</div><div class="chartbar store-ranking-controls" aria-label="門市比較排序與顯示設定">${control('排序',group([['storeSort','desc','由高到低'],['storeSort','asc','由低到高']]))}${control('顯示',group([['storeTop','10',state.storeSort==='asc'?'最低 10':'Top 10'],['storeTop','all','全部']]))}</div><div class="chartbox">${svgBars(shown,{horizontal:true,signed:metric.type==='growth'||metric.type==='rate',unit:metric.type==='rate'||metric.type==='growth'?'%':'',storeClick:true,halfDesktop:true})}</div></div>${state.start<state.end&&storeOverviewDays>=2?'</div>':''}`);
   }else if(baseRows.length){
     overview=sections('圖表',`${storeOverviewCards}<div class="no-data">沒有符合篩選條件的門市，請調整搜尋或進階篩選。</div>`);
   }
   const tableGrouping=single?'':control('表格分類',group([['storeDim','store','門市名稱'],['storeDim','group','門市群組']]));
   const result=sections('查詢結果',
-    `<div class="store-query-results${single?' single-store-results':''}">`
+    `<div class="table-toolbar"><div class="group">${tableGrouping}<label>統計欄位</label>${selectCols}</div><div class="group"><button data-quick="download">下載</button></div></div>`
+    +`<div class="store-query-results${single?' single-store-results':''}">`
     +table(tableHeaders,tableRows,single?'single-period-table store-result-table':'store-result-table')
     +'</div>');
   const fromBrand=state.exploreBrandFilter?`<div class="explore-brand-return"><button type="button" data-explore-brand-back="1">‹ 返回品牌營收一覽表</button><span>目前查看：<strong>${e(state.exploreBrandFilter)}</strong>旗下門市（DEMO 示意關聯）</span></div>`:'';
