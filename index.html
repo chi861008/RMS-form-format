@@ -487,6 +487,7 @@ body.cash-modal-open{overflow:hidden}
 .cash-day-row,.cash-day-row:hover{cursor:default;background:transparent!important;border-color:transparent!important}
 .cash-sheet-detail{margin-top:12px}
 .cash-store-compare .cash-bar-choice{cursor:pointer}
+.rms-mobile-sheet-group{padding:12px 16px 4px;font-size:12px;font-weight:700;color:#7a8991;letter-spacing:.04em}
 .table-fs-wrap.is-fs{position:fixed;inset:0;z-index:900;background:#fff;overflow:auto;padding:12px 16px;animation:sqsIn .2s ease-out}
 .table-fs-wrap.is-fs .table-toolbar{position:sticky;top:-12px;background:#fff;z-index:2}
 body:has(.table-fs-wrap.is-fs){overflow:hidden}
@@ -3227,6 +3228,13 @@ function rmsWeatherInline(date){
 function weekTotal(list,metric,meal){if(metric==='avgOrder'||metric==='guestAvg'){let rev=list.reduce((s,x)=>s+weekMetricVal(x,'revenue',meal),0),n=list.reduce((s,x)=>s+weekMetricVal(x,metric==='avgOrder'?'orders':'guests',meal),0);return n?rev/n:0;}return list.reduce((s,x)=>s+weekMetricVal(x,metric,meal),0)}
 function weekTableToolbar(){return `<div class="table-toolbar"><div class="group"><span class="fil"><label>統計欄位</label><button data-quick="columns">已選 ${state.weekTableCols.length} 項 ▾</button></span></div><div class="group"><button data-quick="download">下載</button></div></div>`}
 function weekFmt(n,key){return fmt(n,['avgOrder','guestAvg'].includes(key)?2:0)}
+// V13.6: calendar metrics grouped by kind; money shows $, counts show their unit.
+const WMT_GROUPS=[['金額',['revenue','avgOrder','guestAvg']],['數量',['orders','guests','qty']]];
+const WMT_UNIT={orders:'單',guests:'人',qty:'份'};
+const WMT_MONEY=['revenue','avgOrder','guestAvg'];
+const WMT_PER={avgOrder:'/單',guestAvg:'/人'};
+function weekUnitFmt(n,key,text=weekFmt(n,key)){return WMT_MONEY.includes(key)?`$${text}${WMT_PER[key]||''}`:`${text} ${WMT_UNIT[key]||''}`.trim()}
+function chooseGrouped(key,groups,labels){return `<select data-key="${key}">${groups.map(([g,keys])=>`<optgroup label="${e(g)}">${keys.map(v=>`<option value="${e(v)}" ${String(state[key])===String(v)?'selected':''}>${e(labels[v]||v)}</option>`).join('')}</optgroup>`).join('')}</select>`}
 function weekRangeFor(date){
   const [m,d]=date.split('/').map(Number);
   const current=new Date(Date.UTC(2026,m-1,d));
@@ -3314,10 +3322,10 @@ function weekDailyMealCharts(group,meal,chosenKeys=state.weekCalendarCols){
     const max=Math.max(1,...values.map(row=>row.value));
     const bars=values.map(row=>{
       const width=row.value>0?Math.max(1,Math.round(row.value/max*100)):0;
-      return `<div class="week-meal-row" role="button" tabindex="0" data-explore-leaf="meal" data-explore-label="${e(row.name)}" data-explore-metric="${e(key)}" aria-label="${e(row.name)} ${e(label)} ${weekFmt(row.value,key)}，探索更多分析"><div class="week-meal-head"><span>${e(row.name)}</span><strong>${weekFmt(row.value,key)}</strong></div><div class="week-meal-track" role="img" aria-label="${e(row.name)} ${e(label)} ${weekFmt(row.value,key)}"><span class="week-meal-fill" style="width:${width}%"></span></div></div>`;
+      return `<div class="week-meal-row" role="button" tabindex="0" data-explore-leaf="meal" data-explore-label="${e(row.name)}" data-explore-metric="${e(key)}" aria-label="${e(row.name)} ${e(label)} ${weekFmt(row.value,key)}，探索更多分析"><div class="week-meal-head"><span>${e(row.name)}</span><strong>${weekUnitFmt(row.value,key)}</strong></div><div class="week-meal-track" role="img" aria-label="${e(row.name)} ${e(label)} ${weekFmt(row.value,key)}"><span class="week-meal-fill" style="width:${width}%"></span></div></div>`;
     }).join('');
     const total=weekTotal(group,key,'全部');
-    return `<section class="week-meal-chart"><h4>各餐期${e(label)}</h4><p class="week-meal-caption">沿用日曆已選的統計欄位 · 每個餐期獨立比較</p><div class="week-meal-rows">${bars}</div><div class="week-meal-total"><span>全日${e(label)}</span><strong>${weekFmt(total,key)}</strong></div></section>`;
+    return `<section class="week-meal-chart"><h4>各餐期${e(label)}</h4><p class="week-meal-caption">沿用日曆已選的統計欄位 · 每個餐期獨立比較</p><div class="week-meal-rows">${bars}</div><div class="week-meal-total"><span>全日${e(label)}</span><strong>${weekUnitFmt(total,key)}</strong></div></section>`;
   }).join('')}</div>`;
 }
 function weekDrillLayer(){
@@ -3463,14 +3471,14 @@ function weekCalendarWithTotals(list,meal){
     const precise=available?weekFmt(value,mobileMetric):'';
     const fraction=available&&!closed?Math.max(0,Math.min(100,Math.round(Math.abs(value)/largest*100))):0;
     const strength=available&&!closed?(.035+.11*fraction/100).toFixed(3):0;
-    const dayText=available?(closed?'公休':compactValue(value)):(inRange?'—':'');
+    const dayText=available?(closed?'公休':weekUnitFmt(value,mobileMetric,WMT_PER[mobileMetric]&&Math.abs(value)<1000?fmt(Math.round(value)):compactValue(value))):(inRange?'—':'');
     const cls=['rms-month-cell',!inRange?'is-outside':'',!record?'is-empty':'',closed?'is-closed':'',isWeekend?'is-weekend':'',state.weekCalendarFocused===record?.date?'is-selected':''].filter(Boolean).join(' ');
     const content=`<span class="rms-month-cell-top"><span class="rms-month-date">${dayNumber}</span>${available?`<span class="rms-month-wx" title="示意天氣：${e(record.weather)}">${e(wx)}</span>`:''}</span><span class="rms-month-value">${e(dayText)}</span><span class="rms-month-track"><span style="width:${fraction}%"></span></span>`;
     if(!available)return `<span class="${cls}" aria-label="${e(iso)}，${inRange?'無資料':'非查詢期間'}">${content}</span>`;
-    return `<button type="button" class="${cls}" style="--rms-month-tint:${strength}" data-week-target="${e(record.date)}" aria-label="${e(iso)}，${e(record.weather)}，${e(mobileName)} ${e(precise)}，查看餐期分布">${content}</button>`;
+    return `<button type="button" class="${cls}" style="--rms-month-tint:${strength}" data-week-target="${e(record.date)}" aria-label="${e(iso)}，${e(record.weather)}，${e(mobileName)} ${e(weekUnitFmt(value,mobileMetric,precise))}，查看餐期分布">${content}</button>`;
   }).join('');
   const mobileCalendar=`<section class="week-shared-calendar rms-month" aria-label="日別營業月曆">
-    <div class="rms-month-top"><div><strong>2026 年 11 月</strong><span>查詢期間 ${e(formatShort(state.start))} ～ ${e(formatShort(state.end))}</span></div><div class="rms-month-metric-actions"><div class="rms-month-metric">${control('圖表指標',choose('weekMobileMetric',WMT))}</div>${chartHeaderMore()}</div></div>
+    <div class="rms-month-top"><div><strong>2026 年 11 月</strong><span>查詢期間 ${e(formatShort(state.start))} ～ ${e(formatShort(state.end))}</span></div><div class="rms-month-metric-actions"><div class="rms-month-metric">${control('圖表指標',chooseGrouped('weekMobileMetric',WMT_GROUPS,Object.fromEntries(WMT)))}</div>${chartHeaderMore()}</div></div>
     <div class="rms-month-grid" role="group" aria-label="2026年11月日曆，顯示${e(mobileName)}">${headerDays}${calendarCells}</div>
     <div class="rms-month-legend"><span><i class="rms-month-legend-dot"></i> 色條比較每日${e(mobileName)}</span><span>☀ ⛅ ☁ ☂ 天氣示意</span></div>
   </section>`;
@@ -4230,7 +4238,8 @@ function rmsOpenMobileSelect(sel){
   rmsMobileSelectSource=sel;
   const dialog=el('mobileSelectSheet');
   el('mobileSelectTitle').textContent='選擇'+rmsMobileSelectLabel(sel).replace(/^選擇/,'');
-  el('mobileSelectOptions').innerHTML=Array.from(sel.options).map(option=>`<button type="button" class="rms-mobile-sheet-option" role="option" aria-selected="${option.selected?'true':'false'}" data-mobile-select-value="${e(option.value)}" ${option.disabled?'disabled':''}><span>${e(option.textContent)}</span><span class="rms-mobile-option-check" aria-hidden="true">${option.selected?'✓':''}</span></button>`).join('');
+  const optionHtml=option=>`<button type="button" class="rms-mobile-sheet-option" role="option" aria-selected="${option.selected?'true':'false'}" data-mobile-select-value="${e(option.value)}" ${option.disabled?'disabled':''}><span>${e(option.textContent)}</span><span class="rms-mobile-option-check" aria-hidden="true">${option.selected?'✓':''}</span></button>`;
+  el('mobileSelectOptions').innerHTML=sel.querySelector('optgroup')?Array.from(sel.children).map(node=>node.tagName==='OPTGROUP'?`<div class="rms-mobile-sheet-group" role="presentation">${e(node.label)}</div>${Array.from(node.children).map(optionHtml).join('')}`:optionHtml(node)).join(''):Array.from(sel.options).map(optionHtml).join('');
   if(!dialog.open)dialog.showModal();
   const selected=el('mobileSelectOptions').querySelector('[aria-selected="true"]');
   selected?.scrollIntoView({block:'nearest'});
