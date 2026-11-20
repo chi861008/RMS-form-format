@@ -462,6 +462,12 @@ body.cash-modal-open{overflow:hidden}
 .brand-cmp-line.is-prev .brand-rank-fill{opacity:.35}.brand-cmp-line.is-prev em{color:#7a8991}
 .brand-rank-label strong small{display:block;font-size:11px;font-weight:400;color:#7a8991;text-align:right}
 .brand-mode-share .brand-rank-label{align-items:flex-end}
+.brand-mode-avg{display:grid!important;grid-template-columns:minmax(0,1fr) auto 76px;align-items:baseline;gap:10px;padding:12px 4px!important;border-bottom:1px solid #eef2f3!important;border-radius:0!important}
+.brand-mode-avg:last-child{border-bottom:0!important}
+.brand-avg-name{font-size:14px;color:#263e45}.brand-avg-value{font-size:22px;font-weight:700;color:#1f3238;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.brand-mode-avg .brand-growth{text-align:right;font-variant-numeric:tabular-nums}.brand-growth.is-flat{color:#7a8991}
+.brand-avg-overall{display:flex;justify-content:space-between;align-items:baseline;padding:8px 12px;background:#f4f7f8;border-radius:6px;font-size:13px;color:#5f7179;margin-bottom:-4px}.brand-avg-overall strong{font-size:15px;color:#263e45;font-variant-numeric:tabular-nums}
+.brand-panel-header + .brand-rank-list .brand-mode-avg:hover{background:#f7fafa}
 .brand-dot-scale{display:flex;justify-content:space-between;font-size:11px;color:#9aa5b1;padding:0 4px;margin-bottom:-6px}
 .brand-dot-track{position:relative;display:block;height:14px;margin-top:9px;background:linear-gradient(#dfe5e8,#dfe5e8) center/100% 2px no-repeat}
 .brand-dot{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 3px #fff}
@@ -2446,10 +2452,11 @@ const STORE_TREND_FIELDS=STORE_FIELDS.filter(x=>!['days','psd','prevWeekSales','
 // V13.1: the brand table offers the same 11 columns as the production RMS 統計欄位 dialog.
 const BRAND_COLUMN_FIELDS=[['revenue','營業額','amount'],['prevWeekSales','上週同期銷售額','amount'],['prevMonthSales','上月同期銷售額','amount'],['discount','折扣招待','amount'],['service','服務費','amount'],['guests','來客數','count'],['orders','結帳單數','count'],['avg','平均訂單單價','avg'],['dineRevenue','營業額(內用)','amount'],['dineGuests','來客數(內用)','count'],['dineGuestAvg','客單價(內用)','avg']].map(([key,label,type])=>({key,label,type}));
 // Chart metrics are chosen with checkboxes; 營業額、來客數、客單價 are on by default.
-// V13.3: chart form follows the metric — volume → bar, 同期 → 本期 vs 同期 + growth, 折扣 → share of revenue, 單價 → dot strip.
+// V13.3: chart form follows the metric — volume → bar, 同期 → 本期 vs 同期 + growth, 折扣 → share of revenue, 單價 → number cards vs 全品牌平均.
 const BRAND_CHART_MODE={prevWeekSales:'compare',prevMonthSales:'compare',discount:'share',guestAvg:'avg',avg:'avg',dineGuestAvg:'avg'};
 const BRAND_CHART_TITLE={prevWeekSales:'營業額 vs 上週同期',prevMonthSales:'營業額 vs 上月同期',discount:'折扣招待佔營業額'};
-const BRAND_CHART_NOTE={prevWeekSales:'深色為本期、淺色為上週同期',prevMonthSales:'深色為本期、淺色為上月同期',discount:'折扣招待 ÷ 營業額',guestAvg:'刻度未從 0 開始，便於比較差距',avg:'刻度未從 0 開始，便於比較差距',dineGuestAvg:'刻度未從 0 開始，便於比較差距'};
+const BRAND_CHART_NOTE={prevWeekSales:'深色為本期、淺色為上週同期',prevMonthSales:'深色為本期、淺色為上月同期',discount:'折扣招待 ÷ 營業額'};
+const BRAND_AVG_PARTS={guestAvg:['revenue','guests'],avg:['revenue','orders'],dineGuestAvg:['dineRevenue','dineGuests']};
 const BRAND_CHART_FIELDS=[...BRAND_COLUMN_FIELDS.slice(0,6),{key:'guestAvg',label:'客單價',type:'avg'},...BRAND_COLUMN_FIELDS.slice(6)].map(f=>({...f,digits:f.type==='count'?0:f.type==='avg'?2:0}));
 function brandMetrics(brand,index){const base=detail(brand,index),r=base.revenue,k=index%3,guests=Math.round(base.orders*[1.48,1.71,1.32][k]);const d={...base,guests,guestAvg:guests?r/guests:0,prevWeekSales:Math.round(r/(1+[.031,-.024,.012][k])),prevMonthSales:Math.round(r/(1+[-.046,.058,.027][k])),discount:Math.round(r*[.035,.027,.046][k])};d.weekGrowth=100*(r/d.prevWeekSales-1);d.monthGrowth=100*(r/d.prevMonthSales-1);const dineRevenue=Math.round(d.revenue*.64),dineGuests=Math.round(d.guests*.71);return {...d,dineRevenue,dineGuests,dineGuestAvg:dineGuests?dineRevenue/dineGuests:0};}
 function brandFmt(v,type){return fmt(v,type==='count'?0:2)}
@@ -3558,10 +3565,10 @@ function renderBrand(){
         `<span class="brand-rank-label"><span>${e(b.name)}</span><strong>${fmt(v,2)}%<small>${fmt(b[m.key]||0,0)}</small></strong></span><span class="brand-rank-track"><span class="brand-rank-fill" style="width:${v/max*100}%;background:${color(b)}"></span></span>`)}).join('');
     }
     if(mode==='avg'){
-      const vals=list.map(valueOf),lo=Math.min(...vals),hi=Math.max(...vals),pad=Math.max((hi-lo)*.25,hi*.02,1),a=Math.max(0,lo-pad),z=hi+pad;
-      const pos=v=>(v-a)/(z-a)*100;
-      return `<div class="brand-dot-scale"><span>${fmt(a,0)}</span><span>${fmt(z,0)}</span></div>`+list.map(b=>{const v=valueOf(b);return row(b,`${m.label} ${fmt(v,2)}`,
-        `<span class="brand-rank-label"><span>${e(b.name)}</span><strong>${fmt(v,2)}</strong></span><span class="brand-dot-track"><span class="brand-dot" style="left:${pos(v)}%;background:${color(b)}"></span></span>`)}).join('');
+      const [num,den]=BRAND_AVG_PARTS[m.key];
+      const sumN=visibleBrands.reduce((t,b)=>t+(b[num]||0),0),sumD=visibleBrands.reduce((t,b)=>t+(b[den]||0),0),overall=sumD?sumN/sumD:0;
+      return `<div class="brand-avg-overall"><span>全品牌平均</span><strong>${fmt(overall,2)}</strong></div>`+list.map(b=>{const v=valueOf(b),d=overall?(v/overall-1)*100:0,cls=Math.abs(d)<0.05?'is-flat':d>0?'is-up':'is-down';return row(b,`${m.label} ${fmt(v,2)}，比全品牌平均${d>=0?'高':'低'} ${fmt(Math.abs(d),1)}%`,
+        `<span class="brand-avg-name">${e(b.name)}</span><strong class="brand-avg-value">${fmt(v,2)}</strong><span class="brand-growth ${cls}">${cls==='is-flat'?'—':d>0?'▲':'▼'} ${fmt(Math.abs(d),1)}%</span>`)}).join('');
     }
     const max=Math.max(1,...list.map(valueOf));
     return list.map(b=>{const v=valueOf(b);return row(b,`${m.label} ${fmt(v,m.digits)}`,
