@@ -399,6 +399,12 @@ body.cash-modal-open{overflow:hidden}
 .device-phone .store-filter-layer{align-items:flex-end}
 .device-phone .sfl-panel{width:min(390px,100vw);border-radius:16px 16px 0 0}
 @media(max-width:550px){.store-query-summary{padding:12px 13px;align-items:flex-start}.sqs-main{flex-direction:column;align-items:flex-start;gap:3px}.sqs-edit span{display:none}.sqs-edit{width:44px;height:44px;border-radius:999px;justify-content:center;padding:0}.store-toolbar{padding:8px 13px 12px}.st-search{flex:1;min-width:0}.store-filter-layer{align-items:flex-end}.sfl-panel{width:100vw;border-radius:16px 16px 0 0}}
+/* V12.2: query area uses a tinted background so it reads as separate from the
+   shared filter toolbar and results below. */
+#body .store-grain-head,#body .date-filters,#body .search-row,#body .single-range-shortcuts{background:#F2F4F7}
+#body .search-row{border-bottom:1px solid #DDE2E8}
+#body .store-query-summary{background:#F2F4F7;border-bottom:1px solid #DDE2E8}
+.store-query-summary .sqs-edit{background:#fff}
 /* V9.8: original RMS store revenue day/week/month statistics. */
 .store-grain-head{display:flex;justify-content:flex-end;align-items:center;gap:12px;padding:10px 30px 0;background:#fff}
 .store-grain-head .pillgroup{display:inline-flex;flex-wrap:wrap}
