@@ -3695,7 +3695,7 @@ function cashStoreCompare(cash){
   const stores=[...new Set(cash.map(x=>x.store))].map(name=>{const r=cash.filter(x=>x.store===name),inc=cashSum(r,'現金入'),out=cashSum(r,'現金出');return {name,inc,out,net:inc+out}}).sort((a,b)=>a.net-b.net||a.name.localeCompare(b.name));
   if(!stores.length)return '<div class="cash-no-data">無符合條件的資料</div>';
   const mag=Math.max(1,...stores.flatMap(x=>[x.inc,Math.abs(x.out)]));
-  return `<div class="cash-legend"><span><i class="cash-out"></i>現金出</span><span><i></i>現金入</span><span class="cash-legend-note">依收支淨額排序，淨流出最多的門市在最上面</span></div><div class="cash-graph cash-store-compare">${stores.map(x=>`<button type="button" class="cash-bar-choice ${state.cashFocusStore===x.name?'is-chosen':''}" data-cash-store="${e(x.name)}" aria-label="${e(x.name)}，現金入 ${fmt(x.inc,0)}、現金出 ${fmt(x.out,0)}、淨額 ${fmt(x.net,0)}，查看收支分類">
+  return `<div class="cash-legend"><span><i class="cash-out"></i>現金出</span><span><i></i>現金入</span><span class="cash-legend-note">依淨額排序</span></div><div class="cash-graph cash-store-compare">${stores.map(x=>`<button type="button" class="cash-bar-choice ${state.cashFocusStore===x.name?'is-chosen':''}" data-cash-store="${e(x.name)}" aria-label="${e(x.name)}，現金入 ${fmt(x.inc,0)}、現金出 ${fmt(x.out,0)}、淨額 ${fmt(x.net,0)}，查看收支分類">
     <div class="cash-bar-line"><span>${e(x.name)}</span><strong class="${x.net<0?'is-neg':''}">淨額 ${fmt(x.net,0)}</strong></div>
     <div class="cash-diverge" aria-hidden="true"><div class="cash-half left"><div class="cash-fill cash-out" style="width:${Math.abs(x.out)/mag*100}%"></div></div><div class="cash-half right"><div class="cash-fill" style="width:${x.inc/mag*100}%"></div></div></div>
     <div class="cash-split-values"><span>${fmt(x.out,0)}</span><span>+${fmt(x.inc,0)}</span></div></button>`).join('')}</div>`;
@@ -3766,7 +3766,7 @@ function renderCash(){
   const tableType=control('收支類型',group([['cashTableType','all','全部'],['cashTableType','in','現金入'],['cashTableType','out','現金出']]));
   const mainChart=singleCash
     ?`<div class="cash-analysis rms-chart-frame"><div class="rms-chart-frame-head"><strong>${e(cashStoreList[0]||'')} 收支分類</strong>${chartHeaderMore()}</div><p class="cash-step-caption">點選分類，查看是哪幾天發生</p>${cash.length?cashCategoryLists(cash):'<div class="cash-no-data">無符合條件的資料</div>'}`
-    :`<div class="cash-analysis rms-chart-frame"><div class="rms-chart-frame-head"><strong>門市收支比較</strong>${chartHeaderMore()}</div><p class="cash-step-caption">點選門市，查看各項收入與支出分類</p>${cashStoreCompare(cash)}`;
+    :`<div class="cash-analysis rms-chart-frame"><div class="rms-chart-frame-head"><strong>門市收支比較</strong>${chartHeaderMore()}</div>${cashStoreCompare(cash)}`;
   const cashStoresAll=[...new Set(cashBase.map(x=>x.store))];
   const cashStoresShown=[...new Set(cash.map(x=>x.store))];
   const cashActive=state.cashStoreGroup!=='全部'?1:0;
