@@ -455,6 +455,16 @@ body.cash-modal-open{overflow:hidden}
 .brand-triple-charts{grid-template-columns:repeat(var(--brand-cols,3),minmax(0,1fr))!important}
 @media(max-width:900px){.brand-triple-charts{grid-template-columns:minmax(0,1fr)!important}}
 .device-phone .brand-triple-charts{grid-template-columns:minmax(0,1fr)!important}
+.brand-chart-note{margin:-4px 0 10px;font-size:12px;color:#7a8991}
+.brand-growth{font-size:13px;font-weight:700}.brand-growth.is-up{color:#1a8a5a}.brand-growth.is-down{color:#d0453a}
+.brand-cmp-line{display:grid;grid-template-columns:minmax(0,1fr) 84px;align-items:center;gap:8px;margin-top:4px;line-height:1.2}
+.brand-cmp-line .brand-rank-track{margin-top:0;height:12px}.brand-cmp-line em{font-style:normal;font-size:12px;color:#263e45;text-align:right;font-variant-numeric:tabular-nums}
+.brand-cmp-line.is-prev .brand-rank-fill{opacity:.35}.brand-cmp-line.is-prev em{color:#7a8991}
+.brand-rank-label strong small{display:block;font-size:11px;font-weight:400;color:#7a8991;text-align:right}
+.brand-mode-share .brand-rank-label{align-items:flex-end}
+.brand-dot-scale{display:flex;justify-content:space-between;font-size:11px;color:#9aa5b1;padding:0 4px;margin-bottom:-6px}
+.brand-dot-track{position:relative;display:block;height:14px;margin-top:9px;background:linear-gradient(#dfe5e8,#dfe5e8) center/100% 2px no-repeat}
+.brand-dot{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 3px #fff}
 .table-fs-wrap.is-fs{position:fixed;inset:0;z-index:900;background:#fff;overflow:auto;padding:12px 16px;animation:sqsIn .2s ease-out}
 .table-fs-wrap.is-fs .table-toolbar{position:sticky;top:-12px;background:#fff;z-index:2}
 body:has(.table-fs-wrap.is-fs){overflow:hidden}
@@ -2436,8 +2446,12 @@ const STORE_TREND_FIELDS=STORE_FIELDS.filter(x=>!['days','psd','prevWeekSales','
 // V13.1: the brand table offers the same 11 columns as the production RMS 統計欄位 dialog.
 const BRAND_COLUMN_FIELDS=[['revenue','營業額','amount'],['prevWeekSales','上週同期銷售額','amount'],['prevMonthSales','上月同期銷售額','amount'],['discount','折扣招待','amount'],['service','服務費','amount'],['guests','來客數','count'],['orders','結帳單數','count'],['avg','平均訂單單價','avg'],['dineRevenue','營業額(內用)','amount'],['dineGuests','來客數(內用)','count'],['dineGuestAvg','客單價(內用)','avg']].map(([key,label,type])=>({key,label,type}));
 // Chart metrics are chosen with checkboxes; 營業額、來客數、客單價 are on by default.
+// V13.3: chart form follows the metric — volume → bar, 同期 → 本期 vs 同期 + growth, 折扣 → share of revenue, 單價 → dot strip.
+const BRAND_CHART_MODE={prevWeekSales:'compare',prevMonthSales:'compare',discount:'share',guestAvg:'avg',avg:'avg',dineGuestAvg:'avg'};
+const BRAND_CHART_TITLE={prevWeekSales:'營業額 vs 上週同期',prevMonthSales:'營業額 vs 上月同期',discount:'折扣招待佔營業額'};
+const BRAND_CHART_NOTE={prevWeekSales:'深色為本期、淺色為上週同期',prevMonthSales:'深色為本期、淺色為上月同期',discount:'折扣招待 ÷ 營業額',guestAvg:'刻度未從 0 開始，便於比較差距',avg:'刻度未從 0 開始，便於比較差距',dineGuestAvg:'刻度未從 0 開始，便於比較差距'};
 const BRAND_CHART_FIELDS=[...BRAND_COLUMN_FIELDS.slice(0,6),{key:'guestAvg',label:'客單價',type:'avg'},...BRAND_COLUMN_FIELDS.slice(6)].map(f=>({...f,digits:f.type==='count'?0:f.type==='avg'?2:0}));
-function brandMetrics(brand,index){const base=detail(brand,index),r=base.revenue,k=index%3,guests=Math.round(base.orders*[1.48,1.71,1.32][k]);const d={...base,guests,guestAvg:guests?r/guests:0,prevWeekSales:Math.round(r/(1+[.031,-.024,.012][k])),prevMonthSales:Math.round(r/(1+[-.046,.058,.027][k]))};d.weekGrowth=100*(r/d.prevWeekSales-1);d.monthGrowth=100*(r/d.prevMonthSales-1);const dineRevenue=Math.round(d.revenue*.64),dineGuests=Math.round(d.guests*.71);return {...d,dineRevenue,dineGuests,dineGuestAvg:dineGuests?dineRevenue/dineGuests:0};}
+function brandMetrics(brand,index){const base=detail(brand,index),r=base.revenue,k=index%3,guests=Math.round(base.orders*[1.48,1.71,1.32][k]);const d={...base,guests,guestAvg:guests?r/guests:0,prevWeekSales:Math.round(r/(1+[.031,-.024,.012][k])),prevMonthSales:Math.round(r/(1+[-.046,.058,.027][k])),discount:Math.round(r*[.035,.027,.046][k])};d.weekGrowth=100*(r/d.prevWeekSales-1);d.monthGrowth=100*(r/d.prevMonthSales-1);const dineRevenue=Math.round(d.revenue*.64),dineGuests=Math.round(d.guests*.71);return {...d,dineRevenue,dineGuests,dineGuestAvg:dineGuests?dineRevenue/dineGuests:0};}
 function brandFmt(v,type){return fmt(v,type==='count'?0:2)}
 // Demonstration-only payment transactions for November 2026.  The original
 // 11/11-11/13, six-store fixture left common queries such as 11/16 empty and
@@ -3526,9 +3540,32 @@ function renderBrand(){
   const brandColors={'品牌 A':'#6d86c8','品牌 B':'#d8a450','品牌 C':'#109d97'};
   const rankList=m=>{
     if(!hasData)return `<div class="no-data">${brandKw?'沒有符合搜尋的品牌。':'所選期間沒有資料'}</div>`;
-    const list=[...visibleBrands].sort((a,b)=>(b[m.key]||0)-(a[m.key]||0));
-    const max=Math.max(1,...list.map(x=>x[m.key]||0));
-    return list.map(brand=>{const val=brand[m.key]||0;return `<button type="button" class="brand-rank-row" data-explore-leaf="brand" data-explore-label="${e(brand.name)}" data-explore-metric="${e(m.key)}" aria-label="${e(brand.name)}，${e(m.label)} ${fmt(val,m.digits)}，進一步分析"><span class="brand-rank-label"><span>${e(brand.name)}</span><strong>${fmt(val,m.digits)}</strong></span><span class="brand-rank-track"><span class="brand-rank-fill" style="width:${Math.max(0,val/max*100)}%;background:${brandColors[brand.name]||'#109d97'}"></span></span></button>`}).join('');
+    const mode=BRAND_CHART_MODE[m.key]||'bar';
+    const valueOf=b=>mode==='share'?(b.revenue?(b[m.key]||0)/b.revenue*100:0):mode==='compare'?(b[m.key]?(b.revenue/b[m.key]-1)*100:0):(b[m.key]||0);
+    const list=[...visibleBrands].sort((a,b)=>valueOf(b)-valueOf(a));
+    const color=b=>brandColors[b.name]||'#109d97';
+    const row=(brand,label,inner)=>`<button type="button" class="brand-rank-row brand-mode-${mode}" data-explore-leaf="brand" data-explore-label="${e(brand.name)}" data-explore-metric="${e(m.key)}" aria-label="${e(brand.name)}，${e(label)}，進一步分析">${inner}</button>`;
+    if(mode==='compare'){
+      const max=Math.max(1,...list.flatMap(b=>[b.revenue||0,b[m.key]||0]));
+      return list.map(b=>{const g=valueOf(b),up=g>=0;return row(b,`本期 ${fmt(b.revenue,0)}，同期 ${fmt(b[m.key]||0,0)}，${up?'成長':'衰退'} ${fmt(Math.abs(g),1)}%`,
+        `<span class="brand-rank-label"><span>${e(b.name)}</span><span class="brand-growth ${up?'is-up':'is-down'}">${up?'▲':'▼'} ${fmt(Math.abs(g),1)}%</span></span>
+        <span class="brand-cmp-line"><span class="brand-rank-track"><span class="brand-rank-fill" style="width:${b.revenue/max*100}%;background:${color(b)}"></span></span><em>${fmt(b.revenue,0)}</em></span>
+        <span class="brand-cmp-line is-prev"><span class="brand-rank-track"><span class="brand-rank-fill" style="width:${(b[m.key]||0)/max*100}%;background:${color(b)}"></span></span><em>${fmt(b[m.key]||0,0)}</em></span>`)}).join('');
+    }
+    if(mode==='share'){
+      const max=Math.max(.1,...list.map(valueOf))*1.15;
+      return list.map(b=>{const v=valueOf(b);return row(b,`${m.label} ${fmt(b[m.key]||0,0)}，佔營業額 ${fmt(v,2)}%`,
+        `<span class="brand-rank-label"><span>${e(b.name)}</span><strong>${fmt(v,2)}%<small>${fmt(b[m.key]||0,0)}</small></strong></span><span class="brand-rank-track"><span class="brand-rank-fill" style="width:${v/max*100}%;background:${color(b)}"></span></span>`)}).join('');
+    }
+    if(mode==='avg'){
+      const vals=list.map(valueOf),lo=Math.min(...vals),hi=Math.max(...vals),pad=Math.max((hi-lo)*.25,hi*.02,1),a=Math.max(0,lo-pad),z=hi+pad;
+      const pos=v=>(v-a)/(z-a)*100;
+      return `<div class="brand-dot-scale"><span>${fmt(a,0)}</span><span>${fmt(z,0)}</span></div>`+list.map(b=>{const v=valueOf(b);return row(b,`${m.label} ${fmt(v,2)}`,
+        `<span class="brand-rank-label"><span>${e(b.name)}</span><strong>${fmt(v,2)}</strong></span><span class="brand-dot-track"><span class="brand-dot" style="left:${pos(v)}%;background:${color(b)}"></span></span>`)}).join('');
+    }
+    const max=Math.max(1,...list.map(valueOf));
+    return list.map(b=>{const v=valueOf(b);return row(b,`${m.label} ${fmt(v,m.digits)}`,
+      `<span class="brand-rank-label"><span>${e(b.name)}</span><strong>${fmt(v,m.digits)}</strong></span><span class="brand-rank-track"><span class="brand-rank-fill" style="width:${Math.max(0,v/max*100)}%;background:${color(b)}"></span></span>`)}).join('');
   };
   const metricLabel=state.brandMetric==='orders'?'結帳單數':'營業額';
   // V11.84: temporarily hide the brand revenue trend chart; retain its code
@@ -3540,7 +3577,8 @@ function renderBrand(){
   const chartMetrics=BRAND_CHART_FIELDS.filter(f=>state.brandChartMetrics.includes(f.key));
   const dual=`<div class="chartbar brand-chart-metrics"><span class="fil"><label>統計指標</label><button type="button" data-quick="brandChartMetrics" aria-label="選擇品牌圖表統計指標">已選 ${chartMetrics.length} 項 ▾</button></span></div><div class="brand-dual-charts brand-triple-charts" style="--brand-cols:${Math.max(1,Math.min(3,chartMetrics.length))}">${chartMetrics.length?'':'<div class="no-data">請至少勾選一項統計指標</div>'}
     ${chartMetrics.map(m=>`<section class="brand-dual-panel" aria-label="品牌${e(m.label)}比較">
-      <header class="brand-panel-header"><h3>${e(m.label)}</h3>${chartHeaderMore()}</header>
+      <header class="brand-panel-header"><h3>${e(BRAND_CHART_TITLE[m.key]||m.label)}</h3>${chartHeaderMore()}</header>
+      ${BRAND_CHART_NOTE[m.key]?`<p class="brand-chart-note">${e(BRAND_CHART_NOTE[m.key])}</p>`:''}
       <div class="brand-rank-list">${rankList(m)}</div>
     </section>`).join('')}
     ${showTrend?`<section class="brand-dual-panel" aria-label="品牌趨勢圖">
