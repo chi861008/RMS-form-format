@@ -405,6 +405,12 @@ body.cash-modal-open{overflow:hidden}
 #body .search-row{border-bottom:1px solid #C5CFDA}
 #body .store-query-summary{background:#E6EBF1;border-bottom:1px solid #C5CFDA}
 .store-query-summary .sqs-edit{background:#fff}
+.store-below{position:relative}
+.store-below-scrim{display:none}
+.device-phone .store-below.is-dimmed{min-height:60vh}
+.device-phone .store-below-scrim{display:block;position:absolute;inset:0;z-index:20;border:0;border-radius:0;padding:0;background:rgba(12,15,18,.74);cursor:pointer}
+.device-phone .store-below-scrim:hover{background:rgba(12,15,18,.74)}
+@media(max-width:550px){.store-below.is-dimmed{min-height:60vh}.store-below-scrim{display:block;position:absolute;inset:0;z-index:20;border:0;border-radius:0;padding:0;background:rgba(12,15,18,.74)}}
 /* V9.8: original RMS store revenue day/week/month statistics. */
 .store-grain-head{display:flex;justify-content:flex-end;align-items:center;gap:12px;padding:10px 30px 0;background:#fff}
 .store-grain-head .pillgroup{display:inline-flex;flex-wrap:wrap}
@@ -2968,7 +2974,9 @@ function renderStore(){
   const queryArea=state.storeQueryCollapsed?storeQuerySummary(baseRows.length):storeGrainHeader()+query();
   const toolbar=storeToolbar({single,mControl,tableGrouping,selectCols,filtered:storeFiltered,viewCount:rows.length,total:baseRows.length});
   const content=state.storeView==='table'?result:overview;
-  return queryArea+fromBrand+toolbar+content+(state.trendDrawerDate?singleTrendDayLayer():storeDrillLayer())+(state.storeSheet&&!single?storeFilterSheet(scopedAll):'');
+  // V12.3: on phones, reopening the query after a search dims everything below it.
+  const dimBelow=!!state.searchedReports.store&&!state.storeQueryCollapsed;
+  return queryArea+`<div class="store-below${dimBelow?' is-dimmed':''}">${dimBelow?'<button type="button" class="store-below-scrim" data-store-query="close" aria-label="收合查詢條件"></button>':''}${fromBrand+toolbar+content}</div>`+(state.trendDrawerDate?singleTrendDayLayer():storeDrillLayer())+(state.storeSheet&&!single?storeFilterSheet(scopedAll):'');
 }
 
 // V10.8: a single shared drawer header and filter context across the four drill reports.
@@ -4050,7 +4058,7 @@ let b=evt.target.closest('button');if(!b)return;
 
 if(b.dataset.trendDayDismiss||b.dataset.storeDismiss||b.dataset.weekDismiss||b.dataset.cashDismiss){dismissDrillStack();return}
 if(b.dataset.trendDayBack||b.dataset.storeBack||b.dataset.weekBack||b.dataset.weekPeriodBack||b.dataset.cashSheetBack){backDrillStep();return}
-if(b.dataset.storeQuery){state.storeQueryCollapsed=false;render();return}
+if(b.dataset.storeQuery){state.storeQueryCollapsed=b.dataset.storeQuery==='close';render();return}
 if(b.dataset.storeSheet){if(b.dataset.storeSheet==='open')state.storeSheet=true;else if(b.dataset.storeSheet==='clear'){state.storeGroupFilter='全部';state.storeRuleMin=0}else state.storeSheet=false;render();return}
 if(b.dataset.storeGroup!==undefined){state.storeGroupFilter=b.dataset.storeGroup;state.storeDrill='';state.trendDrawerDate='';render();return}
 if(b.dataset.storeRule!==undefined){state.storeRuleMin=Number(b.dataset.storeRule)||0;state.storeDrill='';state.trendDrawerDate='';render();return}
