@@ -439,6 +439,11 @@ body.cash-modal-open{overflow:hidden}
 .device-phone #body .table-toolbar .fil{width:auto;flex-wrap:nowrap}
 .device-phone #body .table-toolbar [data-quick="download"]{margin-left:auto}
 @media(max-width:550px){.store-toolbar .st-view{flex-wrap:nowrap;gap:8px}.store-toolbar .st-view-ctl{flex:1;min-width:0;flex-wrap:nowrap;gap:8px}.st-filter{padding:8px 10px;white-space:nowrap}.st-count{display:none}.st-toggle .pillgroup button{min-width:0;padding:8px 10px}#body .table-toolbar{flex-wrap:wrap;gap:10px 16px;justify-content:flex-start}#body .table-toolbar .group{display:contents}#body .table-toolbar .fil{width:auto;flex-wrap:nowrap}#body .table-toolbar [data-quick="download"]{margin-left:auto}}
+@keyframes sqsIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@keyframes sqsBelowIn{from{opacity:.35}to{opacity:1}}
+.store-query-summary.is-entering{animation:sqsIn .28s cubic-bezier(.2,.8,.2,1) both}
+.store-below.is-entering{animation:sqsBelowIn .3s ease both}
+@media(prefers-reduced-motion:reduce){.store-query-summary.is-entering,.store-below.is-entering{animation:none}}
 /* V9.8: original RMS store revenue day/week/month statistics. */
 .store-grain-head{display:flex;justify-content:flex-end;align-items:center;gap:12px;padding:10px 30px 0;background:#fff}
 .store-grain-head .pillgroup{display:inline-flex;flex-wrap:wrap}
@@ -2942,6 +2947,22 @@ function storeFilterSheet(scopedAll){
 function storeQuerySheet(){
   return `<div class="store-filter-layer store-query-layer" data-layer="query" role="dialog" aria-modal="true" aria-label="修改查詢條件"><button type="button" class="sfl-backdrop" data-store-query="close" aria-label="關閉查詢條件"></button><div class="sfl-panel sq-panel"><div class="sfl-head"><strong>修改查詢條件</strong><button type="button" class="sfl-close" data-store-query="close" aria-label="關閉">×</button></div><div class="sq-body">${queryExtras()+query()}</div></div></div>`;
 }
+// V12.7: 搜尋 folds the query away before showing the collapsed 查詢範圍 summary.
+let summaryEnterPending=false;
+function collapseQueryThen(apply){
+  const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finish=()=>{apply();summaryEnterPending=!reduce;render();window.scrollTo({top:0,behavior:reduce?'auto':'smooth'})};
+  if(document.querySelector('.store-query-layer')){closeStoreLayer(()=>{apply();summaryEnterPending=!reduce});return}
+  const parts=[...document.querySelectorAll('#body > .store-grain-head, #body > .date-filters, #body > .single-range-shortcuts, #body > .search-row')];
+  if(reduce||!parts.length||!parts[0].animate){finish();return}
+  parts.forEach(el=>{
+    const h=el.getBoundingClientRect().height;
+    el.style.overflow='hidden';
+    el.animate([{height:h+'px',opacity:1},{height:'0px',opacity:0,paddingTop:'0px',paddingBottom:'0px',marginTop:'0px',marginBottom:'0px'}],{duration:280,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
+  });
+  document.querySelectorAll('#body > :not(.store-grain-head):not(.date-filters):not(.single-range-shortcuts):not(.search-row)').forEach(el=>el.animate([{opacity:1},{opacity:.35}],{duration:280,fill:'forwards'}));
+  setTimeout(finish,280);
+}
 // Animate a store sheet out before the state change re-renders the page.
 function closeStoreLayer(apply){
   const layer=document.querySelector('.store-filter-layer:not(.is-closing)');
@@ -4089,7 +4110,7 @@ document.addEventListener('pointerdown',hideTrendTooltip,true);
 document.addEventListener('click',hideTrendTooltip,true);
 document.addEventListener('keydown',event=>{if(event.key==='Escape')hideTrendTooltip()},true);
 window.addEventListener('resize',hideTrendTooltip);
-function render(){hideTrendTooltip();const prevStoreLayer=document.querySelector('.store-filter-layer:not(.is-closing)')?.dataset.layer||'';const previousDrill=document.querySelector('.rms-drill-layer:not(.is-closing)');document.body.classList.toggle('rms-drill-open',state.version==='after'&&((state.report==='week'&&!!state.weekDrill)||(state.report==='cash'&&!!state.cashSheet)||(state.report==='store'&&!!(state.storeDrill||state.trendDrawerDate))));document.body.classList.remove('cash-modal-open');let rep=REPORTS.find(x=>x.id===state.report)||REPORTS[0];el('report-title').textContent=rep.name;el('reportSelect').innerHTML=REPORTS.map(x=>`<option value="${x.id}" ${x.id===state.report?'selected':''}>${x.name}</option>`).join('');let app=el('app');app.className='device-'+state.device;document.querySelectorAll('[data-device]').forEach(b=>b.classList.toggle('active',b.dataset.device===state.device));document.querySelectorAll('[data-version]').forEach(b=>b.classList.toggle('active',b.dataset.version===state.version));if(state.version==='before'){let key={store:'store',week:'weekday',brand:'brand',punch:'punch',cash:'cash',pay:'payment',close:'close'}[state.report];el('body').innerHTML=`<img class="raw-image" src="${originalScreens[key]}" alt="${rep.name} RMS 原始截圖">`;return}el('body').innerHTML=({store:renderStore,week:renderWeek,brand:renderBrand,punch:renderPunch,cash:renderCash,pay:renderPay,close:renderClose}[state.report])();if(previousDrill){const nextDrill=document.querySelector('.rms-drill-layer');if(nextDrill)nextDrill.classList.add('no-enter')}const scroller=el('body').querySelector('.single-trend-scroll');if(scroller&&state.trendScrollLeft)scroller.scrollLeft=state.trendScrollLeft;rmsEnhanceMobileSelects();fitStoreTotalTrend();const nextStoreLayer=document.querySelector('.store-filter-layer');if(nextStoreLayer&&prevStoreLayer&&nextStoreLayer.dataset.layer===prevStoreLayer)nextStoreLayer.classList.add('no-enter')}
+function render(){hideTrendTooltip();const prevStoreLayer=document.querySelector('.store-filter-layer:not(.is-closing)')?.dataset.layer||'';const previousDrill=document.querySelector('.rms-drill-layer:not(.is-closing)');document.body.classList.toggle('rms-drill-open',state.version==='after'&&((state.report==='week'&&!!state.weekDrill)||(state.report==='cash'&&!!state.cashSheet)||(state.report==='store'&&!!(state.storeDrill||state.trendDrawerDate))));document.body.classList.remove('cash-modal-open');let rep=REPORTS.find(x=>x.id===state.report)||REPORTS[0];el('report-title').textContent=rep.name;el('reportSelect').innerHTML=REPORTS.map(x=>`<option value="${x.id}" ${x.id===state.report?'selected':''}>${x.name}</option>`).join('');let app=el('app');app.className='device-'+state.device;document.querySelectorAll('[data-device]').forEach(b=>b.classList.toggle('active',b.dataset.device===state.device));document.querySelectorAll('[data-version]').forEach(b=>b.classList.toggle('active',b.dataset.version===state.version));if(state.version==='before'){let key={store:'store',week:'weekday',brand:'brand',punch:'punch',cash:'cash',pay:'payment',close:'close'}[state.report];el('body').innerHTML=`<img class="raw-image" src="${originalScreens[key]}" alt="${rep.name} RMS 原始截圖">`;return}el('body').innerHTML=({store:renderStore,week:renderWeek,brand:renderBrand,punch:renderPunch,cash:renderCash,pay:renderPay,close:renderClose}[state.report])();if(previousDrill){const nextDrill=document.querySelector('.rms-drill-layer');if(nextDrill)nextDrill.classList.add('no-enter')}const scroller=el('body').querySelector('.single-trend-scroll');if(scroller&&state.trendScrollLeft)scroller.scrollLeft=state.trendScrollLeft;rmsEnhanceMobileSelects();fitStoreTotalTrend();if(summaryEnterPending){summaryEnterPending=false;const sq=document.querySelector('#body .store-query-summary');if(sq)sq.classList.add('is-entering');const below=document.querySelector('#body .store-below')||null;if(below)below.classList.add('is-entering')}const nextStoreLayer=document.querySelector('.store-filter-layer');if(nextStoreLayer&&prevStoreLayer&&nextStoreLayer.dataset.layer===prevStoreLayer)nextStoreLayer.classList.add('no-enter')}
 function resetScroll(){window.scrollTo({top:0,behavior:'instant'})}
 function isPhoneInteraction(){
   return state.device==='phone'||window.matchMedia('(max-width:550px)').matches;
@@ -4150,20 +4171,15 @@ if(b.dataset.device){state.multiDayStore='';state.trendDrawerDate='';state.store
   el('paymentDialog').showModal();updateBulk('paymentOptions');return;
 }
 if(b.dataset.quick==='stores'){el('storeOptions').innerHTML=STORES.filter(x=>!state.exploreBrandFilter||(DEMO_BRAND_MEMBERS[state.exploreBrandFilter]||[]).includes(x.name)).map(x=>`<label><input type="checkbox" class="store-check" value="${e(x.name)}" ${state.selectedStores.includes(x.name)?'checked':''}>${e(x.name)}</label>`).join('');el('storesDialog').showModal();updateBulk('storeOptions');return}if(b.dataset.quick==='columns'||b.dataset.quick==='calendarColumns'){let modal=el('columnsDialog');state.activeColumnTarget=b.dataset.quick==='calendarColumns'?'calendar':'table';modal.querySelector('.dialog-title').textContent=state.activeColumnTarget==='calendar'?'月曆指標':'統計欄位';let currentCols=state.activeColumnTarget==='calendar'?state.weekCalendarCols:(state.report==='pay'?state.paymentCols:state.report==='brand'?state.brandCols:state.report==='week'?state.weekTableCols:state.storeCols);el('columnOptions').innerHTML=(state.report==='pay'?PAY_COLUMN_FIELDS:state.report==='brand'?BRAND_COLUMN_FIELDS:state.report==='week'?WMT.map(([key,label])=>({key,label})):STORE_FIELDS).map(f=>`<label><input type="checkbox" class="col-check" value="${f.key}" ${currentCols.includes(f.key)?'checked':''}>${f.label}</label>`).join('');modal.showModal();updateBulk('columnOptions');return}if(b.dataset.quick==='download'){let lines=[...document.querySelectorAll('.table-area table tr')].map(tr=>[...tr.querySelectorAll('td,th')].map(td=>'"'+td.innerText.replaceAll('\"','\"\"')+'"').join(','));let blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='RMS_示意查詢.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),500);return}if(b.dataset.quick==='search'||b.dataset.quick==='refresh'){
-  if(b.dataset.quick==='search'&&state.version==='after'&&state.report!=='cash'&&state.report!=='store'){
-    state.searchedReports={...state.searchedReports,[state.report]:true};
-    setQueryCollapsed(true);state.weekDrill='';state.weekDrillPeriod='';
-    render();resetScroll();return;
-  }
-  if(b.dataset.quick==='search'&&state.report==='store'&&state.version==='after'){
-    state.searchedReports={...state.searchedReports,store:true};
-    setQueryCollapsed(true);state.storeDrill='';state.trendDrawerDate='';
-    render();resetScroll();return;
-  }
-  if(b.dataset.quick==='search'&&state.report==='cash'&&state.version==='after'){
-    state.cashHasSearched=true;setQueryCollapsed(true);
-    state.cashFocusDate='';state.cashFocusStore='';state.cashSheet='';
-    render();return;
+  if(b.dataset.quick==='search'&&state.version==='after'){
+    collapseQueryThen(()=>{
+      if(state.report==='cash'){state.cashHasSearched=true;state.cashFocusDate='';state.cashFocusStore='';state.cashSheet=''}
+      else state.searchedReports={...state.searchedReports,[state.report]:true};
+      if(state.report==='store'){state.storeDrill='';state.trendDrawerDate=''}
+      if(state.report==='week'){state.weekDrill='';state.weekDrillPeriod=''}
+      setQueryCollapsed(true);
+    });
+    return;
   }
   b.textContent='已更新';setTimeout(()=>{if(b.isConnected)b.textContent=b.dataset.quick==='search'?'搜尋':'更新時間'},850);return;
 }});
