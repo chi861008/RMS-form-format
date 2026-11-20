@@ -471,6 +471,21 @@ body.cash-modal-open{overflow:hidden}
 .brand-dot-scale{display:flex;justify-content:space-between;font-size:11px;color:#9aa5b1;padding:0 4px;margin-bottom:-6px}
 .brand-dot-track{position:relative;display:block;height:14px;margin-top:9px;background:linear-gradient(#dfe5e8,#dfe5e8) center/100% 2px no-repeat}
 .brand-dot{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 3px #fff}
+.cash-step-caption{margin:2px 0 8px;font-size:12px;color:#7a8991}
+.cash-legend{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;font-size:12px;color:#5f7179;margin:2px 0 4px}.cash-legend i{display:inline-block;width:10px;height:10px;border-radius:2px;background:#109d97;margin-right:5px;vertical-align:-1px}.cash-legend i.cash-out{background:#d95a4d}.cash-legend-note{color:#9aa5b1}
+.cash-split-values{display:flex;justify-content:space-between;font-size:11px;color:#7a8991;margin-top:3px;font-variant-numeric:tabular-nums}
+.cash-bar-line strong.is-neg,.cash-cat-head .is-neg{color:#c2463a}
+.cash-bar-line small{margin-left:8px;font-size:11px;color:#8b979e;font-weight:400}
+.cash-cat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.rms-drill-panel .cash-cat-grid,.device-phone .cash-cat-grid{grid-template-columns:minmax(0,1fr)}
+@media(max-width:700px){.cash-cat-grid{grid-template-columns:minmax(0,1fr)}}
+.cash-cat-block{border:1px solid #e3e9ec;border-radius:8px;padding:10px 10px 6px}
+.cash-cat-head{display:flex;justify-content:space-between;align-items:baseline;padding:2px 8px 4px;font-size:14px}.cash-cat-head span{font-weight:700;font-variant-numeric:tabular-nums}
+.cash-cat-block .cash-graph{margin-top:2px}
+.cash-sheet-kpis{margin:6px 0 10px}
+.cash-day-row,.cash-day-row:hover{cursor:default;background:transparent!important;border-color:transparent!important}
+.cash-sheet-detail{margin-top:12px}
+.cash-store-compare .cash-bar-choice{cursor:pointer}
 .table-fs-wrap.is-fs{position:fixed;inset:0;z-index:900;background:#fff;overflow:auto;padding:12px 16px;animation:sqsIn .2s ease-out}
 .table-fs-wrap.is-fs .table-toolbar{position:sticky;top:-12px;background:#fff;z-index:2}
 body:has(.table-fs-wrap.is-fs){overflow:hidden}
@@ -2479,7 +2494,7 @@ for(let day=1;day<=30;day++){
   }));
 }
 const CLOSE={'營業報表':[['原價','128,300'],['折扣招待','-3,800'],['服務費','2,200'],['實際營收','126,700']],'結帳方式':[['現金','43,700'],['信用卡','57,000'],['LINE PAY','26,000'],['合計','126,700']],'單據／客單':[['結帳單數','328'],['來客數','410'],['平均訂單單價','386.28']],'發票資訊':[['發票張數','322'],['作廢張數','2'],['作廢金額','750']]};
-const state={searchedReports:{},queryCollapsed:{},brandView:'chart',brandKeyword:'',brandChartMetrics:['revenue','guests','guestAvg'],brandUnifyCurrency:'off',brandMerge:'merge',tableFullscreen:false,cashView:'chart',cashKeyword:'',weekView:'chart',viewSheet:'',storeView:'chart',storeKeyword:'',storeShowCode:false,storeMerge:'merge',storeSheet:false,storeGroupFilter:'全部',storeRuleMin:0,multiDayStore:'',allStoresTrend:false,cashTableType:'all',report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','prevWeekSales','prevMonthSales','discount','service','guests','orders','avg','dineRevenue','dineGuests','dineGuestAvg'],cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
+const state={searchedReports:{},queryCollapsed:{},brandView:'chart',brandKeyword:'',brandChartMetrics:['revenue','guests','guestAvg'],brandUnifyCurrency:'off',brandMerge:'merge',tableFullscreen:false,cashView:'chart',cashKeyword:'',weekView:'chart',viewSheet:'',storeView:'chart',storeKeyword:'',storeShowCode:false,storeMerge:'merge',storeSheet:false,storeGroupFilter:'全部',storeRuleMin:0,multiDayStore:'',allStoresTrend:false,cashTableType:'all',report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',cashFocusReason:'',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','prevWeekSales','prevMonthSales','discount','service','guests','orders','avg','dineRevenue','dineGuests','dineGuestAvg'],cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
 const el=id=>document.getElementById(id), fmt=(v,d=0)=>Number(v).toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d}),e=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const field=k=>STORE_FIELDS.find(x=>x.key===k)||STORE_FIELDS[0];
 function fnum(v,k){let t=field(k).type;return `${fmt(v,t==='rate'||t==='growth'?2:t==='avg'?2:t==='amount'?2:0)}${t==='rate'||t==='growth'?'%':''}`;}
@@ -3635,6 +3650,24 @@ function pivotRows(raw,mode,display){
   return {headers:[...keys.map(k=>map[k]),'金額','次數'],rows:[...agg.values()].map(x=>({values:[...x.vals.map(e),fmt(x.amt,2),fmt(x.count)]}))};
 }
 
+// V13.5: richer cash fixture — every store, 11/03–11/16, several income/expense reasons.
+(function buildCashFixture(){
+  let seed=20261103;const rnd=()=>{seed=(seed*1103515245+12345)%2147483648;return seed/2147483648};
+  const IN=[['零用金補入',[3000,6000],.12],['現金盤盈',[100,900],.10],['其他收入',[200,1500],.05]];
+  const OUT=[['用品採購',[800,4200],.20],['臨時採購',[300,2800],.16],['清潔用品',[200,1200],.12],['耗材採買',[400,2200],.14],['現金盤虧',[100,800],.06],['其他支出',[200,1800],.08]];
+  const rows=[];
+  STORES.forEach((store,si)=>{
+    const busy=.7+(si%5)*.15;
+    for(let d=3;d<=16;d++){
+      const date='11/'+String(d).padStart(2,'0');
+      [[IN,'現金入',1],[OUT,'現金出',-1]].forEach(([list,type,sign])=>list.forEach(([reason,[lo,hi],prob])=>{
+        if(rnd()<prob*busy){const qty=rnd()<.15?2:1;rows.push({date,store:store.name,type,reason,amount:sign*Math.round((lo+rnd()*(hi-lo))/10)*10*qty,qty});}
+      }));
+    }
+  });
+  CASH.length=0;CASH.push(...rows);
+})();
+const CASH_DATE=d=>'2026-'+d.replace('/','-');
 function cashMeasureValue(rows,measure){
   const incomings=rows.filter(x=>x.type==='現金入').reduce((v,x)=>v+x.amount,0);
   const outgoings=rows.filter(x=>x.type==='現金出').reduce((v,x)=>v+x.amount,0);
@@ -3656,21 +3689,55 @@ function cashBarChart(rows,measure,axis){
   }).join('')}</div>`;
 }
 function cashIsMobile(){return state.device==='phone'||window.matchMedia('(max-width:550px)').matches;}
-function cashBottomSheet(dateCash, selectedDate, selectedStore, visibleStoreRows){
-  // Shared responsive drill layer: desktop right drawer, mobile bottom sheet.
-  if(!state.cashSheet||!selectedDate)return '';
-  const step=state.cashSheet==='detail'&&selectedStore?'detail':'stores';
-  const title=step==='detail'?selectedDate+' · '+selectedStore:selectedDate;
-  const rows=step==='detail'?dateCash.filter(x=>x.store===selectedStore):[];
-  const detailTable=`${drillFilterBar([['日期',selectedDate],['門市',selectedStore]])}
-    <div class="cash-sheet-detail">${table(['類型','事由','金額','次數'],rows.map(x=>({values:[e(x.type),e(x.reason),fmt(x.amount,2),fmt(x.qty)]})))}</div>
-    <div class="cash-sheet-total">收支淨額：<strong>${fmt(rows.reduce((a,b)=>a+b.amount,0),2)}</strong></div>`;
-  const comparison=`${drillFilterBar([['日期',selectedDate],['統計指標',{in:'現金入',out:'現金出',net:'收支淨額'}['net']]])}
-    ${cashBarChart(visibleStoreRows,'net','store')}`;
+// V13.5: 門市比較 → 門市收支分類 → 哪一天.
+function cashSum(rows,type){return rows.filter(x=>x.type===type).reduce((a,b)=>a+b.amount,0)}
+function cashStoreCompare(cash){
+  const stores=[...new Set(cash.map(x=>x.store))].map(name=>{const r=cash.filter(x=>x.store===name),inc=cashSum(r,'現金入'),out=cashSum(r,'現金出');return {name,inc,out,net:inc+out}}).sort((a,b)=>a.net-b.net||a.name.localeCompare(b.name));
+  if(!stores.length)return '<div class="cash-no-data">無符合條件的資料</div>';
+  const mag=Math.max(1,...stores.flatMap(x=>[x.inc,Math.abs(x.out)]));
+  return `<div class="cash-legend"><span><i class="cash-out"></i>現金出</span><span><i></i>現金入</span><span class="cash-legend-note">依收支淨額排序，淨流出最多的門市在最上面</span></div><div class="cash-graph cash-store-compare">${stores.map(x=>`<button type="button" class="cash-bar-choice ${state.cashFocusStore===x.name?'is-chosen':''}" data-cash-store="${e(x.name)}" aria-label="${e(x.name)}，現金入 ${fmt(x.inc,0)}、現金出 ${fmt(x.out,0)}、淨額 ${fmt(x.net,0)}，查看收支分類">
+    <div class="cash-bar-line"><span>${e(x.name)}</span><strong class="${x.net<0?'is-neg':''}">淨額 ${fmt(x.net,0)}</strong></div>
+    <div class="cash-diverge" aria-hidden="true"><div class="cash-half left"><div class="cash-fill cash-out" style="width:${Math.abs(x.out)/mag*100}%"></div></div><div class="cash-half right"><div class="cash-fill" style="width:${x.inc/mag*100}%"></div></div></div>
+    <div class="cash-split-values"><span>${fmt(x.out,0)}</span><span>+${fmt(x.inc,0)}</span></div></button>`).join('')}</div>`;
+}
+function cashCategoryLists(rows){
+  const block=(type,title)=>{
+    const list=[...new Set(rows.filter(x=>x.type===type).map(x=>x.reason))].map(reason=>{const r=rows.filter(x=>x.type===type&&x.reason===reason);return {reason,amount:r.reduce((a,b)=>a+b.amount,0),qty:r.reduce((a,b)=>a+b.qty,0),days:new Set(r.map(x=>x.date)).size}}).sort((a,b)=>Math.abs(b.amount)-Math.abs(a.amount));
+    const mag=Math.max(1,...list.map(x=>Math.abs(x.amount))),total=list.reduce((a,b)=>a+b.amount,0);
+    return `<div class="cash-cat-block"><div class="cash-cat-head"><strong>${title}</strong><span class="${type==='現金出'?'is-neg':''}">${fmt(total,0)}</span></div>${list.length?`<div class="cash-graph">${list.map(x=>`<button type="button" class="cash-bar-choice ${state.cashFocusReason===x.reason?'is-chosen':''}" data-cash-reason="${e(x.reason)}" aria-label="${e(x.reason)} ${fmt(x.amount,0)} 元、${x.qty} 次，查看是哪幾天">
+      <div class="cash-bar-line"><span>${e(x.reason)}<small>${x.qty} 次・${x.days} 天</small></span><strong>${fmt(x.amount,0)}</strong></div>
+      <div class="cash-track" aria-hidden="true"><div class="cash-fill ${type==='現金出'?'cash-out':''}" style="width:${Math.abs(x.amount)/mag*100}%"></div></div></button>`).join('')}</div>`:'<div class="cash-no-data">無資料</div>'}</div>`;
+  };
+  return `<div class="cash-cat-grid">${block('現金出','支出分類')}${block('現金入','收入分類')}</div>`;
+}
+function cashDayList(rows){
+  const dates=[...new Set(rows.map(x=>x.date))].sort();
+  const mag=Math.max(1,...dates.map(d=>Math.abs(rows.filter(x=>x.date===d).reduce((a,b)=>a+b.amount,0))));
+  const list=dates.map(d=>{const r=rows.filter(x=>x.date===d),v=r.reduce((a,b)=>a+b.amount,0),q=r.reduce((a,b)=>a+b.qty,0);return `<div class="cash-bar-choice cash-day-row"><div class="cash-bar-line"><span>${e(d)}<small>${q} 次</small></span><strong>${fmt(v,0)}</strong></div><div class="cash-track" aria-hidden="true"><div class="cash-fill ${v<0?'cash-out':''}" style="width:${Math.abs(v)/mag*100}%"></div></div></div>`}).join('');
+  return `<p class="cash-step-caption">共 ${dates.length} 天有這筆收支</p><div class="cash-graph">${list}</div>
+    <div class="cash-sheet-detail">${table(['日期','類型','事由','金額','次數'],rows.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(x=>({values:[e(x.date),e(x.type),e(x.reason),fmt(x.amount,2),fmt(x.qty)]})))}</div>`;
+}
+function cashBottomSheet(cash,single){
+  if(!state.cashSheet)return '';
+  const store=state.cashFocusStore,reason=state.cashFocusReason;
+  const storeRows=cash.filter(x=>x.store===store);
+  if(!store||!storeRows.length)return '';
+  const step=state.cashSheet==='days'&&reason?'days':'store';
+  const period=state.start===state.end?state.start.slice(5).replace('-','/'):`${state.start.slice(5).replace('-','/')}～${state.end.slice(5).replace('-','/')}`;
+  let title,content;
+  if(step==='store'){
+    const inc=cashSum(storeRows,'現金入'),out=cashSum(storeRows,'現金出');
+    title=store;
+    content=`${drillFilterBar([['期間',period],['門市',store]])}<div class="cash-sheet-kpis">${stats([['現金入',fmt(inc,0)],['現金出',fmt(out,0)],['收支淨額',fmt(inc+out,0)]])}</div><p class="cash-step-caption">點選分類，查看是哪幾天發生</p>${cashCategoryLists(storeRows)}`;
+  }else{
+    const rows=storeRows.filter(x=>x.reason===reason);
+    title=`${store}・${reason}`;
+    content=`${drillFilterBar([['期間',period],['門市',store],['分類',reason]])}${cashDayList(rows)}`;
+  }
   return `<div class="rms-drill-layer cash-drill-layer" data-cash-layer="${step}"><button type="button" class="rms-drill-scrim" data-cash-dismiss="true" aria-label="關閉"></button>
-    <section class="rms-drill-panel" role="dialog" aria-modal="true" aria-label="${title}">
-      ${drillHeader(title,'data-cash-sheet-back="true"','data-cash-dismiss="true"')}
-      <div class="rms-drill-content">${step==='detail'?detailTable:comparison}</div>
+    <section class="rms-drill-panel" role="dialog" aria-modal="true" aria-label="${e(title)}">
+      ${drillHeader(e(title),'data-cash-sheet-back="true"','data-cash-dismiss="true"')}
+      <div class="rms-drill-content">${content}</div>
     </section></div>`;
 }
 function renderCash(){
@@ -3684,28 +3751,23 @@ function renderCash(){
   // Table-specific grouping and display settings must not alter their totals.
   // V12.8: store search and 門市群組 (進階篩選) are shared by chart, summary and table.
   const cashKw=(state.cashKeyword||'').trim();
-  const cashBase=CASH.filter(x=>state.selectedStores.includes(x.store));
+  const cashBase=CASH.filter(x=>state.selectedStores.includes(x.store)&&CASH_DATE(x.date)>=state.start&&CASH_DATE(x.date)<=state.end);
   const cash=cashBase.filter(x=>(!cashKw||x.store.includes(cashKw))&&(state.cashStoreGroup==='全部'||byStore.get(x.store)===state.cashStoreGroup));
   const income=cash.filter(x=>x.type==='現金入').reduce((a,b)=>a+b.amount,0);
   const out=cash.filter(x=>x.type==='現金出').reduce((a,b)=>a+b.amount,0);
-  const allDates=[...new Set(cash.map(x=>x.date))].sort();
-  if(state.cashFocusDate&&!allDates.includes(state.cashFocusDate)){state.cashFocusDate='';state.cashFocusStore='';state.cashSheet='';}
-  const dayRows=allDates.map(date=>({name:date,v:cashMeasureValue(cash.filter(x=>x.date===date),'net')}));
-  const selectedDate=state.cashFocusDate;
-  const dateCash=selectedDate?cash.filter(x=>x.date===selectedDate):[];
-  const allStoreNames=[...new Set(dateCash.map(x=>x.store))];
-  if(state.cashFocusStore&&!allStoreNames.includes(state.cashFocusStore)){state.cashFocusStore='';state.cashSheet='stores';}
-  const selectedStore=state.cashFocusStore;
-  const storeRows=allStoreNames.map(name=>({name,v:cashMeasureValue(dateCash.filter(x=>x.store===name),'net')}))
-    .filter(x=>x.v!==0).sort((a,b)=>Math.abs(b.v)-Math.abs(a.v)||a.name.localeCompare(b.name));
-  const visibleStoreRows=storeRows.length?storeRows:allStoreNames.map(name=>({name,v:0}));
+  const cashStoreList=[...new Set(cash.map(x=>x.store))];
+  const singleCash=state.selectedStores.length===1;
+  if(state.cashFocusStore&&!cashStoreList.includes(state.cashFocusStore)){state.cashFocusStore='';state.cashFocusReason='';state.cashSheet='';}
+  if(singleCash&&cashStoreList[0])state.cashFocusStore=state.cashFocusStore||cashStoreList[0];
   const tableCash=cash.filter(x=>(state.cashStoreGroup==='全部'||byStore.get(x.store)===state.cashStoreGroup)&&(state.cashTableType==='all'||x.type===(state.cashTableType==='in'?'現金入':'現金出')));
   const p=pivotRows(tableCash,state.cashMode,state.cashStoreView);
   const tableDim=control('維度顯示',group([['cashMode','all','全部'],['cashMode','typeDate','類型 × 日期'],['cashMode','typeStore','類型 × 門市名稱']]));
   const storeDisplay=control('門市顯示',group([['cashStoreView','store','門市名稱'],['cashStoreView','group','門市群組']]));
   const groupFilter=control('門市群組',choose('cashStoreGroup',[['全部','全部'],...groupNames.map(x=>[x,x])]));
   const tableType=control('收支類型',group([['cashTableType','all','全部'],['cashTableType','in','現金入'],['cashTableType','out','現金出']]));
-  const mainChart=`<div class="cash-analysis rms-chart-frame"><div class="rms-chart-frame-head"><strong>現金收支比較</strong>${chartHeaderMore()}</div><p class="cash-net-caption">收支淨額</p>${cashBarChart(dayRows,'net','date')}`;
+  const mainChart=singleCash
+    ?`<div class="cash-analysis rms-chart-frame"><div class="rms-chart-frame-head"><strong>${e(cashStoreList[0]||'')} 收支分類</strong>${chartHeaderMore()}</div><p class="cash-step-caption">點選分類，查看是哪幾天發生</p>${cash.length?cashCategoryLists(cash):'<div class="cash-no-data">無符合條件的資料</div>'}`
+    :`<div class="cash-analysis rms-chart-frame"><div class="rms-chart-frame-head"><strong>門市收支比較</strong>${chartHeaderMore()}</div><p class="cash-step-caption">點選門市，查看各項收入與支出分類</p>${cashStoreCompare(cash)}`;
   const cashStoresAll=[...new Set(cashBase.map(x=>x.store))];
   const cashStoresShown=[...new Set(cash.map(x=>x.store))];
   const cashActive=state.cashStoreGroup!=='全部'?1:0;
@@ -3719,7 +3781,7 @@ function renderCash(){
       `<div class="table-toolbar store-table-toolbar cash-table-toolbar"><div class="group">${tableType}${tableDim}${storeDisplay}</div><div class="group"><button data-quick="download">下載</button></div></div>`+
       table(p.headers,p.rows,'cash-reconcile-table'));
   const report=screen(cashToolbar+(state.cashView==='table'?cashTableSection:cashChartSection));
-  return report+cashSheetHtml+cashBottomSheet(dateCash,selectedDate,selectedStore,visibleStoreRows);
+  return report+cashSheetHtml+cashBottomSheet(cash,singleCash);
 }
 
 function paymentStoreCrossTable(raw,selectedColumns){
@@ -3848,6 +3910,7 @@ function clearDrillStack(){
   state.weekDrillPeriod='';
   state.cashFocusDate='';
   state.cashFocusStore='';
+  state.cashFocusReason='';
   state.cashSheet='';
 }
 function backDrillStep(){
@@ -3859,9 +3922,9 @@ function backDrillStep(){
     state.multiDayStore='';state.trendDrawerDate='';
   }else if(state.weekDrillPeriod){
     state.weekDrillPeriod='';
-  }else if(state.cashSheet==='detail'){
-    state.cashFocusStore='';
-    state.cashSheet='stores';
+  }else if(state.cashSheet==='days'&&state.selectedStores.length>1){
+    state.cashFocusReason='';
+    state.cashSheet='store';
   }else{
     clearDrillStack();
   }
@@ -4282,8 +4345,8 @@ if(b.dataset.storeSheet){if(b.dataset.storeSheet==='close'){closeStoreLayer(()=>
 if(b.dataset.storeGroup!==undefined){state.storeGroupFilter=b.dataset.storeGroup;state.storeDrill='';state.trendDrawerDate='';render();return}
 if(b.dataset.storeRule!==undefined){state.storeRuleMin=Number(b.dataset.storeRule)||0;state.storeDrill='';state.trendDrawerDate='';render();return}
 if(b.dataset.weekPeriod&&state.report==='week'&&state.weekDrill&&state.weekMode==='interval'&&state.weekDrill!=='五'){state.weekDrillPeriod=b.dataset.weekPeriod;render();return}
-if(b.dataset.cashDate){state.cashFocusDate=state.cashFocusDate===b.dataset.cashDate?'':b.dataset.cashDate;state.cashFocusStore='';state.cashMode='all';state.cashSheet=state.cashFocusDate?'stores':'';render();return}
-if(b.dataset.cashStore){state.cashFocusStore=state.cashFocusStore===b.dataset.cashStore?'':b.dataset.cashStore;state.cashMode='all';state.cashSheet=state.cashFocusStore?'detail':'stores';render();return}
+if(b.dataset.cashReason){state.cashFocusReason=b.dataset.cashReason;state.cashSheet='days';render();return}
+if(b.dataset.cashStore){state.cashFocusStore=b.dataset.cashStore;state.cashFocusReason='';state.cashSheet='store';render();return}
 if(b.dataset.cashClear){if(b.dataset.cashClear==='date'){state.cashFocusDate='';state.cashFocusStore='';state.cashSheet=''}else{state.cashFocusStore='';state.cashSheet=state.cashFocusDate?'stores':''}render();return}
 if(b.dataset.storeRange&&state.report==='store'){[state.start,state.end]=storeDatePreset(b.dataset.storeRange);state.storeDrill='';render();return}
 if(b.dataset.device){state.multiDayStore='';state.trendDrawerDate='';state.storeDrill='';state.weekDrill='';state.weekDrillPeriod='';state.cashSheet='';state.cashFocusDate='';state.cashFocusStore='';state.device=b.dataset.device;render();resetScroll();return}if(b.dataset.version){state.multiDayStore='';state.trendDrawerDate='';state.storeDrill='';state.weekDrill='';state.weekDrillPeriod='';state.cashSheet='';state.cashFocusDate='';state.cashFocusStore='';state.version=b.dataset.version;render();resetScroll();return}if(b.dataset.key){state.multiDayStore='';state.trendDrawerDate='';state.storeDrill='';if(['weekMode','weekMeal'].includes(b.dataset.key))state.weekDrill='';state.weekDrillPeriod='';state[b.dataset.key]=b.dataset.value==='true'?true:b.dataset.value==='false'?false:b.dataset.value;render();return}if(b.dataset.quick==='paymentMethods'){
