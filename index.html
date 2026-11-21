@@ -500,6 +500,9 @@ body.cash-modal-open{overflow:hidden}
 .st-rule-chip{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border:1px solid #f0b48a;border-radius:16px;background:#fff6ef;color:#8a4a1c;font-size:13px;white-space:nowrap}.st-rule-chip span{font-size:11px;opacity:.7}
 #body{position:relative}
 .scope-check{display:inline-flex;align-items:center;gap:6px;margin-right:18px;font-size:14px;color:#263e45}.scope-check input{width:16px;height:16px;accent-color:#109d97}
+.store-toolbar .st-chips.is-muted{background:#f3f5f7;border-top-color:#e3e6ea}
+.ts-chart-note{font-size:13px;color:#5e6b78;line-height:1.5}.ts-chart-note strong{color:#2f4850}
+.st-chips.is-muted .st-chips-clear{color:#0e7c75}
 .ts-open .ts-sum{color:#4f7f7a;font-weight:400}
 .ts-body{overflow:auto;flex:1;min-height:0}
 .ts-layer .sfl-panel{display:flex;flex-direction:column;max-height:min(86vh,760px)}
@@ -3051,8 +3054,8 @@ function storeToolbar(o){
   const active=storeActiveFilterCount();
   const shared=o.single?(state.storeView==='table'?tsButton('store'):''):`<label class="st-search">${ST_ICON_SEARCH}<input type="search" data-store-keyword value="${e(state.storeKeyword)}" placeholder="搜尋門市名稱" aria-label="搜尋門市名稱"></label>${state.storeView==='table'?tsButton('store'):''}${o.filtered?`<span class="st-count">顯示 ${o.viewCount} / ${o.total} 間</span>`:''}`;
   // Chart- or table-only settings sit under their own section ribbon, not here.
-  const bar=state.storeView==='table'?tsChips('store',o.tableShown,o.tableTotal):'';
-  return `<div class="store-toolbar"><div class="st-row st-view"><div class="st-view-ctl">${shared}</div><span class="st-toggle" aria-label="切換圖表或表格">${group([['storeView','chart','圖表'],['storeView','table','表格']])}</span></div>${bar?`<div class="st-row st-chips">${bar}</div>`:''}</div>`;
+  const bar=state.storeView==='table'?tsChips('store',o.tableShown,o.tableTotal):tsChartNote('store');
+  return `<div class="store-toolbar"><div class="st-row st-view"><div class="st-view-ctl">${shared}</div><span class="st-toggle" aria-label="切換圖表或表格">${group([['storeView','chart','圖表'],['storeView','table','表格']])}</span></div>${bar?`<div class="st-row st-chips${state.storeView==='table'?'':' is-muted'}">${bar}</div>`:''}</div>`;
 }
 function storeFilterSheet(scopedAll){
   const groups=['全部',...new Set(scopedAll.map(x=>x.row.group))];
@@ -3080,6 +3083,8 @@ function tsNum(v){return +String(v).replace(/,/g,'')}
 function tsPass(r,get){return tsActive(r).every(f=>{const v=+get(f.key)||0,t=tsNum(f.value);return f.op==='lte'?v<=t:v>=t})}
 function tsLabel(r,f){const fd=tsFields(r).find(x=>x.key===f.key)||{label:f.key,type:''};const t=tsNum(f.value);return `${fd.label} ${f.op==='lte'?'≤':'≥'} ${['amount','avg'].includes(fd.type)?'$':''}${Number.isFinite(t)?fmt(t,t%1?2:0):f.value}${['rate','growth'].includes(fd.type)?'%':''}`}
 function tsButton(r){const n=state[TS_CFG[r].colsKey].length,k=tsActive(r).length;return `<button type="button" class="st-filter ts-open${k?' is-on':''}" data-ts="open" aria-haspopup="dialog">${TS_ICON}<span>表格設定</span><span class="ts-sum">・${n} 欄${k?`・篩選 ${k}`:''}</span></button>`}
+// In chart view, say plainly that table-only conditions are not applied to the chart.
+function tsChartNote(r){const act=tsActive(r);if(!act.length)return '';return `<span class="ts-chart-note"><strong>同一批資料</strong>・表格篩選（${act.map(f=>e(tsLabel(r,f))).join('、')}）只套用在表格，圖表顯示報表範圍內的全部${r==='brand'?'品牌':'門市'}。</span><button type="button" class="st-chips-clear" data-key="${r}View" data-value="table">切到表格</button>`}
 function tsChips(r,shown,total){const all=state.tableFilters[r]||[],act=tsActive(r);return activeFilterBar(act.map(f=>[tsLabel(r,f),`data-ts-chip="${all.indexOf(f)}"`]),act.length?`顯示 ${shown} / ${total} ${TS_CFG[r].unit}`:'','data-ts="clearall"')}
 function tsPanel(r){
   const d=state.tsDraft,fields=tsFields(r),avail=fields.filter(f=>d.cols.includes(f.key));
@@ -3102,8 +3107,8 @@ function tsPanel(r){
     </div>
     <div class="sfl-actions"><button type="button" data-ts="close">取消</button><button type="button" class="primary" data-ts="apply">套用</button></div></div></div>`;
 }
-function reportToolbar(viewKey,leftHtml,wrap,chipsHtml=''){
-  return `<div class="store-toolbar${wrap?' is-wrap':''}"><div class="st-row st-view"><div class="st-view-ctl">${leftHtml}</div><span class="st-toggle" aria-label="切換圖表或表格">${group([[viewKey,'chart','圖表'],[viewKey,'table','表格']])}</span></div>${chipsHtml?`<div class="st-row st-chips">${chipsHtml}</div>`:''}</div>`;
+function reportToolbar(viewKey,leftHtml,wrap,chipsHtml='',chipsMuted=false){
+  return `<div class="store-toolbar${wrap?' is-wrap':''}"><div class="st-row st-view"><div class="st-view-ctl">${leftHtml}</div><span class="st-toggle" aria-label="切換圖表或表格">${group([[viewKey,'chart','圖表'],[viewKey,'table','表格']])}</span></div>${chipsHtml?`<div class="st-row st-chips${chipsMuted?' is-muted':''}">${chipsHtml}</div>`:''}</div>`;
 }
 function viewSearch(key,placeholder){return `<label class="st-search">${ST_ICON_SEARCH}<input type="search" data-view-keyword="${key}" value="${e(state[key]||'')}" placeholder="${e(placeholder)}" aria-label="${e(placeholder)}"></label>`}
 function viewFilterButton(active){return `<button type="button" class="st-filter${active?' is-on':''}" data-view-sheet="open" aria-haspopup="dialog">${ST_ICON_FILTER}<span>進階篩選</span>${active?`<span class="st-badge" aria-label="已套用 ${active} 個條件">${active}</span>`:''}</button>`}
@@ -3742,7 +3747,7 @@ function renderBrand(){
   const fs=state.tableFullscreen;
   const brandTableSection=sections('查詢結果',`<div class="table-fs-wrap${fs?' is-fs':''}"${fs?' role="dialog" aria-modal="true" aria-label="品牌營收表格（全螢幕）"':''}><div class="table-toolbar store-table-toolbar brand-table-toolbar"><div class="group">${control('列合併',group([['brandMerge','merge','合併'],['brandMerge','split','不合併']]))}</div><div class="group"><button type="button" data-table-fullscreen="${fs?'close':'open'}">${fs?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div></div>${table(['品牌名稱','品牌幣別',...chosen.map(x=>x.label)],rows,'brand-table')}</div>`);
   return screen(
-    reportToolbar('brandView',viewSearch('brandKeyword','搜尋品牌名稱')+(state.brandView==='table'?tsButton('brand'):''),false,state.brandView==='table'?tsChips('brand',tableBrands.length,visibleBrands.length):'')+
+    reportToolbar('brandView',viewSearch('brandKeyword','搜尋品牌名稱')+(state.brandView==='table'?tsButton('brand'):''),false,state.brandView==='table'?tsChips('brand',tableBrands.length,visibleBrands.length):tsChartNote('brand'),state.brandView!=='table')+
     (state.brandView==='table'?brandTableSection:brandChartSection)
   )+(state.tsOpen==='brand'?tsPanel('brand'):'');
 }
