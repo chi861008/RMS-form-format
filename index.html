@@ -588,6 +588,7 @@ body.cash-modal-open{overflow:hidden}
 .ts-del{width:32px;height:32px;border:0;background:none;color:#9aa5b1;font-size:15px;cursor:pointer}
 .cash-grouped th.cash-th-group{text-align:center;border-bottom:1px solid #e1e5e9}
 .cash-shape-body{display:flex;flex-direction:column;align-items:flex-start;gap:14px}.cash-shape-body .fil{width:100%}
+.table-dim-row{padding-bottom:0!important;border-bottom:0!important}.table-fs-wrap.is-fs .table-dim-row{position:static}.table-dim-row+.table-toolbar{padding-top:10px}
 .ts-op-fixed{display:flex;align-items:center;height:38px;padding:0 10px;border:1px solid #e1e5e9;border-radius:6px;background:#f5f7f9;color:#3d4a57;font-size:14px}
 .ts-from{margin:0 0 8px;font-size:12px;color:#5e6b78}
 .st-rule-chip[data-paused]{border-style:dashed;border-color:#c9ced4;background:#f5f7f9;color:#7a8692}
@@ -3403,7 +3404,7 @@ function renderStore(){
   const fs=state.tableFullscreen;
   const codeToggle=tableByGroup?'':`<button type="button" class="st-check${state.storeShowCode?' is-on':''}" data-store-code="toggle" aria-pressed="${state.storeShowCode}"><span class="st-check-box" aria-hidden="true">${state.storeShowCode?'✓':''}</span>門市代碼</button>`;
   const result=sections('查詢結果',
-    `<div class="table-fs-wrap${fs?' is-fs':''}"${fs?' role="dialog" aria-modal="true" aria-label="門市營收表格（全螢幕）"':''}><div class="table-toolbar store-table-toolbar"><div class="group">${tsButton('store')}${tableGrouping}${codeToggle}${control('列合併',group([['storeMerge','merge','合併'],['storeMerge','split','不合併']]))}</div><div class="group"><button type="button" data-table-fullscreen="${fs?'close':'open'}">${fs?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div></div>`
+    `<div class="table-fs-wrap${fs?' is-fs':''}"${fs?' role="dialog" aria-modal="true" aria-label="門市營收表格（全螢幕）"':''}>${tableGrouping?`<div class="table-toolbar store-table-toolbar table-dim-row"><div class="group">${tableGrouping}</div></div>`:''}<div class="table-toolbar store-table-toolbar"><div class="group">${tsButton('store')}${codeToggle}${control('列合併',group([['storeMerge','merge','合併'],['storeMerge','split','不合併']]))}</div><div class="group"><button type="button" data-table-fullscreen="${fs?'close':'open'}">${fs?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div></div>`
     +tsTableChips('store',tableRows.length,tableRowsTotal)
     +`<div class="store-query-results${single?' single-store-results':''}">`
     +table(tableHeaders,tableRows,(single?'single-period-table store-result-table':'store-result-table')+(newColIdx?' has-new-col new-col-'+newColIdx:''))
@@ -4104,7 +4105,7 @@ function renderCash(){
       `<div class="cash-summary-strip">${stats([['現金入',fmt(income,2)],['現金出',fmt(out,2)],['收支淨額',fmt(income+out,2)]])}</div>`+
       mainChart+'</div>');
   const cashTableSection=sections('查詢結果',
-      `<div class="table-fs-wrap${state.tableFullscreen?' is-fs':''}"${state.tableFullscreen?' role="dialog" aria-modal="true" aria-label="現金管理表格（全螢幕）"':''}><div class="table-toolbar store-table-toolbar cash-table-toolbar"><div class="group">${cashIsMobile()?tableDim+tsButton('cash')+cashShapeButton:tsButton('cash')+tableDim+cashShapeControls+cashMergeCtl}</div><div class="group"><button type="button" data-table-fullscreen="${state.tableFullscreen?'close':'open'}">${state.tableFullscreen?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div></div>`+
+      `<div class="table-fs-wrap${state.tableFullscreen?' is-fs':''}"${state.tableFullscreen?' role="dialog" aria-modal="true" aria-label="現金管理表格（全螢幕）"':''}><div class="table-toolbar store-table-toolbar table-dim-row"><div class="group">${tableDim}</div></div><div class="table-toolbar store-table-toolbar cash-table-toolbar"><div class="group">${tsButton('cash')+(cashIsMobile()?cashShapeButton:cashShapeControls+cashMergeCtl)}</div><div class="group"><button type="button" data-table-fullscreen="${state.tableFullscreen?'close':'open'}">${state.tableFullscreen?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div></div>`+
       tsTableChips('cash',cashTs.shown,cashTs.total)+(p.grouped?cashGroupedTable:table)(p.headers,p.rows,'cash-reconcile-table cash-mode-'+state.cashMode+(p.grouped?' cash-grouped':''))+'</div>');
   const report=screen(cashToolbar+(state.cashView==='table'?cashTableSection:cashChartSection));
   return report+cashSheetHtml+cashBottomSheet(cash,singleCash)+(state.tsOpen==='cash'?tsPanel('cash'):'')+cashShapeSheet;
