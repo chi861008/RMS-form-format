@@ -2671,11 +2671,10 @@ function donut(arr){let sum=arr.reduce((s,x)=>s+x.v,0);if(!sum)return '';let hue
 // V15: report-specific conditions that change WHICH data is fetched also live in 報表範圍.
 function payMethodLabel(){return state.paymentMethods.length===PAYMETHODS.length?'全部付款方式':state.paymentMethods.length===1?state.paymentMethods[0]:`付款方式 ${state.paymentMethods.length} 項`}
 function scopeExtra(){
-  if(state.report==='pay')return control('付款方式',`<button type="button" class="pay-method-button" data-quick="paymentMethods" aria-haspopup="dialog" aria-controls="paymentDialog" title="${e(state.paymentMethods.join('、'))}"><span class="pay-method-text">${e(payMethodLabel())}</span><span class="pay-select-caret" aria-hidden="true">▾</span></button>`);
   if(state.report==='punch')return control('員工',choose('punchName',[['全部','全部員工'],...['員工 A','員工 B','員工 C','員工 D'].map(x=>[x,x])]));
   return '';
 }
-function scopeExtraText(){return state.report==='pay'?' ・ '+payMethodLabel():state.report==='punch'&&state.punchName!=='全部'?' ・ '+state.punchName:''}
+function scopeExtraText(){return state.report==='punch'&&state.punchName!=='全部'?' ・ '+state.punchName:''}
 function query(){return `<div class="date-filters">${control('日期',`<label class="form-radio"><input type="radio" data-key="dateType" value="bank" ${state.dateType==='bank'?'checked':''}>入帳日期</label><label class="form-radio"><input type="radio" data-key="dateType" value="sale" ${state.dateType==='sale'?'checked':''}>銷售日期</label>`)}${control('',`<input type="date" data-key="start" value="${state.start}"> ～ <input type="date" data-key="end" value="${state.end}">`)}${control('集團名稱',choose('group',[['唯賀國際餐飲股份有限公司','唯賀國際餐飲股份有限公司'],['示範集團','示範集團']]))}${control('品牌名稱',choose('brand',[['NU Pasta','NU Pasta'],['全部','全部'],...(state.exploreBrandFilter?[[state.exploreBrandFilter,state.exploreBrandFilter+'（示意）']]:[])]))}${control('門市篩選',`<button data-quick="stores">數量：${state.selectedStores.length} ▾</button>`)}${control('門市群組',choose('scopeGroup',[['全部','全部群組'],...[...new Set(STORES.map(x=>x.group))].filter(g=>g!=='未分組').map(g=>[g,g]),['未分組','未分組（沒有群組的門市）']]))}${scopeExtra()}${control('',`<label class="scope-check"><input type="checkbox" data-scope-flag="excludeTest" ${state.excludeTest?'checked':''}>排除測試店</label><label class="scope-check"><input type="checkbox" data-scope-flag="excludeClosed" ${state.excludeClosed?'checked':''}>排除已關店</label>`)}</div>${state.report==='store'&&state.selectedStores.length===1?storeDateShortcuts():''}<div class="search-row"><button data-quick="refresh">更新時間</button><button data-quick="search" class="orange-text">搜尋</button></div>`;}
 // V12.1: every report waits for the first 搜尋 before showing results, like 門市現金管理統計.
 function awaitingSearch(){return state.version==='after'&&state.report!=='cash'&&!state.searchedReports[state.report]}
@@ -3222,11 +3221,11 @@ function tsRun(r,headers,rows){
 }
 function tsButton(r){const c=TS_CFG[r].colsKey,n=c?state[c].length:0,k=tsActive(r).length,pz=tsPaused(r).length;return `<button type="button" class="st-filter ts-open${k?' is-on':''}" data-ts="open" aria-haspopup="dialog">${TS_ICON}<span>欄位篩選</span><span class="ts-sum">${c?(r==='cash'?`・${state.cashValues.map(v=>CASH_VALUE_LABEL[v]).join('＋')}`:`・${n} 欄`):''}${k?`・篩選 ${k}`:''}${pz?`・暫停 ${pz}`:''}</span></button>`}
 function tsChartNote(r){const act=tsActive(r);if(!act.length)return '';return `<span class="ts-chart-note"><strong>同一批資料</strong>・表格篩選（${act.map(f=>e(tsLabel(r,f))).join('、')}）只套用在表格。</span><button type="button" class="st-chips-clear" data-key="${r}View" data-value="table">切到表格</button>`}
-function tsTableChips(r,shown,total){const bar=tsChips(r,shown,total);return bar?`<div class="st-chips ts-table-chips">${bar}</div>`:''}
-function tsChips(r,shown,total){
+function tsTableChips(r,shown,total,extra=[]){const bar=tsChips(r,shown,total,extra);return bar?`<div class="st-chips ts-table-chips">${bar}</div>`:''}
+function tsChips(r,shown,total,extra=[]){
   const all=state.tableFilters[r]||[],act=tsActive(r),pz=tsPaused(r);
-  const chips=[...act.map(f=>[tsLabel(r,f),`data-ts-chip="${all.indexOf(f)}"`]),...pz.map(f=>[`${tsLabel(r,f)}・目前的表格沒有這一欄`,`data-ts-chip="${all.indexOf(f)}" data-paused="1" title="切換回有「${e(f.col)}」欄的視角就會恢復"`])];
-  return activeFilterBar(chips,act.length?`顯示 ${shown} / ${total} ${TS_CFG[r].unit}`:'','data-ts="clearall"');
+  const chips=[...extra,...act.map(f=>[tsLabel(r,f),`data-ts-chip="${all.indexOf(f)}"`]),...pz.map(f=>[`${tsLabel(r,f)}・目前的表格沒有這一欄`,`data-ts-chip="${all.indexOf(f)}" data-paused="1" title="切換回有「${e(f.col)}」欄的視角就會恢復"`])];
+  return activeFilterBar(chips,act.length?`顯示 ${shown} / ${total} ${TS_CFG[r].unit}`:'',extra.length?'data-ts="clearall" data-pay-methods="all"':'data-ts="clearall"');
 }
 function tsViewDesc(r){
   if(r==='cash'){const m={all:'全部',typeDate:'類型 × 日期',typeStore:'類型 × 門市名稱'}[state.cashMode];const vs=state.cashValues.map(v=>CASH_VALUE_LABEL[v]).join('＋');return state.cashMode==='all'?`維度：${m}・${vs}`:`維度：${m}・列分類：${state.cashRowLevel==='reason'?'事由':'類型'}・${vs}${state.cashTranspose?'・行列置換':''}`}
@@ -4246,13 +4245,16 @@ function renderPay(){
   const fs=state.tableFullscreen;
   const fsGroup=`<div class="group"><button type="button" data-table-fullscreen="${fs?'close':'open'}">${fs?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div>`;
   const mergeCtl=control('',group([['payMerge','merge','合併'],['payMerge','split','不合併']]));
+  // V15: 付款方式 is a 篩選值 but stays near the table (where users found it before), next to 欄位篩選.
+  const payPartial=state.paymentMethods.length!==PAYMETHODS.length;
+  const payMethodBtn=`<button type="button" class="st-filter pay-method-open${payPartial?' is-on':''}" data-quick="paymentMethods" aria-haspopup="dialog" aria-controls="paymentDialog" title="${e(state.paymentMethods.join('、'))}"><span>付款方式</span><span class="ts-sum">・${payPartial?state.paymentMethods.length+' 項':'全部'}</span><span aria-hidden="true">▾</span></button>`;
   const searchRow=`<div class="store-toolbar"><div class="st-row st-view"><div class="st-view-ctl">${viewSearch('payKeyword','搜尋門市名稱')}</div></div></div>`;
   const tableHtml=(d.grouped?cashGroupedTable:table)(d.headers,ts.rows,'payment-table cash-reconcile-table'+(d.grouped?' cash-grouped':''));
   return screen(searchRow+
     sections('查詢結果',
       summaryCards+
-      `<div class="table-fs-wrap${fs?' is-fs':''}"${fs?' role="dialog" aria-modal="true" aria-label="付款方式統計表格（全螢幕）"':''}><div class="table-toolbar store-table-toolbar table-dim-row dim-4"><div class="group">${pivotControl}</div>${cashIsMobile()?'':fsGroup}</div><div class="table-toolbar store-table-toolbar pay-table-toolbar"><div class="group">${tsButton('pay')}${mergeCtl}</div>${cashIsMobile()?fsGroup:''}</div>`+
-      tsTableChips('pay',ts.shown,ts.total)+noDataNote+(raw.length?tableHtml:'')+'</div>'
+      `<div class="table-fs-wrap${fs?' is-fs':''}"${fs?' role="dialog" aria-modal="true" aria-label="付款方式統計表格（全螢幕）"':''}><div class="table-toolbar store-table-toolbar table-dim-row dim-4"><div class="group">${pivotControl}</div>${cashIsMobile()?'':fsGroup}</div><div class="table-toolbar store-table-toolbar pay-table-toolbar"><div class="group">${tsButton('pay')}${payMethodBtn}${cashIsMobile()?'':mergeCtl}</div>${cashIsMobile()?'':''}</div>${cashIsMobile()?`<div class="table-toolbar store-table-toolbar"><div class="group">${mergeCtl}</div>${fsGroup}</div>`:''}`+
+      tsTableChips('pay',ts.shown,ts.total,payPartial?[[`付款方式 ${state.paymentMethods.length} 項`,'data-pay-methods="all"']]:[])+noDataNote+(raw.length?tableHtml:'')+'</div>'
     )
   )+(state.tsOpen==='pay'?tsPanel('pay'):'');
 }
@@ -4709,6 +4711,7 @@ let b=evt.target.closest('button');if(!b)return;
 if(b.dataset.trendDayDismiss||b.dataset.storeDismiss||b.dataset.weekDismiss||b.dataset.cashDismiss){dismissDrillStack();return}
 if(b.dataset.trendDayBack||b.dataset.storeBack||b.dataset.weekBack||b.dataset.weekPeriodBack||b.dataset.cashSheetBack){backDrillStep();return}
 if(b.dataset.viewSheet){if(b.dataset.viewSheet==='close'){closeStoreLayer(()=>{state.viewSheet=''});return}if(b.dataset.viewSheet==='open'){state.viewSheet=state.report;filterSnapshot=dataSnapshot()}else{if(state.report==='cash')state.cashStoreGroup='全部';if(state.report==='brand'){state.brandUnifyCurrency='off';state.brandRuleValue=''}}render();if(b.dataset.chipClear)showReloading();return}
+if(b.dataset.payMethods==='all'){state.paymentMethods=[...PAYMETHODS];if(b.dataset.ts==='clearall')state.tableFilters={...state.tableFilters,pay:[]};render();showReloading();return}
 if(b.dataset.ts){const a=b.dataset.ts,r=state.report,ck=TS_CFG[r].colsKey;
   if(a==='open'){state.tsDraft={cols:ck?[...state[ck]]:[],unify:state.brandUnifyCurrency==='on',filters:(state.tableFilters[r]||[]).map(f=>({...f}))};state.tsOpen=r;state.tsFilterOpen=true;render();return}
   if(a==='close'){closeStoreLayer(()=>{state.tsOpen='';state.tsDraft=null});return}
