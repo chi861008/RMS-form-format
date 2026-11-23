@@ -3147,13 +3147,13 @@ function inScope(name){return state.selectedStores.includes(name)&&(state.scopeG
 function scopeCount(){return state.selectedStores.filter(inScope).length}
 // V14: 表格設定 — ① 呈現 (統計欄位/幣別) + ② 進階篩選 whose fields come from the ticked columns (production logic).
 const TS_CFG={brand:{fields:()=>BRAND_COLUMN_FIELDS,colsKey:'brandCols',unit:'個品牌'},store:{fields:()=>STORE_FIELDS.map(f=>Array.isArray(f)?{key:f[0],label:f[1],type:f[2]}:f),colsKey:'storeCols',unit:'列'}};
-const TS_ICON='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h6"></path></svg>';
+const TS_ICON='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4-2v-4z"></path></svg>';
 function tsFields(r){return TS_CFG[r].fields()}
 function tsActive(r){const cols=state[TS_CFG[r].colsKey];return (state.tableFilters[r]||[]).filter(f=>f.value!==''&&Number.isFinite(+String(f.value).replace(/,/g,''))&&cols.includes(f.key))}
 function tsNum(v){return +String(v).replace(/,/g,'')}
 function tsPass(r,get){return tsActive(r).every(f=>{const v=+get(f.key)||0,t=tsNum(f.value);return f.op==='lte'?v<=t:v>=t})}
 function tsLabel(r,f){const fd=tsFields(r).find(x=>x.key===f.key)||{label:f.key,type:''};const t=tsNum(f.value);return `${fd.label} ${f.op==='lte'?'≤':'≥'} ${['amount','avg'].includes(fd.type)?'$':''}${Number.isFinite(t)?fmt(t,t%1?2:0):f.value}${['rate','growth'].includes(fd.type)?'%':''}`}
-function tsButton(r){const n=state[TS_CFG[r].colsKey].length,k=tsActive(r).length;return `<button type="button" class="st-filter ts-open${k?' is-on':''}" data-ts="open" aria-haspopup="dialog">${TS_ICON}<span>表格設定</span><span class="ts-sum">・${n} 欄${k?`・篩選 ${k}`:''}</span></button>`}
+function tsButton(r){const n=state[TS_CFG[r].colsKey].length,k=tsActive(r).length;return `<button type="button" class="st-filter ts-open${k?' is-on':''}" data-ts="open" aria-haspopup="dialog">${TS_ICON}<span>欄位與篩選</span><span class="ts-sum">・${n} 欄${k?`・篩選 ${k}`:''}</span></button>`}
 // In chart view, say plainly that table-only conditions are not applied to the chart.
 function tsChartNote(r){const act=tsActive(r);if(!act.length)return '';return `<span class="ts-chart-note"><strong>同一批資料</strong>・表格篩選（${act.map(f=>e(tsLabel(r,f))).join('、')}）只套用在表格，圖表顯示報表範圍內的全部${r==='brand'?'品牌':'門市'}。</span><button type="button" class="st-chips-clear" data-key="${r}View" data-value="table">切到表格</button>`}
 function tsTableChips(r,shown,total){const bar=tsChips(r,shown,total);return bar?`<div class="st-chips ts-table-chips">${bar}</div>`:''}
@@ -3169,8 +3169,8 @@ function tsPanel(r){
     return `<div class="ts-cond"><select data-ts-field="${i}" aria-label="篩選欄位">${avail.map(x=>`<option value="${x.key}" ${x.key===f.key?'selected':''}>${e(x.label)}</option>`).join('')}</select><select data-ts-op="${i}" aria-label="條件"><option value="gte" ${f.op!=='lte'?'selected':''}>≥ 大於等於</option><option value="lte" ${f.op==='lte'?'selected':''}>≤ 小於等於</option></select><label class="ts-val">${unit==='$'?'<span>$</span>':''}<input type="text" inputmode="decimal" data-ts-val="${i}" value="${e(f.value)}" placeholder="輸入數值" aria-label="${e(fd.label)}數值">${unit==='%'?'<span>%</span>':''}</label><button type="button" class="ts-del" data-ts-del="${i}" aria-label="刪除條件">✕</button></div>`;
   }).join('');
   const n=d.filters.filter(f=>f.value!=='').length;
-  return `<div class="store-filter-layer ts-layer" data-layer="ts" role="dialog" aria-modal="true" aria-label="表格設定"><button type="button" class="sfl-backdrop" data-ts="close" aria-label="關閉"></button><div class="sfl-panel">
-    <div class="sfl-head"><strong>表格設定</strong><span class="ts-shared-tag ts-table-tag">只影響表格</span><button type="button" class="sfl-close" data-ts="close" aria-label="關閉">×</button></div>
+  return `<div class="store-filter-layer ts-layer" data-layer="ts" role="dialog" aria-modal="true" aria-label="欄位與篩選"><button type="button" class="sfl-backdrop" data-ts="close" aria-label="關閉"></button><div class="sfl-panel">
+    <div class="sfl-head"><strong>欄位與篩選</strong><span class="ts-shared-tag ts-table-tag">只影響表格</span><button type="button" class="sfl-close" data-ts="close" aria-label="關閉">×</button></div>
     <div class="ts-body">
       <div class="sfl-sec"><div class="sfl-label">① 呈現</div>${unify}<div class="ts-sub">統計欄位（已選 ${d.cols.length} / ${fields.length}）</div><div class="ts-cols">${colGrid}</div></div>
       <div class="sfl-sec ts-filter-sec"><button type="button" class="ts-acc${state.tsFilterOpen?' is-open':''}" data-ts="toggle" aria-expanded="${state.tsFilterOpen}"><strong>② 依勾選欄位篩選</strong>${n?`<span class="ts-badge">${n} 個條件</span>`:'<span class="ts-hint">未設定</span>'}<span class="ts-caret" aria-hidden="true">⌄</span></button>
