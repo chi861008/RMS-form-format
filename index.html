@@ -590,6 +590,7 @@ body.cash-modal-open{overflow:hidden}
 @media(max-width:550px){.table-dim-row>.group,.table-dim-row .fil{width:100%!important;max-width:none!important}.table-dim-row .fil{display:flex;flex-direction:column;align-items:flex-start;gap:6px;flex-wrap:nowrap}.table-dim-row .pillgroup{display:flex;flex-wrap:nowrap;width:100%;border:1px solid #c9ced4;border-radius:6px;overflow:hidden}.table-dim-row .pillgroup button{flex:1 1 0;min-width:0;white-space:nowrap;padding:8px 4px;font-size:14px;border:0;border-left:1px solid #e1e5e9;border-radius:0}.table-dim-row .pillgroup button:first-child{border-left:0}}
 .ts-cond .rms-mobile-select-wrap{display:block;min-width:0!important;width:100%!important;max-width:100%}.ts-cond .rms-mobile-select-wrap>button{width:100%!important;min-width:0!important;max-width:100%!important;overflow:hidden}.ts-cond .rms-mobile-select-wrap select{width:100%!important;min-width:0!important;max-width:100%!important}
 .st-check:disabled{opacity:.45;cursor:not-allowed}
+.table-toolbar .fil>label:empty,.cash-shape-body .fil>label:empty{display:none}
 .ts-op-fixed{padding:0 6px;justify-content:center;font-size:13px}.device-phone .ts-cond .ts-del{padding:0;width:24px}
 @media(max-width:550px){.ts-cond{grid-template-columns:minmax(0,1fr) 58px 84px 24px;gap:6px}.ts-cond .ts-val{grid-column:auto;padding:0 8px}.ts-op-fixed{padding:0 6px;justify-content:center;font-size:13px}.ts-cond .ts-del{padding:0;width:24px}}
 .ts-cond select{height:38px;border:1px solid #c9ced4;border-radius:6px;padding:0 8px;background:#fff;font-size:14px;min-width:0}
@@ -3418,7 +3419,7 @@ function renderStore(){
   const tableGrouping=single?'':control('表格分類',group([['storeDim','store','門市名稱'],['storeDim','group','門市群組']]));
   const fs=state.tableFullscreen;
   const codeToggle=codeCheck('data-store-code="toggle"',state.storeShowCode,tableByGroup);
-  const storeMergeCtl=control('列合併',group([['storeMerge','merge','合併'],['storeMerge','split','不合併']]));
+  const storeMergeCtl=control('',group([['storeMerge','merge','合併'],['storeMerge','split','不合併']]));
   const storeFsGroup=`<div class="group"><button type="button" data-table-fullscreen="${fs?'close':'open'}">${fs?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div>`;
   const result=sections('查詢結果',
     `<div class="table-fs-wrap${fs?' is-fs':''}"${fs?' role="dialog" aria-modal="true" aria-label="門市營收表格（全螢幕）"':''}>${tableGrouping?`<div class="table-toolbar store-table-toolbar table-dim-row"><div class="group">${tableGrouping}</div>${cashIsMobile()?'':storeFsGroup}</div>`:''}<div class="table-toolbar store-table-toolbar"><div class="group">${tsButton('store')}${cashIsMobile()?shapeButton('store',[...(state.storeShowCode&&!tableByGroup?['代碼']:[]),state.storeMerge==='merge'?'合併':'不合併']):codeToggle+storeMergeCtl}</div>${tableGrouping&&!cashIsMobile()?'':storeFsGroup}</div>`
@@ -3907,7 +3908,7 @@ function renderBrand(){
   const rows=brandTs.rows;
   const brandChartSection=sections('圖表',dual);
   const fs=state.tableFullscreen;
-  const brandTableSection=sections('查詢結果',`<div class="table-fs-wrap${fs?' is-fs':''}"${fs?' role="dialog" aria-modal="true" aria-label="品牌營收表格（全螢幕）"':''}><div class="table-toolbar store-table-toolbar brand-table-toolbar"><div class="group">${tsButton('brand')}${control('列合併',group([['brandMerge','merge','合併'],['brandMerge','split','不合併']]))}</div><div class="group"><button type="button" data-table-fullscreen="${fs?'close':'open'}">${fs?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div></div>${tsTableChips('brand',brandTs.shown,brandTs.total)}${table(brandHeaders,rows,'brand-table'+(state.brandNewCol?' has-new-col new-col-'+(chosen.findIndex(x=>x.key===state.brandNewCol)+3):''))}</div>`);
+  const brandTableSection=sections('查詢結果',`<div class="table-fs-wrap${fs?' is-fs':''}"${fs?' role="dialog" aria-modal="true" aria-label="品牌營收表格（全螢幕）"':''}><div class="table-toolbar store-table-toolbar brand-table-toolbar"><div class="group">${tsButton('brand')}${control('',group([['brandMerge','merge','合併'],['brandMerge','split','不合併']]))}</div><div class="group"><button type="button" data-table-fullscreen="${fs?'close':'open'}">${fs?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div></div>${tsTableChips('brand',brandTs.shown,brandTs.total)}${table(brandHeaders,rows,'brand-table'+(state.brandNewCol?' has-new-col new-col-'+(chosen.findIndex(x=>x.key===state.brandNewCol)+3):''))}</div>`);
   return screen(
     reportToolbar('brandView',viewSearch('brandKeyword','搜尋品牌名稱'))+
     (state.brandView==='table'?brandTableSection:brandChartSection)
@@ -4105,7 +4106,7 @@ function renderCash(){
     ?storeDisplay+codeCheck('data-cash-code="toggle"',state.cashShowCode,state.cashStoreView==='group')
     :control('列分類',group([['cashRowLevel','type','類型'],['cashRowLevel','reason','事由']]))+`<button type="button" class="st-check${state.cashTranspose?' is-on':''}" data-cash-transpose="toggle" aria-pressed="${state.cashTranspose}">⇄ 行列置換</button>`;
   const cashFsGroup=`<div class="group"><button type="button" data-table-fullscreen="${state.tableFullscreen?'close':'open'}">${state.tableFullscreen?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div>`;
-  const cashMergeCtl=control('列合併',group([['cashMerge','merge','合併'],['cashMerge','split','不合併']]));
+  const cashMergeCtl=control('',group([['cashMerge','merge','合併'],['cashMerge','split','不合併']]));
   // Phone: keep the toolbar short — 列分類／門市顯示／行列置換／列合併 live in one 顯示方式 sheet.
   const shapeSum=state.cashMode==='all'?[state.cashStoreView==='group'?'門市群組':'門市名稱',state.cashMerge==='merge'?'合併':'不合併']:[state.cashRowLevel==='reason'?'事由':'類型',...(state.cashTranspose?['置換']:[]),state.cashMerge==='merge'?'合併':'不合併'];
   const cashShapeButton=shapeButton('cash',shapeSum);
