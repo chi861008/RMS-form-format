@@ -589,6 +589,7 @@ body.cash-modal-open{overflow:hidden}
 .device-phone .table-dim-row .pillgroup button:first-child{border-left:0}
 @media(max-width:550px){.table-dim-row>.group,.table-dim-row .fil{width:100%!important;max-width:none!important}.table-dim-row .fil{display:flex;flex-direction:column;align-items:flex-start;gap:6px;flex-wrap:nowrap}.table-dim-row .pillgroup{display:flex;flex-wrap:nowrap;width:100%;border:1px solid #c9ced4;border-radius:6px;overflow:hidden}.table-dim-row .pillgroup button{flex:1 1 0;min-width:0;white-space:nowrap;padding:8px 4px;font-size:14px;border:0;border-left:1px solid #e1e5e9;border-radius:0}.table-dim-row .pillgroup button:first-child{border-left:0}}
 .ts-cond .rms-mobile-select-wrap{display:block;min-width:0!important;width:100%!important;max-width:100%}.ts-cond .rms-mobile-select-wrap>button{width:100%!important;min-width:0!important;max-width:100%!important;overflow:hidden}.ts-cond .rms-mobile-select-wrap select{width:100%!important;min-width:0!important;max-width:100%!important}
+.st-check:disabled{opacity:.45;cursor:not-allowed}
 .ts-op-fixed{padding:0 6px;justify-content:center;font-size:13px}.device-phone .ts-cond .ts-del{padding:0;width:24px}
 @media(max-width:550px){.ts-cond{grid-template-columns:minmax(0,1fr) 58px 84px 24px;gap:6px}.ts-cond .ts-val{grid-column:auto;padding:0 8px}.ts-op-fixed{padding:0 6px;justify-content:center;font-size:13px}.ts-cond .ts-del{padding:0;width:24px}}
 .ts-cond select{height:38px;border:1px solid #c9ced4;border-radius:6px;padding:0 8px;background:#fff;font-size:14px;min-width:0}
@@ -2617,7 +2618,7 @@ for(let day=1;day<=30;day++){
   }));
 }
 const CLOSE={'營業報表':[['原價','128,300'],['折扣招待','-3,800'],['服務費','2,200'],['實際營收','126,700']],'結帳方式':[['現金','43,700'],['信用卡','57,000'],['LINE PAY','26,000'],['合計','126,700']],'單據／客單':[['結帳單數','328'],['來客數','410'],['平均訂單單價','386.28']],'發票資訊':[['發票張數','322'],['作廢張數','2'],['作廢金額','750']]};
-const state={searchedReports:{},queryCollapsed:{},brandView:'chart',brandKeyword:'',scopeGroup:'全部',excludeTest:true,excludeClosed:true,tableFilters:{brand:[],store:[],cash:[]},tsOpen:'',tsDraft:null,tsFilterOpen:true,brandChartMetrics:['revenue','guests','guestAvg'],brandRuleField:'revenue',brandRuleOp:'gte',brandRuleValue:'',brandUnifyCurrency:'off',brandMerge:'merge',tableFullscreen:false,cashView:'chart',cashKeyword:'',weekView:'chart',viewSheet:'',storeView:'chart',storeKeyword:'',storeNewCol:'',storeShowCode:false,storeMerge:'merge',storeSheet:false,storeGroupFilter:'全部',storeRuleMin:0,multiDayStore:'',allStoresTrend:false,cashTableType:'all',report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',cashFocusReason:'',cashRowLevel:'type',cashValues:['amount'],cashShapeSheet:false,cashTranspose:false,cashShowCode:false,cashMerge:'merge',cashStoreSort:'out',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','guests','guestAvg'],brandChartMetric:'revenue',brandNewCol:'',cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
+const state={searchedReports:{},queryCollapsed:{},brandView:'chart',brandKeyword:'',scopeGroup:'全部',excludeTest:true,excludeClosed:true,tableFilters:{brand:[],store:[],cash:[]},tsOpen:'',tsDraft:null,tsFilterOpen:true,brandChartMetrics:['revenue','guests','guestAvg'],brandRuleField:'revenue',brandRuleOp:'gte',brandRuleValue:'',brandUnifyCurrency:'off',brandMerge:'merge',tableFullscreen:false,cashView:'chart',cashKeyword:'',weekView:'chart',viewSheet:'',storeView:'chart',storeKeyword:'',storeNewCol:'',storeShowCode:false,storeMerge:'merge',storeSheet:false,storeGroupFilter:'全部',storeRuleMin:0,multiDayStore:'',allStoresTrend:false,cashTableType:'all',report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',cashFocusReason:'',cashRowLevel:'type',cashValues:['amount'],shapeSheet:'',cashTranspose:false,cashShowCode:false,cashMerge:'merge',cashStoreSort:'out',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','guests','guestAvg'],brandChartMetric:'revenue',brandNewCol:'',cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
 const el=id=>document.getElementById(id), fmt=(v,d=0)=>Number(v).toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d}),e=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const field=k=>STORE_FIELDS.find(x=>x.key===k)||STORE_FIELDS[0];
 function fnum(v,k){let t=field(k).type;return `${fmt(v,t==='rate'||t==='growth'?2:t==='avg'?2:t==='amount'?2:0)}${t==='rate'||t==='growth'?'%':''}`;}
@@ -3307,6 +3308,12 @@ function closeStoreLayer(apply){
   layer.classList.add('is-closing');
   setTimeout(done,200);
 }
+
+// Phone: table adjustments (合併, 門市代碼, 列分類, 行列置換…) live in one 顯示方式 sheet so the
+// toolbar keeps the same buttons in the same place whatever is switched.
+function shapeButton(r,sum){return `<button type="button" class="st-filter cash-shape-open" data-shape="open" data-shape-r="${r}" aria-haspopup="dialog"><span>顯示方式</span><span class="ts-sum">・${sum.join('・')}</span><span aria-hidden="true">▾</span></button>`}
+function shapeSheet(r,controls){return state.shapeSheet===r&&cashIsMobile()?`<div class="store-filter-layer ts-layer cash-shape-layer" role="dialog" aria-modal="true" aria-label="顯示方式"><button type="button" class="sfl-backdrop" data-shape="close" aria-label="關閉"></button><div class="sfl-panel"><div class="sfl-head"><strong>顯示方式</strong><span class="ts-shared-tag ts-table-tag">不會篩掉資料</span><button type="button" class="sfl-close" data-shape="close" aria-label="關閉">×</button></div><div class="ts-body cash-shape-body">${controls}<p class="ts-note ts-foot">切換後表格立即改變；要篩選資料請用「欄位篩選」。</p></div><div class="sfl-actions"><button type="button" class="primary" data-shape="close">完成</button></div></div></div>`:''}
+function codeCheck(attr,on,disabled){return `<button type="button" class="st-check${on&&!disabled?' is-on':''}" ${attr} aria-pressed="${on&&!disabled}"${disabled?' disabled title="門市群組沒有門市代碼"':''}><span class="st-check-box" aria-hidden="true">${on&&!disabled?'✓':''}</span>門市代碼</button>`}
 function renderStore(){
   if(awaitingSearch())return storeGrainHeader()+query()+awaitSearchBlock();
   // A single store in the *global* store filter is the single-store scenario.
@@ -3411,10 +3418,11 @@ function renderStore(){
   }
   const tableGrouping=single?'':control('表格分類',group([['storeDim','store','門市名稱'],['storeDim','group','門市群組']]));
   const fs=state.tableFullscreen;
-  const codeToggle=tableByGroup?'':`<button type="button" class="st-check${state.storeShowCode?' is-on':''}" data-store-code="toggle" aria-pressed="${state.storeShowCode}"><span class="st-check-box" aria-hidden="true">${state.storeShowCode?'✓':''}</span>門市代碼</button>`;
+  const codeToggle=codeCheck('data-store-code="toggle"',state.storeShowCode,tableByGroup);
+  const storeMergeCtl=control('列合併',group([['storeMerge','merge','合併'],['storeMerge','split','不合併']]));
   const storeFsGroup=`<div class="group"><button type="button" data-table-fullscreen="${fs?'close':'open'}">${fs?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div>`;
   const result=sections('查詢結果',
-    `<div class="table-fs-wrap${fs?' is-fs':''}"${fs?' role="dialog" aria-modal="true" aria-label="門市營收表格（全螢幕）"':''}>${tableGrouping?`<div class="table-toolbar store-table-toolbar table-dim-row"><div class="group">${tableGrouping}</div>${cashIsMobile()?'':storeFsGroup}</div>`:''}<div class="table-toolbar store-table-toolbar"><div class="group">${tsButton('store')}${codeToggle}${control('列合併',group([['storeMerge','merge','合併'],['storeMerge','split','不合併']]))}</div>${tableGrouping&&!cashIsMobile()?'':storeFsGroup}</div>`
+    `<div class="table-fs-wrap${fs?' is-fs':''}"${fs?' role="dialog" aria-modal="true" aria-label="門市營收表格（全螢幕）"':''}>${tableGrouping?`<div class="table-toolbar store-table-toolbar table-dim-row"><div class="group">${tableGrouping}</div>${cashIsMobile()?'':storeFsGroup}</div>`:''}<div class="table-toolbar store-table-toolbar"><div class="group">${tsButton('store')}${cashIsMobile()?shapeButton('store',[...(state.storeShowCode&&!tableByGroup?['代碼']:[]),state.storeMerge==='merge'?'合併':'不合併']):codeToggle+storeMergeCtl}</div>${tableGrouping&&!cashIsMobile()?'':storeFsGroup}</div>`
     +tsTableChips('store',tableRows.length,tableRowsTotal)
     +`<div class="store-query-results${single?' single-store-results':''}">`
     +table(tableHeaders,tableRows,(single?'single-period-table store-result-table':'store-result-table')+(newColIdx?' has-new-col new-col-'+newColIdx:''))
@@ -3423,7 +3431,7 @@ function renderStore(){
   const queryArea=queryBlock(baseRows.length);
   const toolbar=storeToolbar({single,mControl,tableGrouping,selectCols,filtered:storeFiltered,viewCount:rows.length,total:baseRows.length,tableShown:tableRows.length,tableTotal:tableRowsTotal});
   const content=state.storeView==='table'?result:overview;
-  return queryArea+`<div class="store-below">${fromBrand+toolbar+content}</div>`+(querySheetMode()?storeQuerySheet():'')+(state.tsOpen==='store'?tsPanel('store'):'')+(state.trendDrawerDate?singleTrendDayLayer():storeDrillLayer())+(state.storeSheet&&!single?storeFilterSheet(scopedAll):'');
+  return queryArea+`<div class="store-below">${fromBrand+toolbar+content}</div>`+(querySheetMode()?storeQuerySheet():'')+(state.tsOpen==='store'?tsPanel('store'):'')+shapeSheet('store',codeToggle+storeMergeCtl)+(state.trendDrawerDate?singleTrendDayLayer():storeDrillLayer())+(state.storeSheet&&!single?storeFilterSheet(scopedAll):'');
 }
 
 // V10.8: a single shared drawer header and filter context across the four drill reports.
@@ -4095,14 +4103,14 @@ function renderCash(){
   const storeDisplay=control('門市顯示',group([['cashStoreView','store','門市名稱'],['cashStoreView','group','門市群組']]));
   const groupFilter=control('門市群組',choose('cashStoreGroup',[['全部','全部'],...groupNames.map(x=>[x,x])]));
   const cashShapeControls=state.cashMode==='all'
-    ?storeDisplay+(state.cashStoreView==='group'?'':`<button type="button" class="st-check${state.cashShowCode?' is-on':''}" data-cash-code="toggle" aria-pressed="${state.cashShowCode}"><span class="st-check-box" aria-hidden="true">${state.cashShowCode?'✓':''}</span>門市代碼</button>`)
+    ?storeDisplay+codeCheck('data-cash-code="toggle"',state.cashShowCode,state.cashStoreView==='group')
     :control('列分類',group([['cashRowLevel','type','類型'],['cashRowLevel','reason','事由']]))+`<button type="button" class="st-check${state.cashTranspose?' is-on':''}" data-cash-transpose="toggle" aria-pressed="${state.cashTranspose}">⇄ 行列置換</button>`;
   const cashFsGroup=`<div class="group"><button type="button" data-table-fullscreen="${state.tableFullscreen?'close':'open'}">${state.tableFullscreen?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div>`;
   const cashMergeCtl=control('列合併',group([['cashMerge','merge','合併'],['cashMerge','split','不合併']]));
   // Phone: keep the toolbar short — 列分類／門市顯示／行列置換／列合併 live in one 顯示方式 sheet.
   const shapeSum=state.cashMode==='all'?[state.cashStoreView==='group'?'門市群組':'門市名稱',state.cashMerge==='merge'?'合併':'不合併']:[state.cashRowLevel==='reason'?'事由':'類型',...(state.cashTranspose?['置換']:[]),state.cashMerge==='merge'?'合併':'不合併'];
-  const cashShapeButton=`<button type="button" class="st-filter cash-shape-open" data-cash-shape="open" aria-haspopup="dialog"><span>顯示方式</span><span class="ts-sum">・${shapeSum.join('・')}</span><span aria-hidden="true">▾</span></button>`;
-  const cashShapeSheet=state.cashShapeSheet&&cashIsMobile()?`<div class="store-filter-layer ts-layer cash-shape-layer" role="dialog" aria-modal="true" aria-label="顯示方式"><button type="button" class="sfl-backdrop" data-cash-shape="close" aria-label="關閉"></button><div class="sfl-panel"><div class="sfl-head"><strong>顯示方式</strong><span class="ts-shared-tag ts-table-tag">不會篩掉資料</span><button type="button" class="sfl-close" data-cash-shape="close" aria-label="關閉">×</button></div><div class="ts-body cash-shape-body">${cashShapeControls}${cashMergeCtl}<p class="ts-note ts-foot">切換後表格立即改變；要篩選資料請用「欄位篩選」。</p></div><div class="sfl-actions"><button type="button" class="primary" data-cash-shape="close">完成</button></div></div></div>`:'';
+  const cashShapeButton=shapeButton('cash',shapeSum);
+  const cashShapeSheet=shapeSheet('cash',cashShapeControls+cashMergeCtl);
   const mainChart=singleCash
     ?`<div class="cash-analysis rms-chart-frame"><div class="rms-chart-frame-head"><strong>${e(cashStoreList[0]||'')} 收支分類</strong>${chartHeaderMore()}</div><p class="cash-step-caption">點選分類，查看是哪幾天發生</p>${cash.length?cashCategoryLists(cash):'<div class="cash-no-data">無符合條件的資料</div>'}`
     :`<div class="cash-analysis rms-chart-frame"><div class="rms-chart-frame-head"><strong>門市收支比較</strong>${chartHeaderMore()}</div>${cashStoreCompare(cash)}`;
@@ -4689,7 +4697,7 @@ if(b.dataset.tsUnify){state.tsDraft.unify=!state.tsDraft.unify;render();return}
 if(b.dataset.tsRecheck){state.tsDraft.cols.push(b.dataset.tsRecheck);render();return}
 if(b.dataset.tsDel!=null){state.tsDraft.filters.splice(+b.dataset.tsDel,1);render();return}
 if(b.dataset.cashCode){state.cashShowCode=!state.cashShowCode;render();return}
-if(b.dataset.cashShape){if(b.dataset.cashShape==='open'){state.cashShapeSheet=true;render()}else closeStoreLayer(()=>{state.cashShapeSheet=false});return}
+if(b.dataset.shape){if(b.dataset.shape==='open'){state.shapeSheet=b.dataset.shapeR;render()}else closeStoreLayer(()=>{state.shapeSheet=''});return}
 if(b.dataset.cashTranspose){state.cashTranspose=!state.cashTranspose;render();return}
 if(b.dataset.storeCode){state.storeShowCode=!state.storeShowCode;render();return}
 if(b.dataset.brandRuleClear){state.brandRuleValue='';render();showReloading();return}
