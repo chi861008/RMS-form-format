@@ -3244,7 +3244,7 @@ function tsPanel(r){
   }).join('');
   const n=d.filters.filter(tsSet).length,desc=tsViewDesc(r);
   const sub=`<p class="ts-from">依目前表格的欄位（${cols.length} 欄${desc?`・${e(desc)}`:''}）</p>`;
-  const condBody=`<div class="ts-acc-body">${sub}${conds}${cols.length?`<button type="button" class="ts-add" data-ts="add">＋ 新增條件</button>`:'<p class="ts-note">目前表格沒有欄位。</p>'}</div>`;
+  const condBody=`<div class="ts-acc-body">${conds}${cols.length?`<button type="button" class="ts-add" data-ts="add">＋ 新增條件</button>`:'<p class="ts-note">目前表格沒有欄位。</p>'}</div>`;
   const filterSec=hasCols
     ?`<div class="sfl-sec ts-filter-sec"><button type="button" class="ts-acc${open?' is-open':''}" data-ts="toggle" aria-expanded="${open}"><strong>② 篩選條件</strong>${n?`<span class="ts-badge">${n} 個條件</span>`:'<span class="ts-hint">未設定</span>'}<span class="ts-caret" aria-hidden="true">⌄</span></button>${open?condBody:''}</div>`
     :`<div class="sfl-sec ts-filter-sec"><div class="sfl-label">篩選條件${n?` <span class="ts-badge">${n} 個條件</span>`:''}</div>${condBody}</div>`;
@@ -3254,7 +3254,6 @@ function tsPanel(r){
     <div class="ts-body">
       ${hasCols?`<div class="sfl-sec"><div class="sfl-label">① 統計欄位${r==='cash'?'（可複選）':''}</div>${unify}<div class="ts-sub">已選 ${d.cols.length} / ${fields.length}${r==='cash'?'・兩項都勾時，每一欄會分成「金額／次數」':''}</div><div class="ts-cols">${colGrid}</div>${!d.cols.length?'<p class="ts-warn">至少勾選一項</p>':''}</div>`:''}
       ${filterSec}
-      <p class="ts-note ts-foot">${foot}</p>
     </div>
     <div class="sfl-actions"><button type="button" data-ts="close">取消</button><button type="button" class="primary" data-ts="apply">套用</button></div></div></div>`;
 }
