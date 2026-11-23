@@ -1724,7 +1724,7 @@ button.wm-date-row:focus-visible{outline:2px solid #168f8b;outline-offset:-2px;b
 .rms-month-wd{font-size:12px;text-align:center;color:#667b85;font-weight:700;padding:6px 0 8px}
 .rms-month-wd.is-weekend{color:#c16a56}
 .rms-month-cell,.rms-month-blank{min-width:0;min-height:75px}
-.rms-month-cell{display:flex;flex-direction:column;gap:3px;justify-content:space-between;align-items:stretch;overflow:hidden;width:100%;border:1px solid #e0e8e8;border-radius:6px;padding:5px 3px 6px;text-align:left;background:rgba(21,157,149,var(--rms-month-tint,0));color:#263d46;box-shadow:none}
+.rms-month-cell{display:flex;flex-direction:column;gap:3px;justify-content:space-between;align-items:stretch;overflow:hidden;width:100%;border:1px solid #e0e8e8;border-radius:6px;padding:5px 3px 6px;text-align:left;background:#fff;color:#263d46;box-shadow:none}
 button.rms-month-cell:hover{background:#e8f7f4;border-color:#78c5bc}
 button.rms-month-cell:focus-visible{outline:2px solid #129a90;outline-offset:1px}
 .rms-month-cell.is-selected{border-color:#128f86;box-shadow:inset 0 0 0 1px #128f86}
@@ -3749,7 +3749,7 @@ function weekCalendarWithTotals(list,meal){
     const cls=['rms-month-cell',!inRange?'is-outside':'',!record?'is-empty':'',closed?'is-closed':'',isWeekend?'is-weekend':'',state.weekCalendarFocused===record?.date?'is-selected':''].filter(Boolean).join(' ');
     const content=`<span class="rms-month-cell-top"><span class="rms-month-date">${dayNumber}</span>${available?`<span class="rms-month-wx" title="示意天氣：${e(record.weather)}">${e(wx)}</span>`:''}</span><span class="rms-month-value">${e(dayText)}</span><span class="rms-month-track"><span style="width:${fraction}%"></span></span>`;
     if(!available)return `<span class="${cls}" aria-label="${e(iso)}，${inRange?'無資料':'非查詢期間'}">${content}</span>`;
-    return `<button type="button" class="${cls}" style="--rms-month-tint:${strength}" data-week-target="${e(record.date)}" aria-label="${e(iso)}，${e(record.weather)}，${e(mobileName)} ${e(weekUnitFmt(value,mobileMetric,precise))}，查看餐期分布">${content}</button>`;
+    return `<button type="button" class="${cls}" data-week-target="${e(record.date)}" aria-label="${e(iso)}，${e(record.weather)}，${e(mobileName)} ${e(weekUnitFmt(value,mobileMetric,precise))}，查看餐期分布">${content}</button>`;
   }).join('');
   const mobileCalendar=`<section class="week-shared-calendar rms-month" aria-label="日別營業月曆">
     <div class="rms-month-top"><div><strong>2026 年 11 月</strong><span>查詢期間 ${e(formatShort(state.start))} ～ ${e(formatShort(state.end))}</span></div><div class="rms-month-metric-actions"><div class="rms-month-metric">${control('圖表指標',chooseGrouped('weekMobileMetric',WMT_GROUPS,Object.fromEntries(WMT)))}</div>${chartHeaderMore()}</div></div>
