@@ -592,6 +592,11 @@ body.cash-modal-open{overflow:hidden}
 .st-check:disabled{opacity:.45;cursor:not-allowed}
 .table-toolbar .fil>label:empty,.cash-shape-body .fil>label:empty{display:none}
 .cash-shape-open{display:inline-flex;align-items:center;gap:2px;max-width:220px;min-width:0}.cash-shape-open .ts-sum{display:inline-block!important;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.week-iv-strip{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px;margin:4px var(--rms-edge,24px) 12px;max-width:690px}
+.week-iv-title{flex-basis:100%;font-size:13px;color:#5e6b78}
+.week-iv-card{flex:1 1 0;min-width:96px;display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid #e1e5e9;border-radius:8px;background:#fff}
+.week-iv-card small{color:#5e6b78;font-size:12px}.week-iv-card strong{font-size:18px;color:#1f2a35}
+.week-iv-card em{font-style:normal;font-size:12px}.week-iv-card em.is-up{color:#0f8a5f}.week-iv-card em.is-down{color:#c0392b}.week-iv-card em.is-base{color:#9aa5b1}
 .ts-op-fixed{padding:0 6px;justify-content:center;font-size:13px}.device-phone .ts-cond .ts-del{padding:0;width:24px}
 @media(max-width:550px){.ts-cond{grid-template-columns:minmax(0,1fr) 58px 84px 24px;gap:6px}.ts-cond .ts-val{grid-column:auto;padding:0 8px}.ts-op-fixed{padding:0 6px;justify-content:center;font-size:13px}.ts-cond .ts-del{padding:0;width:24px}}
 .ts-cond select{height:38px;border:1px solid #c9ced4;border-radius:6px;padding:0 8px;background:#fff;font-size:14px;min-width:0}
@@ -3758,10 +3763,10 @@ function renderWeek(){
   let mode=state.weekMode,meal=state.weekMeal,metric=state.weekMetric,all=meal==='全部';
   // Synthetic multi-week fixture for weekday analysis, limited to the embedded demo range.
   const visibleWEEK=WEEK.filter(x=>`2026-${x.date.replace('/','-')}`>=state.start&&`2026-${x.date.replace('/','-')}`<=state.end);
-  let weekSelect=control('類型篩選',group([['weekMode','interval','平/假日'],['weekMode','weekday','星期'],['weekMode','daily','日別']]));
+  let weekSelect=control('分組方式',group([['weekMode','interval','平/假日'],['weekMode','weekday','星期'],['weekMode','daily','日別']]));
   let metricChoose=control('圖表指標',choose('weekMetric',WMT));
   let mealFilter=control('餐期',choose('weekMeal',[['全部','全部餐期'],...MEALS.map(x=>[x,x])]));
-  // V12.8: 類型篩選 and 餐期 apply to both chart and table, so they sit in the shared toolbar.
+  // V12.8: 分組方式 and 餐期 apply to both chart and table, so they sit in the shared toolbar.
   let layout=reportToolbar('weekView',weekSelect+mealFilter,true)+(visibleWEEK.length?'':'<p class="comparison-no-data" role="status">查詢期間沒有資料。</p>');
   const weekShow=v=>state.weekView===v;
   let dateIntervals=[{name:'一～四',rows:visibleWEEK.filter(x=>'一二三四'.includes(x.wd))},{name:'五',rows:visibleWEEK.filter(x=>x.wd==='五')},{name:'六～日',rows:visibleWEEK.filter(x=>'六日'.includes(x.wd))}];
@@ -3783,7 +3788,12 @@ function renderWeek(){
     // This switch controls the chart, so show it ABOVE the chart.
     let modeToggle=all?control('顯示方式',group([['weekGrouped','false','合併比較'],['weekGrouped','true','分餐期比較']])):'';
     // Do not guess which weekday the user wants to investigate before drilldown.
-    if(weekShow('chart'))layout+=sections('圖表',`<div class="chartbar week-chart-top">${metricChoose}${modeToggle}</div><div class="rms-chart-frame week-comparison-frame"><div class="rms-chart-frame-head"><strong>${mode==='interval'?'平假日比較':'星期比較'}</strong>${chartHeaderMore()}</div><div class="chartbox week-interactive-chart">${chart}</div></div>`);
+    // V15: in 星期 view, a small 平/假日 strip gives the coarse comparison without a second chart.
+    const ratioM=['avgOrder','guestAvg'].includes(metric),mLabel=WMT.find(x=>x[0]===metric)[1];
+    const ivVal=rows=>rows.length?(ratioM?weekTotal(rows,metric,meal):weekTotal(rows,metric,meal)/rows.length):null;
+    const base=ivVal(dateIntervals[0].rows);
+    const ivCards=mode==='weekday'?`<div class="week-iv-strip" aria-label="平/假日${ratioM?'':'日均'}${e(mLabel)}"><span class="week-iv-title">平/假日${ratioM?'':'日均'}${e(mLabel)}</span>${dateIntervals.map((d,i)=>{const v=ivVal(d.rows);if(v===null)return '';const diff=i&&base?(v/base-1)*100:null;return `<div class="week-iv-card"><small>${d.name}</small><strong>${weekFmt(v,metric)}</strong>${diff===null?'<em class="is-base">比較基準</em>':`<em class="${diff>=0?'is-up':'is-down'}">${diff>=0?'▲':'▼'} ${fmt(Math.abs(diff),1)}%</em>`}</div>`}).join('')}</div>`:'';
+    if(weekShow('chart'))layout+=sections('圖表',`<div class="chartbar week-chart-top">${metricChoose}${modeToggle}</div>${ivCards}<div class="rms-chart-frame week-comparison-frame"><div class="rms-chart-frame-head"><strong>${mode==='interval'?'平假日比較':'星期比較'}</strong>${chartHeaderMore()}</div><div class="chartbox week-interactive-chart">${chart}</div></div>`);
     let names=['全部',...MEALS],tableRows=names.flatMap(mealName=>state.weekTableCols.map(col=>({values:[mealName==='全部'?'總計':mealName,WMT.find(x=>x[0]===col)[1],weekFmt(weekTotal(visibleWEEK,col,mealName),col),...packs.map(p=>weekFmt(weekTotal(p.rows,col,mealName),col))]})));
     const lowCells=packs.map(p=>{
       const day=weekLowestTradeDay(p.rows,meal);
