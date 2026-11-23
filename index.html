@@ -3131,8 +3131,8 @@ function tsPanel(r){
     <div class="sfl-head"><strong>${r==='brand'?'顯示設定':'表格設定'}</strong>${r==='brand'?'<span class="ts-shared-tag">圖表、表格共用</span>':''}<button type="button" class="sfl-close" data-ts="close" aria-label="關閉">×</button></div>
     <div class="ts-body">
       <div class="sfl-sec"><div class="sfl-label">① 呈現</div>${unify}<div class="ts-sub">統計欄位（已選 ${d.cols.length} / ${fields.length}）</div><div class="ts-cols">${colGrid}</div></div>
-      <div class="sfl-sec ts-filter-sec"><button type="button" class="ts-acc${state.tsFilterOpen?' is-open':''}" data-ts="toggle" aria-expanded="${state.tsFilterOpen}"><strong>② 進階篩選</strong>${n?`<span class="ts-badge">${n} 個條件</span>`:'<span class="ts-hint">未設定</span>'}<span class="ts-caret" aria-hidden="true">⌄</span></button>
-      ${state.tsFilterOpen?`<div class="ts-acc-body"><p class="ts-note">欄位只能從上面勾選的統計欄位挑選。</p>${conds}${avail.length?`<button type="button" class="ts-add" data-ts="add">＋ 新增條件</button>`:'<p class="ts-note">請先勾選統計欄位。</p>'}</div>`:''}</div>
+      <div class="sfl-sec ts-filter-sec"><button type="button" class="ts-acc${state.tsFilterOpen?' is-open':''}" data-ts="toggle" aria-expanded="${state.tsFilterOpen}"><strong>② 依勾選欄位篩選</strong>${n?`<span class="ts-badge">${n} 個條件</span>`:'<span class="ts-hint">未設定</span>'}<span class="ts-caret" aria-hidden="true">⌄</span></button>
+      ${state.tsFilterOpen?`<div class="ts-acc-body">${conds}${avail.length?`<button type="button" class="ts-add" data-ts="add">＋ 新增條件</button>`:'<p class="ts-note">請先勾選統計欄位。</p>'}</div>`:''}</div>
       <p class="ts-note ts-foot">${r==='brand'?'圖表從勾選的欄位挑一個來畫；篩選條件圖表、表格都套用。':''}套用後會重新查詢。合併、全螢幕等觀看方式在表格上方隨時切換。</p>
     </div>
     <div class="sfl-actions"><button type="button" data-ts="close">取消</button><button type="button" class="primary" data-ts="apply">套用</button></div></div></div>`;
