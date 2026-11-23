@@ -598,6 +598,8 @@ body.cash-modal-open{overflow:hidden}
 .week-iv-card small{color:#5e6b78;font-size:12px}.week-iv-card strong{font-size:18px;color:#1f2a35}
 .week-iv-card em{font-style:normal;font-size:12px}.week-iv-card em.is-up{color:#0f8a5f}.week-iv-card em.is-down{color:#c0392b}.week-iv-card em.is-base{color:#9aa5b1}
 .ts-layer .ts-filter-sec{margin-top:12px}
+.device-phone .table-dim-row.dim-4 .pillgroup{display:grid!important;grid-template-columns:1fr 1fr}.device-phone .table-dim-row.dim-4 .pillgroup button:nth-child(3){border-left:0}.device-phone .table-dim-row.dim-4 .pillgroup button:nth-child(n+3){border-top:1px solid #e1e5e9}
+@media(max-width:550px){.table-dim-row.dim-4 .pillgroup{display:grid!important;grid-template-columns:1fr 1fr}.table-dim-row.dim-4 .pillgroup button:nth-child(3){border-left:0}.table-dim-row.dim-4 .pillgroup button:nth-child(n+3){border-top:1px solid #e1e5e9}}
 .ts-op-fixed{padding:0 6px;justify-content:center;font-size:13px}.device-phone .ts-cond .ts-del{padding:0;width:24px}
 @media(max-width:550px){.ts-cond{grid-template-columns:minmax(0,1fr) 58px 84px 24px;gap:6px}.ts-cond .ts-val{grid-column:auto;padding:0 8px}.ts-op-fixed{padding:0 6px;justify-content:center;font-size:13px}.ts-cond .ts-del{padding:0;width:24px}}
 .ts-cond select{height:38px;border:1px solid #c9ced4;border-radius:6px;padding:0 8px;background:#fff;font-size:14px;min-width:0}
@@ -2626,7 +2628,7 @@ for(let day=1;day<=30;day++){
   }));
 }
 const CLOSE={'營業報表':[['原價','128,300'],['折扣招待','-3,800'],['服務費','2,200'],['實際營收','126,700']],'結帳方式':[['現金','43,700'],['信用卡','57,000'],['LINE PAY','26,000'],['合計','126,700']],'單據／客單':[['結帳單數','328'],['來客數','410'],['平均訂單單價','386.28']],'發票資訊':[['發票張數','322'],['作廢張數','2'],['作廢金額','750']]};
-const state={searchedReports:{},queryCollapsed:{},brandView:'chart',brandKeyword:'',scopeGroup:'全部',excludeTest:true,excludeClosed:true,tableFilters:{brand:[],store:[],cash:[]},tsOpen:'',tsDraft:null,tsFilterOpen:true,brandChartMetrics:['revenue','guests','guestAvg'],brandRuleField:'revenue',brandRuleOp:'gte',brandRuleValue:'',brandUnifyCurrency:'off',brandMerge:'merge',tableFullscreen:false,cashView:'chart',cashKeyword:'',weekView:'chart',viewSheet:'',storeView:'chart',storeKeyword:'',storeNewCol:'',storeShowCode:false,storeMerge:'merge',storeSheet:false,storeGroupFilter:'全部',storeRuleMin:0,multiDayStore:'',allStoresTrend:false,cashTableType:'all',report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',cashFocusReason:'',cashRowLevel:'type',cashValues:['amount'],shapeSheet:'',cashTranspose:false,cashShowCode:false,cashMerge:'merge',cashStoreSort:'out',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','guests','guestAvg'],brandChartMetric:'revenue',brandNewCol:'',cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
+const state={searchedReports:{},queryCollapsed:{},brandView:'chart',brandKeyword:'',scopeGroup:'全部',excludeTest:true,excludeClosed:true,tableFilters:{brand:[],store:[],cash:[],pay:[],punch:[]},payKeyword:'',payMerge:'merge',tsOpen:'',tsDraft:null,tsFilterOpen:true,brandChartMetrics:['revenue','guests','guestAvg'],brandRuleField:'revenue',brandRuleOp:'gte',brandRuleValue:'',brandUnifyCurrency:'off',brandMerge:'merge',tableFullscreen:false,cashView:'chart',cashKeyword:'',weekView:'chart',viewSheet:'',storeView:'chart',storeKeyword:'',storeNewCol:'',storeShowCode:false,storeMerge:'merge',storeSheet:false,storeGroupFilter:'全部',storeRuleMin:0,multiDayStore:'',allStoresTrend:false,cashTableType:'all',report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',cashFocusReason:'',cashRowLevel:'type',cashValues:['amount'],shapeSheet:'',cashTranspose:false,cashShowCode:false,cashMerge:'merge',cashStoreSort:'out',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','guests','guestAvg'],brandChartMetric:'revenue',brandNewCol:'',cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
 const el=id=>document.getElementById(id), fmt=(v,d=0)=>Number(v).toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d}),e=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const field=k=>STORE_FIELDS.find(x=>x.key===k)||STORE_FIELDS[0];
 function fnum(v,k){let t=field(k).type;return `${fmt(v,t==='rate'||t==='growth'?2:t==='avg'?2:t==='amount'?2:0)}${t==='rate'||t==='growth'?'%':''}`;}
@@ -2671,7 +2673,15 @@ let mobile=`<div class="mobile-bars">${data.map(d=>`<div class="mobile-bar" ${st
 return svg+'</svg>'+mobile}
 function svgGroups(data,labels,precision=0,weekClick=false){const w=desktopHalfChartWidth()||900,h=320,l=65,r=25,t=22,b=50,colors=['#109d97','#5e8ab9','#f0a85e','#aa91bd'];const ax=niceAxis(0,Math.max(1,...data.flatMap(x=>x.values)));let max=ax.max,out=`<svg class="chartsvg group-chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="各餐期群組長條圖" xmlns="http://www.w3.org/2000/svg">`;ax.ticks.forEach(v=>{let y=h-b-v/max*(h-t-b);out+=`<line x1="${l}" y1="${y}" x2="${w-r}" y2="${y}" stroke="#e6e9e9"/><text x="${l-8}" y="${y+4}" text-anchor="end" font-size="12" fill="#75848d">${chartLabel(v,precision?'avg':'count',max)}</text>`});let sl=(w-l-r)/data.length;for(let i=0;i<data.length;i++){let d=data[i];for(let j=0;j<d.values.length;j++){let bw=sl*.13,x=l+i*sl+sl*.19+j*(bw+2),bh=d.values[j]/max*(h-t-b),y=h-b-bh;out+=`<rect ${weekClick?`data-week-target="${e(d.name)}" tabindex="0" role="button" aria-label="查看 ${e(d.name)} 明細"`:``} x="${x}" y="${y}" width="${bw}" height="${bh}" fill="${colors[j]}"><title>${e(d.name)} ${labels[j]}：${fmt(d.values[j],precision)}</title></rect>`;}out+=`<text x="${l+i*sl+sl/2}" y="${h-23}" text-anchor="middle" fill="#666" font-size="13">${e(d.name)}</text>`;}let mobile=`<div class="mobile-bars">${data.map(d=>`<div class="mobile-group" ${weekClick?`data-week-target="${e(d.name)}" tabindex="0" role="button"`:``}><div class="mobile-group-title">${e(d.name)}</div>${d.values.map((v,i)=>`<div class="mobile-bar"><div class="mobile-bar-head"><span>${labels[i]}</span><strong>${fmt(v,precision)}</strong></div><div class="mobile-bar-track"><div class="mobile-bar-fill" style="background:${colors[i]};width:${Math.max(1,v/max*100)}%"></div></div></div>`).join('')}</div>`).join('')}</div>`;return out+'</svg>'+mobile+`<div class="legend">${labels.map((x,i)=>`<span class="legend-item"><i class="legend-dot" style="background:${colors[i]}"></i>${x}</span>`).join('')}</div>`;}
 function donut(arr){let sum=arr.reduce((s,x)=>s+x.v,0);if(!sum)return '';let hues=['#0aa4a0','#4d83b7','#f1af65','#a78abd','#bfc5cc'];let current=0,parts=[];arr.forEach((d,i)=>{let a=d.v/sum*360;parts.push(`${hues[i%hues.length]} ${current}deg ${current+a}deg`);current+=a;});return `<div style="display:flex;gap:35px;align-items:center;justify-content:center;flex-wrap:wrap;padding:18px"><div role="img" aria-label="組成圓環圖" style="width:218px;height:218px;border-radius:50%;background:conic-gradient(${parts.join(',')});position:relative"><div style="position:absolute;inset:54px;background:#fff;border-radius:50%;display:grid;place-items:center;text-align:center"><span style="font-size:13px;color:#999">總計</span><b style="display:block;font-size:17px">${fmt(sum)}</b></div></div><div style="min-width:150px">${arr.map((d,i)=>`<div style="display:flex;justify-content:space-between;gap:24px;margin:8px 0;font-size:13px"><span><i class="legend-dot" style="background:${hues[i%hues.length]};margin-right:6px"></i>${e(d.name)}</span><b>${fmt(d.v/sum*100,1)}%</b></div>`).join('')}</div></div>`;}
-function query(){return `<div class="date-filters">${control('日期',`<label class="form-radio"><input type="radio" data-key="dateType" value="bank" ${state.dateType==='bank'?'checked':''}>入帳日期</label><label class="form-radio"><input type="radio" data-key="dateType" value="sale" ${state.dateType==='sale'?'checked':''}>銷售日期</label>`)}${control('',`<input type="date" data-key="start" value="${state.start}"> ～ <input type="date" data-key="end" value="${state.end}">`)}${control('集團名稱',choose('group',[['唯賀國際餐飲股份有限公司','唯賀國際餐飲股份有限公司'],['示範集團','示範集團']]))}${control('品牌名稱',choose('brand',[['NU Pasta','NU Pasta'],['全部','全部'],...(state.exploreBrandFilter?[[state.exploreBrandFilter,state.exploreBrandFilter+'（示意）']]:[])]))}${control('門市篩選',`<button data-quick="stores">數量：${state.selectedStores.length} ▾</button>`)}${control('門市群組',choose('scopeGroup',[['全部','全部群組'],...[...new Set(STORES.map(x=>x.group))].filter(g=>g!=='未分組').map(g=>[g,g]),['未分組','未分組（沒有群組的門市）']]))}${control('',`<label class="scope-check"><input type="checkbox" data-scope-flag="excludeTest" ${state.excludeTest?'checked':''}>排除測試店</label><label class="scope-check"><input type="checkbox" data-scope-flag="excludeClosed" ${state.excludeClosed?'checked':''}>排除已關店</label>`)}</div>${state.report==='store'&&state.selectedStores.length===1?storeDateShortcuts():''}<div class="search-row"><button data-quick="refresh">更新時間</button><button data-quick="search" class="orange-text">搜尋</button></div>`;}
+// V15: report-specific conditions that change WHICH data is fetched also live in 報表範圍.
+function payMethodLabel(){return state.paymentMethods.length===PAYMETHODS.length?'全部付款方式':state.paymentMethods.length===1?state.paymentMethods[0]:`付款方式 ${state.paymentMethods.length} 項`}
+function scopeExtra(){
+  if(state.report==='pay')return control('付款方式',`<button type="button" class="pay-method-button" data-quick="paymentMethods" aria-haspopup="dialog" aria-controls="paymentDialog" title="${e(state.paymentMethods.join('、'))}"><span class="pay-method-text">${e(payMethodLabel())}</span><span class="pay-select-caret" aria-hidden="true">▾</span></button>`);
+  if(state.report==='punch')return control('員工',choose('punchName',[['全部','全部員工'],...['員工 A','員工 B','員工 C','員工 D'].map(x=>[x,x])]));
+  return '';
+}
+function scopeExtraText(){return state.report==='pay'?' ・ '+payMethodLabel():state.report==='punch'&&state.punchName!=='全部'?' ・ '+state.punchName:''}
+function query(){return `<div class="date-filters">${control('日期',`<label class="form-radio"><input type="radio" data-key="dateType" value="bank" ${state.dateType==='bank'?'checked':''}>入帳日期</label><label class="form-radio"><input type="radio" data-key="dateType" value="sale" ${state.dateType==='sale'?'checked':''}>銷售日期</label>`)}${control('',`<input type="date" data-key="start" value="${state.start}"> ～ <input type="date" data-key="end" value="${state.end}">`)}${control('集團名稱',choose('group',[['唯賀國際餐飲股份有限公司','唯賀國際餐飲股份有限公司'],['示範集團','示範集團']]))}${control('品牌名稱',choose('brand',[['NU Pasta','NU Pasta'],['全部','全部'],...(state.exploreBrandFilter?[[state.exploreBrandFilter,state.exploreBrandFilter+'（示意）']]:[])]))}${control('門市篩選',`<button data-quick="stores">數量：${state.selectedStores.length} ▾</button>`)}${control('門市群組',choose('scopeGroup',[['全部','全部群組'],...[...new Set(STORES.map(x=>x.group))].filter(g=>g!=='未分組').map(g=>[g,g]),['未分組','未分組（沒有群組的門市）']]))}${scopeExtra()}${control('',`<label class="scope-check"><input type="checkbox" data-scope-flag="excludeTest" ${state.excludeTest?'checked':''}>排除測試店</label><label class="scope-check"><input type="checkbox" data-scope-flag="excludeClosed" ${state.excludeClosed?'checked':''}>排除已關店</label>`)}</div>${state.report==='store'&&state.selectedStores.length===1?storeDateShortcuts():''}<div class="search-row"><button data-quick="refresh">更新時間</button><button data-quick="search" class="orange-text">搜尋</button></div>`;}
 // V12.1: every report waits for the first 搜尋 before showing results, like 門市現金管理統計.
 function awaitingSearch(){return state.version==='after'&&state.report!=='cash'&&!state.searchedReports[state.report]}
 function awaitSearchBlock(){const rep=REPORTS.find(x=>x.id===state.report);return `<div class="cash-await-search" role="status">請設定查詢條件後點選「搜尋」，以查看${e(rep?rep.name:'報表')}結果。</div>`}
@@ -3135,7 +3145,7 @@ function storeQuerySummary(n){
   const grain=state.report==='store'?({day:'日統計',week:'週統計',month:'月統計'}[state.storeGrain]||''):'';
   const fmtD=d=>d.replaceAll('-','/');
   const range=state.start===state.end?fmtD(state.start):`${fmtD(state.start)} – ${fmtD(state.end)}`;
-  return `<div class="store-query-summary"><div class="sqs-main"><div class="sqs-meta">查詢範圍 ${grain?`<span class="sqs-grain">${e(grain)}</span> `:''}${state.dateType==='bank'?'入帳日期':'銷售日期'}</div><div class="sqs-range">${e(range)}</div><div class="sqs-sub">${e(state.brand)} ・ ${state.scopeGroup==='全部'?'':e(state.scopeGroup)+' ・ '}門市 ${n} 間${state.excludeTest||state.excludeClosed?` ・ 排除${[state.excludeTest?'測試店':'',state.excludeClosed?'已關店':''].filter(Boolean).join('、')}`:''}</div></div><button type="button" class="sqs-edit" data-store-query="open" aria-label="修改查詢條件">${ST_ICON_SEARCH}<span>修改條件</span></button></div>`;
+  return `<div class="store-query-summary"><div class="sqs-main"><div class="sqs-meta">查詢範圍 ${grain?`<span class="sqs-grain">${e(grain)}</span> `:''}${state.dateType==='bank'?'入帳日期':'銷售日期'}</div><div class="sqs-range">${e(range)}</div><div class="sqs-sub">${e(state.brand)} ・ ${state.scopeGroup==='全部'?'':e(state.scopeGroup)+' ・ '}門市 ${n} 間${e(scopeExtraText())}${state.excludeTest||state.excludeClosed?` ・ 排除${[state.excludeTest?'測試店':'',state.excludeClosed?'已關店':''].filter(Boolean).join('、')}`:''}</div></div><button type="button" class="sqs-edit" data-store-query="open" aria-label="修改查詢條件">${ST_ICON_SEARCH}<span>修改條件</span></button></div>`;
 }
 function storeToolbar(o){
   const active=storeActiveFilterCount();
@@ -3171,10 +3181,10 @@ function scopeCount(){return state.selectedStores.filter(inScope).length}
 // V15: 欄位篩選 — conditions are built from the CURRENT table's columns (production logic).
 // Text columns use「包含」, number columns use ≥ / ≤. View switches stay on the table toolbar;
 // a condition whose column is not in the current view is kept but paused.
-const TS_CFG={brand:{fields:()=>BRAND_COLUMN_FIELDS,colsKey:'brandCols',unit:'個品牌'},store:{fields:()=>STORE_FIELDS.map(f=>Array.isArray(f)?{key:f[0],label:f[1],type:f[2]}:f),colsKey:'storeCols',unit:'列'},cash:{fields:()=>[{key:'amount',label:'金額',type:'amount'},{key:'qty',label:'次數',type:'count'}],colsKey:'cashValues',unit:'列',statCols:false}};
+const TS_CFG={brand:{fields:()=>BRAND_COLUMN_FIELDS,colsKey:'brandCols',unit:'個品牌'},store:{fields:()=>STORE_FIELDS.map(f=>Array.isArray(f)?{key:f[0],label:f[1],type:f[2]}:f),colsKey:'storeCols',unit:'列'},cash:{fields:()=>[{key:'amount',label:'金額',type:'amount'},{key:'qty',label:'次數',type:'count'}],colsKey:'cashValues',unit:'列',statCols:false},pay:{fields:()=>PAY_COLUMN_FIELDS,colsKey:'paymentCols',unit:'列',statCols:false},punch:{fields:()=>[],colsKey:'',unit:'筆'}};
 const TS_ICON='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4-2v-4z"></path></svg>';
 const TS_LAST={},TS_VIEW_LAST={};
-const TS_VIEW_KEYS={cash:['cashMode','cashRowLevel','cashTranspose','cashStoreView','cashShowCode','cashValues'],store:['storeDim','storeShowCode','storeGrain','storeCols'],brand:['brandCols']};
+const TS_VIEW_KEYS={cash:['cashMode','cashRowLevel','cashTranspose','cashStoreView','cashShowCode','cashValues'],store:['storeDim','storeShowCode','storeGrain','storeCols'],brand:['brandCols'],pay:['paymentPivot','paymentCols'],punch:[]};
 function tsFields(r){return TS_CFG[r].fields()}
 function tsBase(h){return String(h).replace('（新加入）','')}
 function tsText(v){return String(v??'').replace(/<[^>]*>/g,'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&').trim()}
@@ -4194,64 +4204,74 @@ function paymentRankingChart(raw){
   }).join('');
   return `<section class="pay-ranking-panel" aria-label="付款方式分布圖"><div class="pay-ranking-head"><h3>付款方式分布</h3>${control('統計指標',choose('paymentChartMetric',[['amount','付款金額'],['count','付款次數']]))}</div>${shown.length?`<div class="pay-ranking-list">${rows}</div><p class="pay-ranking-note">${ranked.length>10?'顯示前 10 種付款方式，':'依'}${e(metricName)}由高至低排列；佔比以所有已選付款方式計算。示意資料。</p>`:'<p class="no-data">目前條件沒有可顯示的付款資料</p>'}</section>`;
 }
-/* V11.29: restore four payment pivots and place the default multi-store reconciliation under 門市名稱 × 日期. */
+/* V15: 付款方式統計 keeps its table-only design but follows the shared layout:
+   付款方式 in 報表範圍, search row, 維度顯示 on its own row, 欄位篩選 (① 統計欄位 ② 篩選條件). */
+function payTableData(raw,pivotKey,cols){
+  const multi=cols.length>1,sub=h=>multi?cols.map(c=>h+'・'+c.label):[h];
+  const v=(d,k)=>k==='amount'?fmt(d.amount,2):fmt(d.count);
+  const cells=d=>cols.map(c=>v(d,c.key));
+  const merge=state.payMerge==='merge';
+  const grand={amount:0,count:0};raw.forEach(x=>{grand.amount+=x.amount;grand.count+=x.count});
+  if(pivotKey==='store-date'){
+    const stores=STORES.map(x=>x.name).filter(x=>inScope(x)&&raw.some(r=>r.store===x));
+    const dates=[...new Set(raw.map(x=>x.date))].sort();
+    const acc=new Map(),add=(k,x)=>{const t=acc.get(k)||{amount:0,count:0};t.amount+=x.amount;t.count+=x.count;acc.set(k,t)};
+    raw.forEach(x=>{add(x.date+'|'+x.method,x);add(x.date+'|'+x.method+'|'+x.store,x);add('*|'+x.store,x)});
+    const z={amount:0,count:0};
+    const headers=['日期','付款方式',...sub('總計'),...stores.flatMap(sub)];
+    const rows=[{_total:true,values:['總計','',...cells(grand),...stores.flatMap(st=>cells(acc.get('*|'+st)||z))]}];
+    dates.forEach(d=>{PAYMETHODS.filter(m=>acc.has(d+'|'+m)).forEach((m,i)=>rows.push({values:[i&&merge?'':e('2026-'+d.replace('/','-')),e(m),...cells(acc.get(d+'|'+m)),...stores.flatMap(st=>cells(acc.get(d+'|'+m+'|'+st)||z))]}))});
+    return {headers,rows,grouped:multi};
+  }
+  const pivot={'date-store':['date','store'],'date-method':['date','method'],'store-method':['store','method']}[pivotKey]||['date','store'];
+  const agg=new Map();
+  raw.forEach(x=>{const k=pivot.map(y=>x[y]).join('|');if(!agg.has(k))agg.set(k,{keys:pivot.map(y=>x[y]),amount:0,count:0});const t=agg.get(k);t.amount+=x.amount;t.count+=x.count});
+  const list=[...agg.values()].sort((a,b)=>a.keys.join('|').localeCompare(b.keys.join('|'),'zh-Hant'));
+  const rows=list.map((x,i)=>({values:[...x.keys.map((k,c)=>c===0&&merge&&i&&list[i-1].keys[0]===k?'':e(k)),...cells(x)]}));
+  const headers=[...pivot.map(x=>({date:'日期',store:'門市名稱',method:'付款方式'}[x])),...cols.map(c=>c.label)];
+  return {headers,rows:[{_total:true,values:['總計','',...cells(grand)]},...rows],grouped:false};
+}
 function renderPay(){
-  const isStoreCross=state.paymentPivot==='store-date';
-  const pivot=isStoreCross?null:({'date-store':['date','store'],'date-method':['date','method'],'store-method':['store','method']}[state.paymentPivot]||['date','store']);
+  const kw=(state.payKeyword||'').trim();
   const raw=PAYROWS.filter(x=>inScope(x.store)
     &&state.paymentMethods.includes(x.method)
+    &&(!kw||x.store.includes(kw))
     &&(!state.start||('2026-'+x.date.replace('/','-'))>=state.start)
     &&(!state.end||('2026-'+x.date.replace('/','-'))<=state.end));
-  const selectedColumns=PAY_COLUMN_FIELDS.filter(c=>state.paymentCols.includes(c.key));
+  const cols=PAY_COLUMN_FIELDS.filter(c=>state.paymentCols.includes(c.key));
   const sum=raw.reduce((v,x)=>v+x.amount,0),cnt=raw.reduce((v,x)=>v+x.count,0);
-  const methodLabel=state.paymentMethods.length===PAYMETHODS.length?'全部付款方式':`已選 ${state.paymentMethods.length} 項`;
-  const pivotControl=control('維度顯示',group([
-    ['paymentPivot','date-store','日期 × 門市名稱'],
-    ['paymentPivot','store-date','門市名稱 × 日期'],
-    ['paymentPivot','date-method','日期 × 付款方式'],
-    ['paymentPivot','store-method','門市名稱 × 付款方式']
-  ]));
-  const methodDisplay=state.paymentMethods.length===1?state.paymentMethods[0]:methodLabel;
-  const methodControl=control('付款方式',`<button type="button" class="pay-method-button" data-quick="paymentMethods" aria-haspopup="dialog" aria-controls="paymentDialog" aria-label="選擇付款方式，${e(methodDisplay)}" title="${e(state.paymentMethods.join('、'))}"><span class="pay-method-text">${e(methodDisplay)}</span><span class="pay-select-caret" aria-hidden="true">▾</span></button>`);
+  const pivotControl=control('維度顯示',group([['paymentPivot','date-store','日期 × 門市名稱'],['paymentPivot','store-date','門市名稱 × 日期'],['paymentPivot','date-method','日期 × 付款方式'],['paymentPivot','store-method','門市名稱 × 付款方式']]));
   const summaryItems=[
     ...(state.paymentCols.includes('amount')?[`<div class="payment-summary-card"><span class="payment-summary-card-label">總金額</span><strong class="payment-summary-card-value">${fmt(sum,2)}</strong></div>`]:[]),
     ...(state.paymentCols.includes('count')?[`<div class="payment-summary-card"><span class="payment-summary-card-label">總次數</span><strong class="payment-summary-card-value">${fmt(cnt)}</strong></div>`]:[])
   ];
   const summaryCards=summaryItems.length?`<div class="payment-summary-cards${summaryItems.length===1?' is-single':''}" role="group" aria-label="目前篩選條件的彙總數字">${summaryItems.join('')}</div>`:'';
   const noDataNote=raw.length?'':`<p class="payment-empty-note" role="status">目前查詢條件下沒有資料，請確認日期、門市或付款方式。</p>`;
-  const noColumnsNote=!selectedColumns.length?'<p class="payment-empty-note" role="status">請先選擇至少一個統計欄位，才能顯示對帳資料。</p>':'';
-  let resultTable;
-  if(isStoreCross){
-    resultTable=raw.length&&selectedColumns.length?paymentStoreCrossTable(raw,selectedColumns):'';
-  }else{
-    const agg=new Map();
-    raw.forEach(x=>{
-      const k=pivot.map(y=>x[y]).join('|');
-      if(!agg.has(k))agg.set(k,{keys:pivot.map(y=>x[y]),amt:0,count:0});
-      const item=agg.get(k);item.amt+=x.amount;item.count+=x.count;
-    });
-    const valueFor=(item,key)=>key==='amount'?fmt(item.amt,2):fmt(item.count);
-    const rows=[...agg.values()].map(x=>({values:[...x.keys.map(e),...selectedColumns.map(c=>valueFor(x,c.key))]}));
-    const headers=pivot.map(x=>({date:'日期',store:'門市名稱',method:'付款方式'}[x]));
-    const total={_total:true,values:['總計',...(headers.length>1?['']:[]),...selectedColumns.map(c=>valueFor({amt:sum,count:cnt},c.key))]};
-    resultTable=table([...headers,...selectedColumns.map(c=>c.label)],raw.length?[total,...rows]:[],'payment-table');
-  }
-  return screen(
+  const d=payTableData(raw,state.paymentPivot,cols.length?cols:[PAY_COLUMN_FIELDS[0]]);
+  const ts=tsRun('pay',d.headers,raw.length?d.rows:[]);
+  const fs=state.tableFullscreen;
+  const fsGroup=`<div class="group"><button type="button" data-table-fullscreen="${fs?'close':'open'}">${fs?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div>`;
+  const mergeCtl=control('',group([['payMerge','merge','合併'],['payMerge','split','不合併']]));
+  const searchRow=`<div class="store-toolbar"><div class="st-row st-view"><div class="st-view-ctl">${viewSearch('payKeyword','搜尋門市名稱')}</div></div></div>`;
+  const tableHtml=(d.grouped?cashGroupedTable:table)(d.headers,ts.rows,'payment-table cash-reconcile-table'+(d.grouped?' cash-grouped':''));
+  return screen(searchRow+
     sections('查詢結果',
       summaryCards+
-      `<div class="table-toolbar store-table-toolbar pay-table-toolbar"><div class="group"><span class="payment-pivot">${pivotControl}</span>${methodControl}<span class="fil payment-columns-control"><label>統計欄位</label><button type="button" data-quick="columns" aria-label="選擇付款方式統計欄位">已選 ${selectedColumns.length} 項 ▾</button></span></div><div class="group"><button type="button" data-quick="download">下載</button></div></div>`+
-      noDataNote+noColumnsNote+resultTable
+      `<div class="table-fs-wrap${fs?' is-fs':''}"${fs?' role="dialog" aria-modal="true" aria-label="付款方式統計表格（全螢幕）"':''}><div class="table-toolbar store-table-toolbar table-dim-row dim-4"><div class="group">${pivotControl}</div>${cashIsMobile()?'':fsGroup}</div><div class="table-toolbar store-table-toolbar pay-table-toolbar"><div class="group">${tsButton('pay')}${mergeCtl}</div>${cashIsMobile()?fsGroup:''}</div>`+
+      tsTableChips('pay',ts.shown,ts.total)+noDataNote+(raw.length?tableHtml:'')+'</div>'
     )
-  );
+  )+(state.tsOpen==='pay'?tsPanel('pay'):'');
 }
 
 function renderPunch(){
+  // V15: 員工 moved to 報表範圍; the table gets the shared 欄位篩選.
   const rows=PUNCH.filter(x=>inScope(x.store)&&(state.punchName==='全部'||x.name===state.punchName));
-  const employeeFilter=control('員工',choose('punchName',[['全部','全部員工'],...['員工 A','員工 B','員工 C','員工 D'].map(x=>[x,x])]));
-  const rowTable=table(['員工','門市名稱','上班日期','上班時間','下班日期','下班時間','工時'],rows.map(x=>({values:[x.name,x.store,x.date,x.start,x.date,x.end,fmt(x.hours,2)]})),'mobile-cards');
-  const rowCards=cards(rows.map(x=>({title:x.name,date:x.date,items:[['門市',x.store],['上班',x.start],['下班',x.end],['工時',fmt(x.hours,2)+' 小時']]})));
-  const results=sections('查詢結果',`<div class="table-toolbar punch-result-toolbar"><div class="group">${employeeFilter}</div><div class="group"><button data-quick="download">下載</button></div></div>${rowTable}${rowCards}`);
-  return screen(results);
+  const ts=tsRun('punch',['員工','門市名稱','上班日期','上班時間','下班日期','下班時間','工時'],rows.map((x,i)=>({_i:i,values:[e(x.name),e(x.store),e(x.date),e(x.start),e(x.date),e(x.end),fmt(x.hours,2)]})));
+  const kept=ts.rows.map(r=>rows[r._i]);
+  const rowTable=table(['員工','門市名稱','上班日期','上班時間','下班日期','下班時間','工時'],ts.rows,'mobile-cards');
+  const rowCards=cards(kept.map(x=>({title:x.name,date:x.date,items:[['門市',x.store],['上班',x.start],['下班',x.end],['工時',fmt(x.hours,2)+' 小時']]})));
+  const results=sections('查詢結果',`<div class="table-toolbar store-table-toolbar punch-result-toolbar"><div class="group">${tsButton('punch')}</div><div class="group"><button data-quick="download">下載</button></div></div>${tsTableChips('punch',ts.shown,ts.total)}${rowTable}${rowCards}`);
+  return screen(results)+(state.tsOpen==='punch'?tsPanel('punch'):'');
 }
 function renderClose(){return screen(sections('查詢結果',`<div class="table-toolbar"><div class="group">門市：台北南西店　　營業日：2026/11/15</div><button data-quick="download">PDF</button></div><div class="tile-sheet">${Object.entries(CLOSE).map(([title,arr])=>`<div class="sheet-block"><h4>${title}</h4>${arr.map(([k,v])=>`<div class="r"><span>${k}</span><strong>${v}</strong></div>`).join('')}</div>`).join('')}</div>`));}
 
