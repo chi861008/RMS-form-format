@@ -586,6 +586,8 @@ body.cash-modal-open{overflow:hidden}
 .ts-cond select{height:38px;border:1px solid #c9ced4;border-radius:6px;padding:0 8px;background:#fff;font-size:14px;min-width:0}
 .ts-val{display:flex;align-items:center;gap:4px;height:38px;border:1px solid #c9ced4;border-radius:6px;padding:0 10px;background:#fff}.ts-val input{border:0;outline:0;flex:1;min-width:0;font-size:14px;background:transparent}.ts-val span{color:#5e6b78;font-size:13px}
 .ts-del{width:32px;height:32px;border:0;background:none;color:#9aa5b1;font-size:15px;cursor:pointer}
+.cash-grouped th.cash-th-group{text-align:center;border-bottom:1px solid #e1e5e9}
+.cash-shape-body{display:flex;flex-direction:column;align-items:flex-start;gap:14px}.cash-shape-body .fil{width:100%}
 .ts-op-fixed{display:flex;align-items:center;height:38px;padding:0 10px;border:1px solid #e1e5e9;border-radius:6px;background:#f5f7f9;color:#3d4a57;font-size:14px}
 .ts-from{margin:0 0 8px;font-size:12px;color:#5e6b78}
 .st-rule-chip[data-paused]{border-style:dashed;border-color:#c9ced4;background:#f5f7f9;color:#7a8692}
@@ -2606,7 +2608,7 @@ for(let day=1;day<=30;day++){
   }));
 }
 const CLOSE={'營業報表':[['原價','128,300'],['折扣招待','-3,800'],['服務費','2,200'],['實際營收','126,700']],'結帳方式':[['現金','43,700'],['信用卡','57,000'],['LINE PAY','26,000'],['合計','126,700']],'單據／客單':[['結帳單數','328'],['來客數','410'],['平均訂單單價','386.28']],'發票資訊':[['發票張數','322'],['作廢張數','2'],['作廢金額','750']]};
-const state={searchedReports:{},queryCollapsed:{},brandView:'chart',brandKeyword:'',scopeGroup:'全部',excludeTest:true,excludeClosed:true,tableFilters:{brand:[],store:[],cash:[]},tsOpen:'',tsDraft:null,tsFilterOpen:false,brandChartMetrics:['revenue','guests','guestAvg'],brandRuleField:'revenue',brandRuleOp:'gte',brandRuleValue:'',brandUnifyCurrency:'off',brandMerge:'merge',tableFullscreen:false,cashView:'chart',cashKeyword:'',weekView:'chart',viewSheet:'',storeView:'chart',storeKeyword:'',storeNewCol:'',storeShowCode:false,storeMerge:'merge',storeSheet:false,storeGroupFilter:'全部',storeRuleMin:0,multiDayStore:'',allStoresTrend:false,cashTableType:'all',report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',cashFocusReason:'',cashRowLevel:'type',cashValue:'amount',cashTranspose:false,cashShowCode:false,cashMerge:'merge',cashStoreSort:'out',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','guests','guestAvg'],brandChartMetric:'revenue',brandNewCol:'',cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
+const state={searchedReports:{},queryCollapsed:{},brandView:'chart',brandKeyword:'',scopeGroup:'全部',excludeTest:true,excludeClosed:true,tableFilters:{brand:[],store:[],cash:[]},tsOpen:'',tsDraft:null,tsFilterOpen:false,brandChartMetrics:['revenue','guests','guestAvg'],brandRuleField:'revenue',brandRuleOp:'gte',brandRuleValue:'',brandUnifyCurrency:'off',brandMerge:'merge',tableFullscreen:false,cashView:'chart',cashKeyword:'',weekView:'chart',viewSheet:'',storeView:'chart',storeKeyword:'',storeNewCol:'',storeShowCode:false,storeMerge:'merge',storeSheet:false,storeGroupFilter:'全部',storeRuleMin:0,multiDayStore:'',allStoresTrend:false,cashTableType:'all',report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',cashFocusReason:'',cashRowLevel:'type',cashValues:['amount'],cashShapeSheet:false,cashTranspose:false,cashShowCode:false,cashMerge:'merge',cashStoreSort:'out',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','guests','guestAvg'],brandChartMetric:'revenue',brandNewCol:'',cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
 const el=id=>document.getElementById(id), fmt=(v,d=0)=>Number(v).toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d}),e=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const field=k=>STORE_FIELDS.find(x=>x.key===k)||STORE_FIELDS[0];
 function fnum(v,k){let t=field(k).type;return `${fmt(v,t==='rate'||t==='growth'?2:t==='avg'?2:t==='amount'?2:0)}${t==='rate'||t==='growth'?'%':''}`;}
@@ -3151,7 +3153,7 @@ function scopeCount(){return state.selectedStores.filter(inScope).length}
 // V15: 欄位篩選 — conditions are built from the CURRENT table's columns (production logic).
 // Text columns use「包含」, number columns use ≥ / ≤. View switches stay on the table toolbar;
 // a condition whose column is not in the current view is kept but paused.
-const TS_CFG={brand:{fields:()=>BRAND_COLUMN_FIELDS,colsKey:'brandCols',unit:'個品牌'},store:{fields:()=>STORE_FIELDS.map(f=>Array.isArray(f)?{key:f[0],label:f[1],type:f[2]}:f),colsKey:'storeCols',unit:'列'},cash:{fields:()=>[],colsKey:'',unit:'列'}};
+const TS_CFG={brand:{fields:()=>BRAND_COLUMN_FIELDS,colsKey:'brandCols',unit:'個品牌'},store:{fields:()=>STORE_FIELDS.map(f=>Array.isArray(f)?{key:f[0],label:f[1],type:f[2]}:f),colsKey:'storeCols',unit:'列'},cash:{fields:()=>[{key:'amount',label:'金額',type:'amount'},{key:'qty',label:'次數',type:'count'}],colsKey:'cashValues',unit:'列',statCols:false}};
 const TS_ICON='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4-2v-4z"></path></svg>';
 const TS_LAST={};
 function tsFields(r){return TS_CFG[r].fields()}
@@ -3179,10 +3181,11 @@ function tsRun(r,headers,rows){
   const ok=v=>act.every(f=>{const i=H.indexOf(f.col),t=v[i]??'';if(f.op==='contains')return t.toLowerCase().includes(String(f.value).toLowerCase());const n=tsNumOf(t),lim=tsNumOf(f.value);return n!==null&&(f.op==='lte'?n<=lim:n>=lim)});
   const keep=[];body.forEach((row,j)=>{if(ok(eff[j]))keep.push(j)});
   const out=keep.map((j,k)=>{const p=k?keep[k-1]:-1;return {...body[j],values:body[j].values.map((v,i)=>raw[j][i]===''&&eff[j][i]!==''&&(p<0||eff[p].slice(0,i+1).join('｜')!==eff[j].slice(0,i+1).join('｜'))?e(eff[j][i]):v)}});
-  const newTots=tots.map(row=>({...row,values:row.values.map((v,i)=>{if(i===0||types[H[i]]!=='num'||tsText(v)==='')return v;const dec=tsText(v).includes('.')?2:0;return fmt(keep.reduce((s,j)=>s+(tsNumOf(eff[j][i])||0),0),dec)})}));
+  const ki=H.indexOf('分析項目');
+  const newTots=tots.map(row=>{const kind=ki<0?null:tsText(row.values[ki]),ks=ki<0?keep:keep.filter(j=>eff[j][ki]===kind);return {...row,values:row.values.map((v,i)=>{if(i===0||types[H[i]]!=='num'||tsText(v)==='')return v;const dec=tsText(v).includes('.')?2:0;return fmt(ks.reduce((s,j)=>s+(tsNumOf(eff[j][i])||0),0),dec)})}});
   return {rows:[...newTots,...out],shown:keep.length,total:body.length};
 }
-function tsButton(r){const c=TS_CFG[r].colsKey,n=c?state[c].length:0,k=tsActive(r).length,pz=tsPaused(r).length;return `<button type="button" class="st-filter ts-open${k?' is-on':''}" data-ts="open" aria-haspopup="dialog">${TS_ICON}<span>欄位篩選</span><span class="ts-sum">${c?`・${n} 欄`:''}${k?`・篩選 ${k}`:''}${pz?`・暫停 ${pz}`:''}</span></button>`}
+function tsButton(r){const c=TS_CFG[r].colsKey,n=c?state[c].length:0,k=tsActive(r).length,pz=tsPaused(r).length;return `<button type="button" class="st-filter ts-open${k?' is-on':''}" data-ts="open" aria-haspopup="dialog">${TS_ICON}<span>欄位篩選</span><span class="ts-sum">${c?(r==='cash'?`・${state.cashValues.map(v=>CASH_VALUE_LABEL[v]).join('＋')}`:`・${n} 欄`):''}${k?`・篩選 ${k}`:''}${pz?`・暫停 ${pz}`:''}</span></button>`}
 function tsChartNote(r){const act=tsActive(r);if(!act.length)return '';return `<span class="ts-chart-note"><strong>同一批資料</strong>・表格篩選（${act.map(f=>e(tsLabel(r,f))).join('、')}）只套用在表格。</span><button type="button" class="st-chips-clear" data-key="${r}View" data-value="table">切到表格</button>`}
 function tsTableChips(r,shown,total){const bar=tsChips(r,shown,total);return bar?`<div class="st-chips ts-table-chips">${bar}</div>`:''}
 function tsChips(r,shown,total){
@@ -3191,14 +3194,14 @@ function tsChips(r,shown,total){
   return activeFilterBar(chips,act.length?`顯示 ${shown} / ${total} ${TS_CFG[r].unit}`:'','data-ts="clearall"');
 }
 function tsViewDesc(r){
-  if(r==='cash'){const m={all:'全部',typeDate:'類型 × 日期',typeStore:'類型 × 門市名稱'}[state.cashMode];return state.cashMode==='all'?`維度：${m}`:`維度：${m}・列分類：${state.cashRowLevel==='reason'?'事由':'類型'}${state.cashTranspose?'・行列置換':''}`}
+  if(r==='cash'){const m={all:'全部',typeDate:'類型 × 日期',typeStore:'類型 × 門市名稱'}[state.cashMode];const vs=state.cashValues.map(v=>CASH_VALUE_LABEL[v]).join('＋');return state.cashMode==='all'?`維度：${m}・${vs}`:`維度：${m}・列分類：${state.cashRowLevel==='reason'?'事由':'類型'}・${vs}${state.cashTranspose?'・行列置換':''}`}
   if(r==='store')return state.storeDim==='group'?'表格分類：門市群組':'表格分類：門市名稱';
   return '';
 }
 // Columns the panel offers = current table columns; for brand/store the stat columns follow the draft ticks.
 function tsDraftCols(r){
   const last=TS_LAST[r]||{headers:[],types:{}},fields=tsFields(r);
-  if(!TS_CFG[r].colsKey)return last.headers.map(h=>({label:h,type:last.types[h]||'text'}));
+  if(!TS_CFG[r].colsKey||TS_CFG[r].statCols===false)return last.headers.map(h=>({label:h,type:last.types[h]||'text'}));
   const statLabels=fields.map(f=>f.label);
   const fixed=last.headers.filter(h=>!statLabels.includes(h)).map(h=>({label:h,type:last.types[h]||'text'}));
   return [...fixed,...fields.filter(f=>state.tsDraft.cols.includes(f.key)).map(f=>({label:f.label,type:'num'}))];
@@ -3210,7 +3213,7 @@ function tsPanel(r){
   const conds=d.filters.map((f,i)=>{
     const c=cols.find(x=>x.label===f.col);
     if(!c){
-      const fd=fields.find(x=>x.label===f.col);
+      const fd=TS_CFG[r].statCols===false?null:fields.find(x=>x.label===f.col);
       return `<div class="ts-cond is-gone"><span class="ts-gone-text">${e(tsLabel(r,f))}</span><span class="ts-warn">${fd?`⚠「${e(f.col)}」已在上方取消勾選，套用後會移除這個條件。<button type="button" data-ts-recheck="${fd.key}">重新勾選</button>`:`⚠ 目前的表格沒有「${e(f.col)}」這一欄，先暫停；切換回原本的視角就會恢復。`}<button type="button" data-ts-del="${i}">刪除</button></span></div>`;
     }
     const num=c.type==='num';
@@ -3223,11 +3226,11 @@ function tsPanel(r){
   const filterSec=hasCols
     ?`<div class="sfl-sec ts-filter-sec"><button type="button" class="ts-acc${open?' is-open':''}" data-ts="toggle" aria-expanded="${open}"><strong>② 篩選條件</strong>${n?`<span class="ts-badge">${n} 個條件</span>`:'<span class="ts-hint">未設定</span>'}<span class="ts-caret" aria-hidden="true">⌄</span></button>${open?condBody:''}</div>`
     :`<div class="sfl-sec ts-filter-sec"><div class="sfl-label">篩選條件${n?` <span class="ts-badge">${n} 個條件</span>`:''}</div>${condBody}</div>`;
-  const foot=r==='cash'?'要換成別的欄位，請先在表格上方切換「維度顯示／列分類／行列置換」，這裡的欄位會跟著改變。圖表不受影響，套用後會重新查詢。':'圖表有自己的統計指標，不受這裡影響。套用後會重新查詢。合併、全螢幕等觀看方式在表格上方隨時切換。';
+  const foot=r==='cash'?'統計欄位改了要按「套用」，下方可篩的欄位才會跟著換。要換成別的欄位，請先在表格上方切換「維度顯示／列分類／行列置換」，這裡的欄位會跟著改變。圖表不受影響，套用後會重新查詢。':'圖表有自己的統計指標，不受這裡影響。套用後會重新查詢。合併、全螢幕等觀看方式在表格上方隨時切換。';
   return `<div class="store-filter-layer ts-layer" data-layer="ts" role="dialog" aria-modal="true" aria-label="欄位篩選"><button type="button" class="sfl-backdrop" data-ts="close" aria-label="關閉"></button><div class="sfl-panel">
     <div class="sfl-head"><strong>欄位篩選</strong><span class="ts-shared-tag ts-table-tag">只影響表格</span><button type="button" class="sfl-close" data-ts="close" aria-label="關閉">×</button></div>
     <div class="ts-body">
-      ${hasCols?`<div class="sfl-sec"><div class="sfl-label">① 統計欄位</div>${unify}<div class="ts-sub">已選 ${d.cols.length} / ${fields.length}</div><div class="ts-cols">${colGrid}</div></div>`:''}
+      ${hasCols?`<div class="sfl-sec"><div class="sfl-label">① 統計欄位${r==='cash'?'（可複選）':''}</div>${unify}<div class="ts-sub">已選 ${d.cols.length} / ${fields.length}${r==='cash'?'・兩項都勾時，每一欄會分成「金額／次數」':''}</div><div class="ts-cols">${colGrid}</div>${!d.cols.length?'<p class="ts-warn">至少勾選一項</p>':''}</div>`:''}
       ${filterSec}
       <p class="ts-note ts-foot">${foot}</p>
     </div>
@@ -3894,28 +3897,46 @@ function cashDetailTable(raw){
   const tot=list.reduce((t,x)=>({amt:t.amt+x.amt,qty:t.qty+x.qty}),{amt:0,qty:0});
   const mergeN=state.cashMerge==='merge'?keys.length-2:0; // merge repeated leading cells (群組/門市/日期)
   const rows=list.map((x,i)=>({values:[...x.vals.map((v,k)=>k<mergeN&&i>0&&list[i-1].vals.slice(0,k+1).join('｜')===x.vals.slice(0,k+1).join('｜')?'':e(v)),fmt(x.amt,2),fmt(x.qty)]}));
-  return {headers:[...keys.map(k=>label[k]),'金額','次數'],rows:[{values:['總計',...keys.slice(1).map(()=>''),fmt(tot.amt,2),fmt(tot.qty)]},...rows]};
+  const va=state.cashValues.includes('amount')||!state.cashValues.includes('qty'),vq=state.cashValues.includes('qty');
+  const pick=(a,q)=>[...(va?[a]:[]),...(vq?[q]:[])];
+  return {headers:[...keys.map(k=>label[k]),...pick('金額','次數')],rows:[{values:['總計',...keys.slice(1).map(()=>''),...pick(fmt(tot.amt,2),fmt(tot.qty))]},...rows.map(r=>({...r,values:[...r.values.slice(0,keys.length),...pick(r.values[keys.length],r.values[keys.length+1])]}))]};
 }
+// V15: 統計欄位 is multi-select (金額/次數). With both ticked: not transposed → two-level columns
+// (each column splits into 金額/次數); transposed → each row splits by 分析項目, like production.
+const CASH_VALUE_LABEL={amount:'金額',qty:'次數'};
 function cashCrossTable(raw){
-  const byReason=state.cashRowLevel==='reason',val=state.cashValue==='qty'?'qty':'amount';
+  const byReason=state.cashRowLevel==='reason';
+  const vals=['amount','qty'].filter(v=>state.cashValues.includes(v));if(!vals.length)vals.push('amount');
+  const multi=vals.length>1;
   const colKey=state.cashMode==='typeDate'?'date':'store';
   const rowKeys=[...new Set(raw.map(x=>byReason?x.type+'｜'+x.reason:x.type))].sort();
   const colKeys=[...new Set(raw.map(x=>x[colKey]))].sort();
-  const cell=(r,c)=>raw.filter(x=>(r==null||(byReason?x.type+'｜'+x.reason:x.type)===r)&&(c==null||x[colKey]===c)).reduce((t,x)=>t+x[val],0);
-  const f=v=>val==='qty'?fmt(v):fmt(v,2);
+  const cell=(r,c,val)=>raw.filter(x=>(r==null||(byReason?x.type+'｜'+x.reason:x.type)===r)&&(c==null||x[colKey]===c)).reduce((t,x)=>t+x[val],0);
+  const f=(v,val)=>val==='qty'?fmt(v):fmt(v,2);
   const rowHead=byReason?['類型','事由']:['類型'];
   const split=r=>byReason?r.split('｜'):[r];
+  const merge=state.cashMerge==='merge';
+  const sub=h=>multi?vals.map(v=>h+'・'+CASH_VALUE_LABEL[v]):[h];
+  const cells=(r,c)=>vals.map(v=>f(cell(r,c,v),v));
   if(!state.cashTranspose){
-    const headers=[...rowHead,'總計',...colKeys];
-    const total={values:['總計',...(byReason?['']:[]),f(cell(null,null)),...colKeys.map(c=>f(cell(null,c)))]};
-    const merge=state.cashMerge==='merge';
-    const rows=rowKeys.map((r,i)=>{const parts=split(r);if(merge&&byReason&&i>0&&split(rowKeys[i-1])[0]===parts[0])parts[0]='';return {values:[...parts.map(e),f(cell(r,null)),...colKeys.map(c=>f(cell(r,c)))]}});
-    return {headers,rows:[total,...rows]};
+    const headers=[...rowHead,...sub('總計'),...colKeys.flatMap(sub)];
+    const total={values:['總計',...(byReason?['']:[]),...cells(null,null),...colKeys.flatMap(c=>cells(null,c))]};
+    const rows=rowKeys.map((r,i)=>{const parts=split(r);if(merge&&byReason&&i>0&&split(rowKeys[i-1])[0]===parts[0])parts[0]='';return {values:[...parts.map(e),...cells(r,null),...colKeys.flatMap(c=>cells(r,c))]}});
+    return {headers,rows:[total,...rows],grouped:multi};
   }
   const colName=colKey==='date'?'日期':'門市名稱';
-  const headers=[colName,'總計',...rowKeys.map(r=>byReason?r.replace('｜','・'):r)];
-  const total={values:['總計',f(cell(null,null)),...rowKeys.map(r=>f(cell(r,null)))]};
-  return {headers,rows:[total,...colKeys.map(c=>({values:[e(c),f(cell(null,c)),...rowKeys.map(r=>f(cell(r,c)))]}))]};
+  const lead=multi?[colName,'分析項目']:[colName];
+  const headers=[...lead,'總計',...rowKeys.map(r=>byReason?r.replace('｜','・'):r)];
+  const line=(c,v,k)=>({values:[k&&merge?'':(c==null?'總計':e(c)),...(multi?[CASH_VALUE_LABEL[v]]:[]),f(cell(null,c,v),v),...rowKeys.map(r=>f(cell(r,c,v),v))],_total:c==null});
+  return {headers,rows:[...vals.map((v,k)=>line(null,v,k)),...colKeys.flatMap(c=>vals.map((v,k)=>line(c,v,k)))]};
+}
+// Two-level header: "11/12・金額" + "11/12・次數" share one top cell.
+function cashGroupedTable(headers,rows,cls){
+  const parts=headers.map(h=>h.includes('・')?h.split('・'):[h,null]);
+  let top='',i=0;
+  while(i<parts.length){const [g,sv]=parts[i];if(sv==null){top+=`<th rowspan="2">${e(g)}</th>`;i++;continue}let n=1;while(i+n<parts.length&&parts[i+n][0]===g&&parts[i+n][1]!=null)n++;top+=`<th colspan="${n}" class="cash-th-group">${e(g)}</th>`;i+=n}
+  const second=parts.filter(x=>x[1]!=null).map(x=>`<th>${e(x[1])}</th>`).join('');
+  return `<div class="table-area ${cls}"><table><thead><tr>${top}</tr><tr>${second}</tr></thead><tbody>${rows.map(row=>`<tr class="${row._total?'total':''}">${row.values.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
 function pivotRows(raw,mode,display){
   const groups=new Map(STORES.map(x=>[x.name,x.group]));
@@ -4047,13 +4068,18 @@ function renderCash(){
   const tableCash=cash;
   const p0=state.cashMode==='all'?cashDetailTable(tableCash):cashCrossTable(tableCash);
   const cashTs=tsRun('cash',p0.headers,p0.rows);
-  const p={headers:p0.headers,rows:cashTs.rows};
+  const p={headers:p0.headers,rows:cashTs.rows,grouped:p0.grouped};
   const tableDim=control('維度顯示',group([['cashMode','all','全部'],['cashMode','typeDate','類型 × 日期'],['cashMode','typeStore','類型 × 門市名稱']]));
   const storeDisplay=control('門市顯示',group([['cashStoreView','store','門市名稱'],['cashStoreView','group','門市群組']]));
   const groupFilter=control('門市群組',choose('cashStoreGroup',[['全部','全部'],...groupNames.map(x=>[x,x])]));
   const cashShapeControls=state.cashMode==='all'
     ?storeDisplay+(state.cashStoreView==='group'?'':`<button type="button" class="st-check${state.cashShowCode?' is-on':''}" data-cash-code="toggle" aria-pressed="${state.cashShowCode}"><span class="st-check-box" aria-hidden="true">${state.cashShowCode?'✓':''}</span>門市代碼</button>`)
-    :control('列分類',group([['cashRowLevel','type','類型'],['cashRowLevel','reason','事由']]))+control('統計欄位',group([['cashValue','amount','金額'],['cashValue','qty','次數']]))+`<button type="button" class="st-check${state.cashTranspose?' is-on':''}" data-cash-transpose="toggle" aria-pressed="${state.cashTranspose}">⇄ 行列置換</button>`;
+    :control('列分類',group([['cashRowLevel','type','類型'],['cashRowLevel','reason','事由']]))+`<button type="button" class="st-check${state.cashTranspose?' is-on':''}" data-cash-transpose="toggle" aria-pressed="${state.cashTranspose}">⇄ 行列置換</button>`;
+  const cashMergeCtl=control('列合併',group([['cashMerge','merge','合併'],['cashMerge','split','不合併']]));
+  // Phone: keep the toolbar short — 列分類／門市顯示／行列置換／列合併 live in one 顯示方式 sheet.
+  const shapeSum=state.cashMode==='all'?[state.cashStoreView==='group'?'門市群組':'門市名稱',state.cashMerge==='merge'?'合併':'不合併']:[state.cashRowLevel==='reason'?'事由':'類型',...(state.cashTranspose?['置換']:[]),state.cashMerge==='merge'?'合併':'不合併'];
+  const cashShapeButton=`<button type="button" class="st-filter cash-shape-open" data-cash-shape="open" aria-haspopup="dialog"><span>顯示方式</span><span class="ts-sum">・${shapeSum.join('・')}</span><span aria-hidden="true">▾</span></button>`;
+  const cashShapeSheet=state.cashShapeSheet&&cashIsMobile()?`<div class="store-filter-layer ts-layer cash-shape-layer" role="dialog" aria-modal="true" aria-label="顯示方式"><button type="button" class="sfl-backdrop" data-cash-shape="close" aria-label="關閉"></button><div class="sfl-panel"><div class="sfl-head"><strong>顯示方式</strong><span class="ts-shared-tag ts-table-tag">不會篩掉資料</span><button type="button" class="sfl-close" data-cash-shape="close" aria-label="關閉">×</button></div><div class="ts-body cash-shape-body">${cashShapeControls}${cashMergeCtl}<p class="ts-note ts-foot">切換後表格立即改變；要篩選資料請用「欄位篩選」。</p></div><div class="sfl-actions"><button type="button" class="primary" data-cash-shape="close">完成</button></div></div></div>`:'';
   const mainChart=singleCash
     ?`<div class="cash-analysis rms-chart-frame"><div class="rms-chart-frame-head"><strong>${e(cashStoreList[0]||'')} 收支分類</strong>${chartHeaderMore()}</div><p class="cash-step-caption">點選分類，查看是哪幾天發生</p>${cash.length?cashCategoryLists(cash):'<div class="cash-no-data">無符合條件的資料</div>'}`
     :`<div class="cash-analysis rms-chart-frame"><div class="rms-chart-frame-head"><strong>門市收支比較</strong>${chartHeaderMore()}</div>${cashStoreCompare(cash)}`;
@@ -4067,10 +4093,10 @@ function renderCash(){
       `<div class="cash-summary-strip">${stats([['現金入',fmt(income,2)],['現金出',fmt(out,2)],['收支淨額',fmt(income+out,2)]])}</div>`+
       mainChart+'</div>');
   const cashTableSection=sections('查詢結果',
-      `<div class="table-fs-wrap${state.tableFullscreen?' is-fs':''}"${state.tableFullscreen?' role="dialog" aria-modal="true" aria-label="現金管理表格（全螢幕）"':''}><div class="table-toolbar store-table-toolbar cash-table-toolbar"><div class="group">${tsButton('cash')}${tableDim}${cashShapeControls}${control('列合併',group([['cashMerge','merge','合併'],['cashMerge','split','不合併']]))}</div><div class="group"><button type="button" data-table-fullscreen="${state.tableFullscreen?'close':'open'}">${state.tableFullscreen?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div></div>`+
-      tsTableChips('cash',cashTs.shown,cashTs.total)+table(p.headers,p.rows,'cash-reconcile-table cash-mode-'+state.cashMode)+'</div>');
+      `<div class="table-fs-wrap${state.tableFullscreen?' is-fs':''}"${state.tableFullscreen?' role="dialog" aria-modal="true" aria-label="現金管理表格（全螢幕）"':''}><div class="table-toolbar store-table-toolbar cash-table-toolbar"><div class="group">${cashIsMobile()?tableDim+tsButton('cash')+cashShapeButton:tsButton('cash')+tableDim+cashShapeControls+cashMergeCtl}</div><div class="group"><button type="button" data-table-fullscreen="${state.tableFullscreen?'close':'open'}">${state.tableFullscreen?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div></div>`+
+      tsTableChips('cash',cashTs.shown,cashTs.total)+(p.grouped?cashGroupedTable:table)(p.headers,p.rows,'cash-reconcile-table cash-mode-'+state.cashMode+(p.grouped?' cash-grouped':''))+'</div>');
   const report=screen(cashToolbar+(state.cashView==='table'?cashTableSection:cashChartSection));
-  return report+cashSheetHtml+cashBottomSheet(cash,singleCash)+(state.tsOpen==='cash'?tsPanel('cash'):'');
+  return report+cashSheetHtml+cashBottomSheet(cash,singleCash)+(state.tsOpen==='cash'?tsPanel('cash'):'')+cashShapeSheet;
 }
 
 function paymentStoreCrossTable(raw,selectedColumns){
@@ -4630,7 +4656,7 @@ if(b.dataset.viewSheet){if(b.dataset.viewSheet==='close'){closeStoreLayer(()=>{s
 if(b.dataset.ts){const a=b.dataset.ts,r=state.report,ck=TS_CFG[r].colsKey;
   if(a==='open'){state.tsDraft={cols:ck?[...state[ck]]:[],unify:state.brandUnifyCurrency==='on',filters:(state.tableFilters[r]||[]).map(f=>({...f}))};state.tsOpen=r;render();return}
   if(a==='close'){closeStoreLayer(()=>{state.tsOpen='';state.tsDraft=null});return}
-  if(a==='apply'){const d=state.tsDraft,unticked=ck?tsFields(r).filter(f=>!d.cols.includes(f.key)).map(f=>f.label):[];closeStoreLayer(()=>{if(ck)state[ck]=tsFields(r).map(f=>f.key).filter(k=>d.cols.includes(k));if(r==='brand'){state.brandUnifyCurrency=d.unify?'on':'off';state.brandNewCol=''}if(r==='store')state.storeNewCol='';state.tableFilters={...state.tableFilters,[r]:d.filters.filter(f=>tsSet(f)&&!unticked.includes(f.col))};state.tsOpen='';state.tsDraft=null});setTimeout(()=>showReloading(),230);return}
+  if(a==='apply'){const d=state.tsDraft;if(ck&&!d.cols.length){rmsToast('至少勾選一項統計欄位');return}const unticked=ck&&TS_CFG[r].statCols!==false?tsFields(r).filter(f=>!d.cols.includes(f.key)).map(f=>f.label):[];closeStoreLayer(()=>{if(ck)state[ck]=tsFields(r).map(f=>f.key).filter(k=>d.cols.includes(k));if(r==='brand'){state.brandUnifyCurrency=d.unify?'on':'off';state.brandNewCol=''}if(r==='store')state.storeNewCol='';state.tableFilters={...state.tableFilters,[r]:d.filters.filter(f=>tsSet(f)&&!unticked.includes(f.col))};state.tsOpen='';state.tsDraft=null});setTimeout(()=>showReloading(),230);return}
   if(a==='toggle'){state.tsFilterOpen=!state.tsFilterOpen;render();return}
   if(a==='add'){const c=tsDraftCols(r)[0];if(c)state.tsDraft.filters.push({col:c.label,op:c.type==='num'?'gte':'contains',value:''});state.tsFilterOpen=true;render();setTimeout(()=>{const ins=document.querySelectorAll('[data-ts-val]');ins[ins.length-1]?.focus()},30);return}
   if(a==='clearall'){state.tableFilters={...state.tableFilters,[r]:[]};render();showReloading();return}
@@ -4640,6 +4666,7 @@ if(b.dataset.tsUnify){state.tsDraft.unify=!state.tsDraft.unify;render();return}
 if(b.dataset.tsRecheck){state.tsDraft.cols.push(b.dataset.tsRecheck);render();return}
 if(b.dataset.tsDel!=null){state.tsDraft.filters.splice(+b.dataset.tsDel,1);render();return}
 if(b.dataset.cashCode){state.cashShowCode=!state.cashShowCode;render();return}
+if(b.dataset.cashShape){if(b.dataset.cashShape==='open'){state.cashShapeSheet=true;render()}else closeStoreLayer(()=>{state.cashShapeSheet=false});return}
 if(b.dataset.cashTranspose){state.cashTranspose=!state.cashTranspose;render();return}
 if(b.dataset.storeCode){state.storeShowCode=!state.storeShowCode;render();return}
 if(b.dataset.brandRuleClear){state.brandRuleValue='';render();showReloading();return}
