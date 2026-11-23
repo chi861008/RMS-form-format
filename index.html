@@ -3403,8 +3403,9 @@ function renderStore(){
   const tableGrouping=single?'':control('表格分類',group([['storeDim','store','門市名稱'],['storeDim','group','門市群組']]));
   const fs=state.tableFullscreen;
   const codeToggle=tableByGroup?'':`<button type="button" class="st-check${state.storeShowCode?' is-on':''}" data-store-code="toggle" aria-pressed="${state.storeShowCode}"><span class="st-check-box" aria-hidden="true">${state.storeShowCode?'✓':''}</span>門市代碼</button>`;
+  const storeFsGroup=`<div class="group"><button type="button" data-table-fullscreen="${fs?'close':'open'}">${fs?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div>`;
   const result=sections('查詢結果',
-    `<div class="table-fs-wrap${fs?' is-fs':''}"${fs?' role="dialog" aria-modal="true" aria-label="門市營收表格（全螢幕）"':''}>${tableGrouping?`<div class="table-toolbar store-table-toolbar table-dim-row"><div class="group">${tableGrouping}</div></div>`:''}<div class="table-toolbar store-table-toolbar"><div class="group">${tsButton('store')}${codeToggle}${control('列合併',group([['storeMerge','merge','合併'],['storeMerge','split','不合併']]))}</div><div class="group"><button type="button" data-table-fullscreen="${fs?'close':'open'}">${fs?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div></div>`
+    `<div class="table-fs-wrap${fs?' is-fs':''}"${fs?' role="dialog" aria-modal="true" aria-label="門市營收表格（全螢幕）"':''}>${tableGrouping?`<div class="table-toolbar store-table-toolbar table-dim-row"><div class="group">${tableGrouping}</div>${cashIsMobile()?'':storeFsGroup}</div>`:''}<div class="table-toolbar store-table-toolbar"><div class="group">${tsButton('store')}${codeToggle}${control('列合併',group([['storeMerge','merge','合併'],['storeMerge','split','不合併']]))}</div>${tableGrouping&&!cashIsMobile()?'':storeFsGroup}</div>`
     +tsTableChips('store',tableRows.length,tableRowsTotal)
     +`<div class="store-query-results${single?' single-store-results':''}">`
     +table(tableHeaders,tableRows,(single?'single-period-table store-result-table':'store-result-table')+(newColIdx?' has-new-col new-col-'+newColIdx:''))
@@ -4087,6 +4088,7 @@ function renderCash(){
   const cashShapeControls=state.cashMode==='all'
     ?storeDisplay+(state.cashStoreView==='group'?'':`<button type="button" class="st-check${state.cashShowCode?' is-on':''}" data-cash-code="toggle" aria-pressed="${state.cashShowCode}"><span class="st-check-box" aria-hidden="true">${state.cashShowCode?'✓':''}</span>門市代碼</button>`)
     :control('列分類',group([['cashRowLevel','type','類型'],['cashRowLevel','reason','事由']]))+`<button type="button" class="st-check${state.cashTranspose?' is-on':''}" data-cash-transpose="toggle" aria-pressed="${state.cashTranspose}">⇄ 行列置換</button>`;
+  const cashFsGroup=`<div class="group"><button type="button" data-table-fullscreen="${state.tableFullscreen?'close':'open'}">${state.tableFullscreen?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div>`;
   const cashMergeCtl=control('列合併',group([['cashMerge','merge','合併'],['cashMerge','split','不合併']]));
   // Phone: keep the toolbar short — 列分類／門市顯示／行列置換／列合併 live in one 顯示方式 sheet.
   const shapeSum=state.cashMode==='all'?[state.cashStoreView==='group'?'門市群組':'門市名稱',state.cashMerge==='merge'?'合併':'不合併']:[state.cashRowLevel==='reason'?'事由':'類型',...(state.cashTranspose?['置換']:[]),state.cashMerge==='merge'?'合併':'不合併'];
@@ -4105,7 +4107,7 @@ function renderCash(){
       `<div class="cash-summary-strip">${stats([['現金入',fmt(income,2)],['現金出',fmt(out,2)],['收支淨額',fmt(income+out,2)]])}</div>`+
       mainChart+'</div>');
   const cashTableSection=sections('查詢結果',
-      `<div class="table-fs-wrap${state.tableFullscreen?' is-fs':''}"${state.tableFullscreen?' role="dialog" aria-modal="true" aria-label="現金管理表格（全螢幕）"':''}><div class="table-toolbar store-table-toolbar table-dim-row"><div class="group">${tableDim}</div></div><div class="table-toolbar store-table-toolbar cash-table-toolbar"><div class="group">${tsButton('cash')+(cashIsMobile()?cashShapeButton:cashShapeControls+cashMergeCtl)}</div><div class="group"><button type="button" data-table-fullscreen="${state.tableFullscreen?'close':'open'}">${state.tableFullscreen?'結束全螢幕':'全螢幕顯示'}</button><button data-quick="download">下載</button></div></div>`+
+      `<div class="table-fs-wrap${state.tableFullscreen?' is-fs':''}"${state.tableFullscreen?' role="dialog" aria-modal="true" aria-label="現金管理表格（全螢幕）"':''}><div class="table-toolbar store-table-toolbar table-dim-row"><div class="group">${tableDim}</div>${cashIsMobile()?'':cashFsGroup}</div><div class="table-toolbar store-table-toolbar cash-table-toolbar"><div class="group">${tsButton('cash')+(cashIsMobile()?cashShapeButton:cashShapeControls+cashMergeCtl)}</div>${cashIsMobile()?cashFsGroup:''}</div>`+
       tsTableChips('cash',cashTs.shown,cashTs.total)+(p.grouped?cashGroupedTable:table)(p.headers,p.rows,'cash-reconcile-table cash-mode-'+state.cashMode+(p.grouped?' cash-grouped':''))+'</div>');
   const report=screen(cashToolbar+(state.cashView==='table'?cashTableSection:cashChartSection));
   return report+cashSheetHtml+cashBottomSheet(cash,singleCash)+(state.tsOpen==='cash'?tsPanel('cash'):'')+cashShapeSheet;
