@@ -3208,7 +3208,8 @@ function tsRun(r,headers,rows){
     const old=state.tableFilters[r],keys=TS_VIEW_KEYS[r]||[];
     state.tableFilters={...state.tableFilters,[r]:old.filter(f=>H.includes(f.col))};
     const cols=[...new Set(gone.map(f=>f.col))].map(c=>`「${c}」`).join('、');
-    setTimeout(()=>rmsToast(`這個表格沒有${cols}欄，已清除 ${gone.length} 個篩選條件`,prevView?'復原':'',()=>{JSON.parse(prevView).forEach((v,i)=>{state[keys[i]]=v});state.tableFilters={...state.tableFilters,[r]:old};render()}),0);
+    const viewChanged=prevView&&prevView!==view;
+    setTimeout(()=>rmsToast(`這個表格沒有${cols}欄，已清除 ${gone.length} 個篩選條件`,viewChanged?'復原':'',()=>{JSON.parse(prevView).forEach((v,i)=>{state[keys[i]]=v});state.tableFilters={...state.tableFilters,[r]:old};render()}),0);
   }
   const act=tsActive(r);
   if(!act.length)return {rows,shown:body.length,total:body.length};
