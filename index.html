@@ -592,11 +592,6 @@ body.cash-modal-open{overflow:hidden}
 .st-check:disabled{opacity:.45;cursor:not-allowed}
 .table-toolbar .fil>label:empty,.cash-shape-body .fil>label:empty{display:none}
 .cash-shape-open{display:inline-flex;align-items:center;gap:2px;max-width:220px;min-width:0}.cash-shape-open .ts-sum{display:inline-block!important;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.week-iv-strip{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px;margin:4px var(--rms-edge,24px) 12px;max-width:690px}
-.week-iv-title{flex-basis:100%;font-size:13px;color:#5e6b78}
-.week-iv-card{flex:1 1 0;min-width:96px;display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid #e1e5e9;border-radius:8px;background:#fff}
-.week-iv-card small{color:#5e6b78;font-size:12px}.week-iv-card strong{font-size:18px;color:#1f2a35}
-.week-iv-card em{font-style:normal;font-size:12px}.week-iv-card em.is-up{color:#0f8a5f}.week-iv-card em.is-down{color:#c0392b}.week-iv-card em.is-base{color:#9aa5b1}
 .ts-layer .ts-filter-sec{margin-top:12px}
 .device-phone .table-dim-row.dim-4 .pillgroup{display:grid!important;grid-template-columns:1fr 1fr}.device-phone .table-dim-row.dim-4 .pillgroup button:nth-child(3){border-left:0}.device-phone .table-dim-row.dim-4 .pillgroup button:nth-child(n+3){border-top:1px solid #e1e5e9}
 @media(max-width:550px){.table-dim-row.dim-4 .pillgroup{display:grid!important;grid-template-columns:1fr 1fr}.table-dim-row.dim-4 .pillgroup button:nth-child(3){border-left:0}.table-dim-row.dim-4 .pillgroup button:nth-child(n+3){border-top:1px solid #e1e5e9}}
@@ -2628,7 +2623,7 @@ for(let day=1;day<=30;day++){
   }));
 }
 const CLOSE={'營業報表':[['原價','128,300'],['折扣招待','-3,800'],['服務費','2,200'],['實際營收','126,700']],'結帳方式':[['現金','43,700'],['信用卡','57,000'],['LINE PAY','26,000'],['合計','126,700']],'單據／客單':[['結帳單數','328'],['來客數','410'],['平均訂單單價','386.28']],'發票資訊':[['發票張數','322'],['作廢張數','2'],['作廢金額','750']]};
-const state={searchedReports:{},queryCollapsed:{},brandView:'chart',brandKeyword:'',scopeGroup:'全部',excludeTest:true,excludeClosed:true,tableFilters:{brand:[],store:[],cash:[],pay:[],punch:[]},payKeyword:'',payMerge:'merge',tsOpen:'',tsDraft:null,tsFilterOpen:true,brandChartMetrics:['revenue','guests','guestAvg'],brandRuleField:'revenue',brandRuleOp:'gte',brandRuleValue:'',brandUnifyCurrency:'off',brandMerge:'merge',tableFullscreen:false,cashView:'chart',cashKeyword:'',weekView:'chart',viewSheet:'',storeView:'chart',storeKeyword:'',storeNewCol:'',storeShowCode:false,storeMerge:'merge',storeSheet:false,storeGroupFilter:'全部',storeRuleMin:0,multiDayStore:'',allStoresTrend:false,cashTableType:'all',report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',cashFocusReason:'',cashRowLevel:'type',cashValues:['amount'],shapeSheet:'',cashTranspose:false,cashShowCode:false,cashMerge:'merge',cashStoreSort:'out',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','guests','guestAvg'],brandChartMetric:'revenue',brandNewCol:'',cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
+const state={searchedReports:{},queryCollapsed:{},brandView:'chart',brandKeyword:'',scopeGroup:'全部',excludeTest:true,excludeClosed:true,tableFilters:{brand:[],store:[],cash:[],pay:[],punch:[]},payKeyword:'',payMerge:'merge',tsOpen:'',tsDraft:null,tsFilterOpen:true,brandChartMetrics:['revenue','guests','guestAvg'],brandRuleField:'revenue',brandRuleOp:'gte',brandRuleValue:'',brandUnifyCurrency:'off',brandMerge:'merge',tableFullscreen:false,cashView:'chart',cashKeyword:'',weekView:'chart',viewSheet:'',storeView:'chart',storeKeyword:'',storeNewCol:'',storeShowCode:false,storeMerge:'merge',storeSheet:false,storeGroupFilter:'全部',storeRuleMin:0,multiDayStore:'',allStoresTrend:false,cashTableType:'all',report:'store',device:'desktop',version:'after',group:'唯賀國際餐飲股份有限公司',brand:'NU Pasta',dateType:'bank',start:'2026-11-03',end:'2026-11-16',storeScope:'all',storeDim:'store',storeTop:'10',storeSort:'desc',storeMetric:'revenue',singleHourlyMetric:'revenue',singleTrendMetric:'revenue',storeGrain:'week',storeGrainVisible:true,storeCols:['revenue','orders','avg','voidCount','voidCountRate','voidAmount','voidAmountRate'],singleComposition:false,weekMode:'daily',weekTop:'daily',weekSub:'weekday',weekMeal:'全部',weekMetric:'revenue',weekTableCols:['revenue','orders'],weekDailyChart:false,weekCalendarMetric:'revenue',weekCalendarCols:['revenue'],weekMobileMetric:'revenue',weekCalendarFocused:'',cashMode:'all',cashType:'全部',cashChart:false,cashHasSearched:false,cashMeasure:'net',cashFocusDate:'',cashFocusStore:'',cashSheet:'',cashFocusReason:'',cashRowLevel:'type',cashValues:['amount'],shapeSheet:'',cashTranspose:false,cashShowCode:false,cashMerge:'merge',cashStoreSort:'out',paymentPivot:'store-date',paymentMethods:['LINEPAY','UberEats','foodpanda','現金','信用卡(離線)','UE(離線)'],paymentCols:['amount','count'],paymentMeasure:'amount',paymentChartMetric:'amount',punchName:'全部',punchChart:false,brandChart:false,brandMetric:'revenue',brandCols:['revenue','guests','guestAvg'],brandChartMetric:'revenue',brandNewCol:'',cashStoreView:'store',cashStoreGroup:'全部',exploreBrandFilter:'',weekGrouped:false,weekDrill:'',weekDrillPeriod:'',storeDrill:'',trendDrawerDate:'',trendSelectedDate:'',trendScrollLeft:0,selectedStores:STORES.map(x=>x.name)};
 const el=id=>document.getElementById(id), fmt=(v,d=0)=>Number(v).toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d}),e=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const field=k=>STORE_FIELDS.find(x=>x.key===k)||STORE_FIELDS[0];
 function fnum(v,k){let t=field(k).type;return `${fmt(v,t==='rate'||t==='growth'?2:t==='avg'?2:t==='amount'?2:0)}${t==='rate'||t==='growth'?'%':''}`;}
@@ -3510,7 +3505,7 @@ function rmsWeatherInline(date){
   return data?`<span class="rms-weather-inline" title="示意天氣：${e(data.weather)}" aria-label="示意天氣：${e(data.weather)}">${rmsWeatherSymbol(data.weather)}</span>`:'';
 }
 function weekTotal(list,metric,meal){if(metric==='avgOrder'||metric==='guestAvg'){let rev=list.reduce((s,x)=>s+weekMetricVal(x,'revenue',meal),0),n=list.reduce((s,x)=>s+weekMetricVal(x,metric==='avgOrder'?'orders':'guests',meal),0);return n?rev/n:0;}return list.reduce((s,x)=>s+weekMetricVal(x,metric,meal),0)}
-function weekTableToolbar(){return `<div class="table-toolbar"><div class="group"><span class="fil"><label>統計欄位</label><button data-quick="columns">已選 ${state.weekTableCols.length} 項 ▾</button></span></div><div class="group"><button data-quick="download">下載</button></div></div>`}
+function weekTableToolbar(extra=''){return `<div class="table-toolbar"><div class="group">${extra}<span class="fil"><label>統計欄位</label><button data-quick="columns">已選 ${state.weekTableCols.length} 項 ▾</button></span></div><div class="group"><button data-quick="download">下載</button></div></div>`}
 function weekFmt(n,key){return fmt(n,['avgOrder','guestAvg'].includes(key)?2:0)}
 // V13.6: calendar metrics grouped by kind; money shows $, counts show their unit.
 const WMT_GROUPS=[['金額',['revenue','avgOrder','guestAvg']],['數量',['orders','guests','qty']]];
@@ -3772,7 +3767,10 @@ function renderWeek(){
   let mode=state.weekMode,meal=state.weekMeal,metric=state.weekMetric,all=meal==='全部';
   // Synthetic multi-week fixture for weekday analysis, limited to the embedded demo range.
   const visibleWEEK=WEEK.filter(x=>`2026-${x.date.replace('/','-')}`>=state.start&&`2026-${x.date.replace('/','-')}`<=state.end);
-  let weekSelect=control('分組方式',group([['weekMode','interval','平/假日'],['weekMode','weekday','星期'],['weekMode','daily','日別']]));
+  // V15: 平/假日 and 星期 are one page (星期); the coarse/fine view is a 查看方式 switch inside chart and table.
+  state.weekMode=state.weekTop==='daily'?'daily':(state.weekSub==='interval'?'interval':'weekday');mode=state.weekMode;
+  let weekSelect=control('分組方式',group([['weekTop','week','星期'],['weekTop','daily','日別']]));
+  const subToggle=control('查看方式',group([['weekSub','interval','平/假日'],['weekSub','weekday','星期']]));
   let metricChoose=control('圖表指標',choose('weekMetric',WMT));
   let mealFilter=control('餐期',choose('weekMeal',[['全部','全部餐期'],...MEALS.map(x=>[x,x])]));
   // V12.8: 分組方式 and 餐期 apply to both chart and table, so they sit in the shared toolbar.
@@ -3797,19 +3795,14 @@ function renderWeek(){
     // This switch controls the chart, so show it ABOVE the chart.
     let modeToggle=all?control('顯示方式',group([['weekGrouped','false','合併比較'],['weekGrouped','true','分餐期比較']])):'';
     // Do not guess which weekday the user wants to investigate before drilldown.
-    // V15: in 星期 view, a small 平/假日 strip gives the coarse comparison without a second chart.
-    const ratioM=['avgOrder','guestAvg'].includes(metric),mLabel=WMT.find(x=>x[0]===metric)[1];
-    const ivVal=rows=>rows.length?(ratioM?weekTotal(rows,metric,meal):weekTotal(rows,metric,meal)/rows.length):null;
-    const base=ivVal(dateIntervals[0].rows);
-    const ivCards=mode==='weekday'?`<div class="week-iv-strip" aria-label="平/假日${ratioM?'':'日均'}${e(mLabel)}"><span class="week-iv-title">平/假日${ratioM?'':'日均'}${e(mLabel)}</span>${dateIntervals.map((d,i)=>{const v=ivVal(d.rows);if(v===null)return '';const diff=i&&base?(v/base-1)*100:null;return `<div class="week-iv-card"><small>${d.name}</small><strong>${weekFmt(v,metric)}</strong>${diff===null?'<em class="is-base">比較基準</em>':`<em class="${diff>=0?'is-up':'is-down'}">${diff>=0?'▲':'▼'} ${fmt(Math.abs(diff),1)}%</em>`}</div>`}).join('')}</div>`:'';
-    if(weekShow('chart'))layout+=sections('圖表',`<div class="chartbar week-chart-top">${metricChoose}${modeToggle}</div>${ivCards}<div class="rms-chart-frame week-comparison-frame"><div class="rms-chart-frame-head"><strong>${mode==='interval'?'平假日比較':'星期比較'}</strong>${chartHeaderMore()}</div><div class="chartbox week-interactive-chart">${chart}</div></div>`);
+    if(weekShow('chart'))layout+=sections('圖表',`<div class="chartbar week-chart-top">${metricChoose}${subToggle}${modeToggle}</div><div class="rms-chart-frame week-comparison-frame"><div class="rms-chart-frame-head"><strong>${mode==='interval'?'平假日比較':'星期比較'}</strong>${chartHeaderMore()}</div><div class="chartbox week-interactive-chart">${chart}</div></div>`);
     let names=['全部',...MEALS],tableRows=names.flatMap(mealName=>state.weekTableCols.map(col=>({values:[mealName==='全部'?'總計':mealName,WMT.find(x=>x[0]===col)[1],weekFmt(weekTotal(visibleWEEK,col,mealName),col),...packs.map(p=>weekFmt(weekTotal(p.rows,col,mealName),col))]})));
     const lowCells=packs.map(p=>{
       const day=weekLowestTradeDay(p.rows,meal);
       return day?`<span class="week-low-date">${e(day.row.date)}</span><span class="week-low-value">營業額 ${fmt(day.revenue)}</span>`:'—';
     });
     tableRows.push({values:['目前餐期','最低營業額日期','—',...lowCells],_total:true,lowRow:true});
-    if(weekShow('table'))layout+=sections('查詢結果',weekTableToolbar()+table(['餐期','分析項目','總計',...packs.map(p=>p.name)],tableRows));
+    if(weekShow('table'))layout+=sections('查詢結果',weekTableToolbar(subToggle)+table(['餐期','分析項目','總計',...packs.map(p=>p.name)],tableRows));
   }
   return screen(layout)+weekDrillLayer();
 }
