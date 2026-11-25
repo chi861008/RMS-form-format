@@ -2976,7 +2976,11 @@ function singleStoreTrend(daily,{compact=false,metricKey="revenue",aggregate=fal
   const scrollMode=daily.length>(narrow?6:22);
   const baseWidth=chartWidth||(compact?380:narrow?360:(desktopHalfChartWidth()||1000));
   const height=chartHeight||(compact?230:232);
-  const left=aggregate?(narrow?88:96):(narrow?48:57),right=narrow?24:30,top=30,bottom=46;
+  let left=aggregate?(narrow?88:96):(narrow?48:57);const right=narrow?24:30,top=30,bottom=46;
+  // V15: on a scrolling chart the Y-axis column only needs to fit its longest label.
+  if(scrollMode){const vs=daily.map(metricValue),ax=niceAxis(aggregate?Math.min(0,...vs):0,Math.max(1,...vs.map(x=>Math.abs(x)))*1.05);
+    const textW=t=>[...String(t)].reduce((w,c)=>w+(/[\u3000-\u9fff]/.test(c)?12:/[.,]/.test(c)?3.5:7),0);
+    left=Math.ceil(Math.max(...ax.ticks.map(v=>textW(chartLabel(v,field(metricKey).type,ax.max)))))+18;}
   const width=scrollMode?Math.max(baseWidth,left+right+Math.max(1,daily.length-1)*(narrow?53:45)):baseWidth;
   const plotW=width-left-right,plotH=height-top-bottom;
   const values=daily.map(metricValue);
