@@ -595,6 +595,7 @@ body.cash-modal-open{overflow:hidden}
 .ts-layer .ts-filter-sec{margin-top:12px}
 .device-phone .table-dim-row.dim-4 .pillgroup{display:grid!important;grid-template-columns:1fr 1fr}.device-phone .table-dim-row.dim-4 .pillgroup button:nth-child(3){border-left:0}.device-phone .table-dim-row.dim-4 .pillgroup button:nth-child(n+3){border-top:1px solid #e1e5e9}
 @media(max-width:550px){.table-dim-row.dim-4 .pillgroup{display:grid!important;grid-template-columns:1fr 1fr}.table-dim-row.dim-4 .pillgroup button:nth-child(3){border-left:0}.table-dim-row.dim-4 .pillgroup button:nth-child(n+3){border-top:1px solid #e1e5e9}}
+.single-trend-scroll.has-sticky-axis{padding-left:0!important}.single-trend-track{display:flex;align-items:flex-start}.single-trend-yaxis{position:sticky;left:0;z-index:2;flex:none;display:block;pointer-events:none}.single-trend-track .single-trend-svg{flex:none;display:block}
 .ts-op-fixed{padding:0 6px;justify-content:center;font-size:13px}.device-phone .ts-cond .ts-del{padding:0;width:24px}
 @media(max-width:550px){.ts-cond{grid-template-columns:minmax(0,1fr) 58px 84px 24px;gap:6px}.ts-cond .ts-val{grid-column:auto;padding:0 8px}.ts-op-fixed{padding:0 6px;justify-content:center;font-size:13px}.ts-cond .ts-del{padding:0;width:24px}}
 .ts-cond select{height:38px;border:1px solid #c9ced4;border-radius:6px;padding:0 8px;background:#fff;font-size:14px;min-width:0}
@@ -2985,7 +2986,11 @@ function singleStoreTrend(daily,{compact=false,metricKey="revenue",aggregate=fal
   const path=coords.map((p,i)=>`${i?'L':'M'}${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(' ');
   const maxTicks=narrow?4:8;
   const labelStep=scrollMode?1:Math.max(1,Math.ceil((daily.length-1)/Math.max(1,maxTicks-1)));
-  const grids=yAxis.ticks.map(v=>{let y=top+plotH*(1-(v-min)/(max-min));return `<line x1="${left}" x2="${width-right}" y1="${y}" y2="${y}" stroke="#e7eeee"/><text x="${left-8}" y="${y+4}" text-anchor="end" font-size="${narrow?12:12}" fill="#75848d">${e(chartLabel(v,axisType,max))}</text>`}).join('');
+  const yLabels=yAxis.ticks.map(v=>{let y=top+plotH*(1-(v-min)/(max-min));return `<text x="${left-8}" y="${y+4}" text-anchor="end" font-size="12" fill="#75848d">${e(chartLabel(v,axisType,max))}</text>`}).join('');
+  // V15: when the chart scrolls sideways (phones, long periods) the Y-axis labels sit in their own
+  // sticky layer, so the scale stays readable after the user swipes right.
+  const grids=yAxis.ticks.map(v=>{let y=top+plotH*(1-(v-min)/(max-min));return `<line x1="${left}" x2="${width-right}" y1="${y}" y2="${y}" stroke="#e7eeee"/>`}).join('')+(scrollMode?'':yLabels);
+  const stickyAxis=scrollMode?`<svg class="single-trend-yaxis" viewBox="0 0 ${left} ${height}" width="${left}" height="${height}" aria-hidden="true"><rect x="0" y="0" width="${left}" height="${height}" fill="#fff"/><line x1="${left-0.5}" x2="${left-0.5}" y1="${top}" y2="${top+plotH}" stroke="#d5dfe0"/>${yLabels}</svg>`:'';
   // Label the highest and lowest day directly so phones don't depend on hover.
   const hiI=values.indexOf(Math.max(...values)),loI=values.indexOf(Math.min(...values));
   const extremes=[...new Set([hiI,loI])].filter(i=>i>=0&&coords[i]).map(i=>{const p=coords[i],isHi=i===hiI;return `<text class="trend-extreme-label" x="${Math.min(width-right,Math.max(left+18,p.x))}" y="${isHi?Math.max(12,p.y-12):Math.min(top+plotH-4,p.y+20)}" text-anchor="middle" font-size="12" font-weight="700" fill="${isHi?'#0b7f78':'#8a5a2b'}" pointer-events="none">${isHi?'最高 ':'最低 '}${e(chartLabel(values[i],axisType,max))}</text>`}).join('');
@@ -2998,7 +3003,7 @@ function singleStoreTrend(daily,{compact=false,metricKey="revenue",aggregate=fal
   }).join('');
   const selectedDay=daily.find(x=>x.date===state.trendSelectedDate);
   return `<div class="single-trend-widget">
-    <div class="single-trend-scroll" tabindex="0" aria-label="每日${e(metricName)}折線圖${scrollMode?'，可左右滑動查看其他日期':''}"><svg class="single-trend-svg" viewBox="0 0 ${width} ${height}" style="${scrollMode?`width:${width}px;max-width:none`:'width:100%'}" role="group" aria-label="每日${e(metricName)}趨勢，自 ${daily[0].date} 至 ${daily[daily.length-1].date}">${grids}<path d="${path}" fill="none" stroke="#0d9e96" stroke-width="${narrow?2.5:3}" stroke-linejoin="round" stroke-linecap="round" pointer-events="none"/>${dots}${extremes}${ticks}</svg></div>
+    <div class="single-trend-scroll${scrollMode?' has-sticky-axis':''}" tabindex="0" aria-label="每日${e(metricName)}折線圖${scrollMode?'，可左右滑動查看其他日期':''}">${scrollMode?`<div class="single-trend-track" style="width:${width}px">${stickyAxis}`:''}<svg class="single-trend-svg" viewBox="0 0 ${width} ${height}" style="${scrollMode?`width:${width}px;max-width:none;margin-left:-${left}px`:'width:100%'}" role="group" aria-label="每日${e(metricName)}趨勢，自 ${daily[0].date} 至 ${daily[daily.length-1].date}">${grids}<path d="${path}" fill="none" stroke="#0d9e96" stroke-width="${narrow?2.5:3}" stroke-linejoin="round" stroke-linecap="round" pointer-events="none"/>${dots}${extremes}${ticks}</svg>${scrollMode?'</div>':''}</div>
     ${aggregate?'':`<p class="single-trend-hint">點選日期節點從右側查看當日營業明細${scrollMode?'；圖表區域可左右滑動查看其他日期':''}。</p>`}
   </div>`;
 }
